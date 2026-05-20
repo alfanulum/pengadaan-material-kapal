@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Tender extends Model
+{
+    protected $fillable = [
+        'kode_tender',
+        'material_request_id',
+        'nama_tender',
+        'deadline',
+        'catatan',
+        'status',
+    ];
+
+    public function materialRequest()
+    {
+        return $this->belongsTo(MaterialRequest::class);
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(TenderInvitation::class);
+    }
+}

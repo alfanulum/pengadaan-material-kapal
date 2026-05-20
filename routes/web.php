@@ -2,21 +2,61 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MaterialRequestController;
 use App\Http\Controllers\PlannerMaterialRequestController;
+use App\Http\Controllers\SupplyChain\VendorController;
+use App\Http\Controllers\SupplyChain\MaterialRequestController as SupplyChainMaterialRequestController;
+use App\Http\Controllers\SupplyChain\TenderController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $role = Auth::user()->role;
+
+    if ($role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    if ($role === 'engineer') {
+        return redirect()->route('engineer.dashboard');
+    }
+
+    if ($role === 'planner') {
+        return redirect()->route('planner.dashboard');
+    }
+
+    if ($role === 'supply_chain') {
+        return redirect()->route('supply-chain.dashboard');
+    }
+
+    if ($role === 'vendor') {
+        return redirect()->route('vendor.dashboard');
+    }
+
+    if ($role === 'gudang') {
+        return redirect()->route('gudang.dashboard');
+    }
+
+    return redirect()->route('login');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/admin/dashboard', function () {
+        return view('dashboards.admin');
+    })->name('admin.dashboard');
+
+
+    // engineer
+    Route::get('/engineer/dashboard', function () {
+        return view('dashboards.engineer');
+    })->name('engineer.dashboard');
 
     Route::get('/material-requests', [MaterialRequestController::class, 'index'])
         ->name('material-requests.index');
@@ -39,13 +79,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/material-requests/{id}', [MaterialRequestController::class, 'destroy'])
         ->name('material-requests.destroy');
 
-    Route::get('/admin/dashboard', function () {
-        return view('dashboards.admin');
-    })->name('admin.dashboard');
 
-    Route::get('/engineer/dashboard', function () {
-        return view('dashboards.engineer');
-    })->name('engineer.dashboard');
+    // palanner
+    Route::get('/planner/dashboard', function () {
+        return view('dashboards.planner');
+    })->name('planner.dashboard');
 
     Route::get('/planner/material-requests', [PlannerMaterialRequestController::class, 'index'])
         ->name('planner.material-requests.index');
@@ -62,21 +100,48 @@ Route::middleware('auth')->group(function () {
     Route::post('/planner/material-requests/{id}/reject', [PlannerMaterialRequestController::class, 'reject'])
         ->name('planner.material-requests.reject');
 
-    Route::get('/planner/dashboard', function () {
-        return view('dashboards.planner');
-    })->name('planner.dashboard');
+
+    // supplychain
+    // Route::get('/supply-chain/dashboard', function () {
+    //     return view('dashboards.supply');
+    // })->name('supply.dashboard');
 
     Route::get('/supply-chain/dashboard', function () {
         return view('dashboards.supply');
-    })->name('supply.dashboard');
+    })->name('supply-chain.dashboard');
 
-    Route::get('/gudang/dashboard', function () {
-        return view('dashboards.gudang');
-    })->name('gudang.dashboard');
+    Route::prefix('supply-chain')->name('supply-chain.')->group(function () {
+        Route::resource('vendors', VendorController::class);
 
+        Route::get('/material-requests', [SupplyChainMaterialRequestController::class, 'index'])
+            ->name('material-requests.index');
+
+        Route::get('/material-requests/{id}', [SupplyChainMaterialRequestController::class, 'show'])
+            ->name('material-requests.show');
+        Route::get('/tenders', [TenderController::class, 'index'])
+            ->name('tenders.index');
+
+        Route::get('/material-requests/{materialRequest}/tenders/create', [TenderController::class, 'create'])
+            ->name('tenders.create');
+
+        Route::post('/tenders', [TenderController::class, 'store'])
+            ->name('tenders.store');
+
+        Route::get('/tenders/{tender}', [TenderController::class, 'show'])
+            ->name('tenders.show');
+    });
+
+
+    // Vendor
     Route::get('/vendor/dashboard', function () {
         return view('dashboards.vendor');
     })->name('vendor.dashboard');
+
+
+    // gudang
+    Route::get('/gudang/dashboard', function () {
+        return view('dashboards.gudang');
+    })->name('gudang.dashboard');
 });
 
 require __DIR__ . '/auth.php';

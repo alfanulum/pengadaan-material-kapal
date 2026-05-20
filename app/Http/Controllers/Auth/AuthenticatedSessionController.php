@@ -43,7 +43,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         if ($user->role === 'supply_chain') {
-            return redirect()->route('supply.dashboard');
+            return redirect()->route('supply-chain.dashboard');
         }
 
         if ($user->role === 'gudang') {
@@ -54,7 +54,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('vendor.dashboard');
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route('login');
     }
 
     /**
