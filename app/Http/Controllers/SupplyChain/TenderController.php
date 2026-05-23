@@ -7,6 +7,7 @@ use App\Models\MaterialRequest;
 use App\Models\Tender;
 use App\Models\TenderInvitation;
 use App\Models\Vendor;
+use App\Models\VendorQuotation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -69,8 +70,53 @@ class TenderController extends Controller
 
     public function show(Tender $tender)
     {
-        $tender->load(['materialRequest.project', 'materialRequest.items', 'invitations.vendor']);
+        $tender->load([
+            'materialRequest.project',
+            'materialRequest.items',
+            'materialRequest.user',
+            'invitations.vendor',
+            'quotations.vendor',
+            'purchaseOrder',
+        ]);
 
         return view('supply-chain.tenders.show', compact('tender'));
+    }
+
+    public function chooseVendor($tenderId, $quotationId)
+    {
+        DB::transaction(function () use ($tenderId, $quotationId) {
+            $tender = Tender::with('invitations')->findOrFail($tenderId);
+
+            $quotation = VendorQuotation::where('tender_id', $tender->id)
+                ->where('id', $quotationId)
+                ->firstOrFail();
+
+            VendorQuotation::where('tender_id', $tender->id)
+                ->update([
+                    'status' => 'ditolak',
+                ]);
+
+            $quotation->update([
+                'status' => 'diterima',
+            ]);
+
+            $tender->invitations()->update([
+                'status' => 'tidak_terpilih',
+            ]);
+
+            $tender->invitations()
+                ->where('vendor_id', $quotation->vendor_id)
+                ->update([
+                    'status' => 'terpilih',
+                ]);
+
+            $tender->update([
+                'status' => 'vendor_terpilih',
+            ]);
+        });
+
+        return redirect()
+            ->route('supply-chain.tenders.show', $tenderId)
+            ->with('success', 'Vendor pemenang berhasil dipilih.');
     }
 }

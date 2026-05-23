@@ -24,4 +24,21 @@ class Tender extends Model
     {
         return $this->hasMany(TenderInvitation::class);
     }
+
+    public function quotations()
+    {
+        return $this->hasMany(VendorQuotation::class);
+    }
+
+    public function purchaseOrder()
+    {
+        return $this->hasOne(PurchaseOrder::class);
+    }
+
+    public function vendors()
+    {
+        return $this->belongsToMany(Vendor::class, 'tender_invitations')
+            ->withPivot('status', 'sent_at')
+            ->withTimestamps();
+    }
 }

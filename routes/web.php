@@ -8,6 +8,11 @@ use App\Http\Controllers\PlannerMaterialRequestController;
 use App\Http\Controllers\SupplyChain\VendorController;
 use App\Http\Controllers\SupplyChain\MaterialRequestController as SupplyChainMaterialRequestController;
 use App\Http\Controllers\SupplyChain\TenderController;
+use App\Http\Controllers\Vendor\TenderController as VendorTenderController;
+use App\Http\Controllers\SupplyChain\PurchaseOrderController as SupplyChainPurchaseOrderController;
+use App\Http\Controllers\Vendor\PurchaseOrderController as VendorPurchaseOrderController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -118,6 +123,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/material-requests/{id}', [SupplyChainMaterialRequestController::class, 'show'])
             ->name('material-requests.show');
+
         Route::get('/tenders', [TenderController::class, 'index'])
             ->name('tenders.index');
 
@@ -129,6 +135,20 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/tenders/{tender}', [TenderController::class, 'show'])
             ->name('tenders.show');
+
+        Route::post('/tenders/{tender}/quotations/{quotation}/choose', [TenderController::class, 'chooseVendor'])
+            ->name('tenders.quotations.choose');
+        Route::get('/purchase-orders', [SupplyChainPurchaseOrderController::class, 'index'])
+            ->name('purchase-orders.index');
+
+        Route::get('/tenders/{tender}/purchase-orders/create', [SupplyChainPurchaseOrderController::class, 'create'])
+            ->name('purchase-orders.create');
+
+        Route::post('/purchase-orders', [SupplyChainPurchaseOrderController::class, 'store'])
+            ->name('purchase-orders.store');
+
+        Route::get('/purchase-orders/{purchaseOrder}', [SupplyChainPurchaseOrderController::class, 'show'])
+            ->name('purchase-orders.show');
     });
 
 
@@ -137,6 +157,22 @@ Route::middleware('auth')->group(function () {
         return view('dashboards.vendor');
     })->name('vendor.dashboard');
 
+    Route::prefix('vendor')->name('vendor.')->group(function () {
+        Route::get('/tenders', [VendorTenderController::class, 'index'])
+            ->name('tenders.index');
+
+        Route::get('/tenders/{id}', [VendorTenderController::class, 'show'])
+            ->name('tenders.show');
+
+        Route::post('/tenders/{id}/quotation', [VendorTenderController::class, 'storeQuotation'])
+            ->name('tenders.quotation.store');
+
+        Route::get('/purchase-orders', [VendorPurchaseOrderController::class, 'index'])
+            ->name('purchase-orders.index');
+
+        Route::get('/purchase-orders/{purchaseOrder}', [VendorPurchaseOrderController::class, 'show'])
+            ->name('purchase-orders.show');
+    });
 
     // gudang
     Route::get('/gudang/dashboard', function () {

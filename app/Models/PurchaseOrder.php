@@ -6,5 +6,35 @@ use Illuminate\Database\Eloquent\Model;
 
 class PurchaseOrder extends Model
 {
-    //
+    protected $fillable = [
+        'kode_po',
+        'tender_id',
+        'vendor_id',
+        'vendor_quotation_id',
+        'tanggal_po',
+        'deadline_pengiriman',
+        'total_harga',
+        'catatan',
+        'status',
+    ];
+
+    public function tender()
+    {
+        return $this->belongsTo(Tender::class);
+    }
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
+    public function quotation()
+    {
+        return $this->belongsTo(VendorQuotation::class, 'vendor_quotation_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(PurchaseOrderItem::class);
+    }
 }

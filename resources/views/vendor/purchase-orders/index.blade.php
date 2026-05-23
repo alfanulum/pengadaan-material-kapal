@@ -3,24 +3,17 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div>
                 <h2 class="font-bold text-2xl text-slate-900 leading-tight">
-                    Data Tender
+                    Purchase Order Masuk
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">
-                    Kelola tender, undangan vendor, penawaran masuk, dan pemilihan vendor pemenang.
+                    Daftar Purchase Order yang dikirim Supply Chain kepada vendor.
                 </p>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-3">
-                <a href="{{ route('supply-chain.dashboard') }}"
-                    class="inline-flex items-center justify-center px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition">
-                    Kembali ke Dashboard
-                </a>
-
-                <a href="{{ route('supply-chain.material-requests.index') }}"
-                    class="inline-flex items-center justify-center px-5 py-3 bg-blue-900 text-white rounded-xl font-semibold shadow-lg hover:bg-blue-950 transition">
-                    + Buat dari Pengajuan
-                </a>
-            </div>
+            <a href="{{ route('vendor.dashboard') }}"
+                class="inline-flex items-center justify-center px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition">
+                Kembali ke Dashboard
+            </a>
         </div>
     </x-slot>
 
@@ -36,40 +29,34 @@
                 <div>
                     <p
                         class="inline-flex px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-blue-100 mb-5">
-                        Tender Management
+                        Vendor Purchase Order
                     </p>
 
                     <h3 class="text-3xl md:text-4xl font-bold leading-tight">
-                        Monitoring Tender Vendor
+                        Purchase Order dari Supply Chain
                     </h3>
 
                     <p class="mt-4 text-blue-100 max-w-3xl text-base leading-relaxed">
-                        Supply Chain dapat memantau tender yang dibuat dari pengajuan Planner,
-                        melihat vendor yang diundang, mengecek penawaran masuk, dan menentukan vendor pemenang.
+                        Vendor dapat melihat PO yang diterbitkan Supply Chain setelah penawaran vendor dipilih sebagai
+                        pemenang tender.
                     </p>
                 </div>
 
                 <div class="bg-white/10 border border-white/10 rounded-2xl p-5 min-w-[180px]">
-                    <p class="text-sm text-blue-100">Total Tender</p>
-                    <p class="text-3xl font-bold mt-1">{{ $tenders->total() }}</p>
+                    <p class="text-sm text-blue-100">Total PO</p>
+                    <p class="text-3xl font-bold mt-1">{{ $purchaseOrders->total() }}</p>
                 </div>
             </div>
         </div>
-
-        @if (session('success'))
-            <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-2xl">
-                {{ session('success') }}
-            </div>
-        @endif
 
         {{-- Table --}}
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-6 py-5 border-b border-slate-200">
                 <h3 class="text-lg font-bold text-slate-900">
-                    Daftar Tender
+                    Daftar Purchase Order
                 </h3>
                 <p class="text-sm text-slate-500 mt-1">
-                    Data tender yang telah dibuat dan dikirim ke vendor.
+                    Vendor: {{ $vendor->nama_vendor }}
                 </p>
             </div>
 
@@ -78,110 +65,100 @@
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Kode Tender
-                            </th>
+                                Kode PO</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Tender
-                            </th>
+                                Tender</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Pengajuan
-                            </th>
+                                Project</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Deadline
-                            </th>
+                                Tanggal PO</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Status
-                            </th>
+                                Total</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Aksi
-                            </th>
+                                Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                Aksi</th>
                         </tr>
                     </thead>
 
                     <tbody class="divide-y divide-slate-100">
-                        @forelse ($tenders as $tender)
+                        @forelse ($purchaseOrders as $po)
                             <tr class="hover:bg-slate-50 transition">
                                 <td class="px-6 py-4 text-sm font-bold text-slate-900 whitespace-nowrap">
-                                    {{ $tender->kode_tender }}
+                                    {{ $po->kode_po }}
                                 </td>
 
                                 <td class="px-6 py-4 text-sm">
                                     <div class="font-bold text-slate-900">
-                                        {{ $tender->nama_tender }}
+                                        {{ $po->tender->nama_tender ?? '-' }}
                                     </div>
                                     <div class="text-xs text-slate-500 mt-1">
-                                        Procurement tender material kapal
+                                        {{ $po->tender->kode_tender ?? '-' }}
                                     </div>
                                 </td>
 
-                                <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">
-                                    {{ $tender->materialRequest->kode_pengajuan ?? 'REQ-' . str_pad($tender->material_request_id, 4, '0', STR_PAD_LEFT) }}
+                                <td class="px-6 py-4 text-sm text-slate-700">
+                                    {{ $po->tender->materialRequest->project->nama_project ?? '-' }}
                                 </td>
 
                                 <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">
-                                    {{ \Carbon\Carbon::parse($tender->deadline)->format('d-m-Y') }}
+                                    {{ \Carbon\Carbon::parse($po->tanggal_po)->format('d-m-Y') }}
+                                </td>
+
+                                <td class="px-6 py-4 text-sm font-bold text-slate-900 whitespace-nowrap">
+                                    Rp {{ number_format($po->total_harga, 0, ',', '.') }}
                                 </td>
 
                                 <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                    @if ($tender->status == 'dikirim')
+                                    @if ($po->status == 'dikirim_ke_vendor')
                                         <span
                                             class="inline-flex px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">
-                                            Dikirim
+                                            Dikirim ke Vendor
                                         </span>
-                                    @elseif ($tender->status == 'penawaran_masuk')
+                                    @elseif ($po->status == 'diproses_vendor')
                                         <span
                                             class="inline-flex px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold">
-                                            Penawaran Masuk
+                                            Diproses Vendor
                                         </span>
-                                    @elseif ($tender->status == 'negosiasi')
+                                    @elseif ($po->status == 'dikirim')
                                         <span
                                             class="inline-flex px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold">
-                                            Negosiasi
+                                            Dikirim
                                         </span>
-                                    @elseif ($tender->status == 'vendor_terpilih')
+                                    @elseif ($po->status == 'selesai')
                                         <span
                                             class="inline-flex px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-                                            Vendor Terpilih
-                                        </span>
-                                    @elseif ($tender->status == 'selesai')
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
                                             Selesai
-                                        </span>
-                                    @elseif ($tender->status == 'dibatalkan')
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
-                                            Dibatalkan
                                         </span>
                                     @else
                                         <span
                                             class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
-                                            {{ str_replace('_', ' ', ucfirst($tender->status)) }}
+                                            {{ str_replace('_', ' ', ucfirst($po->status)) }}
                                         </span>
                                     @endif
                                 </td>
 
                                 <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                    <a href="{{ route('supply-chain.tenders.show', $tender) }}"
+                                    <a href="{{ route('vendor.purchase-orders.show', $po->id) }}"
                                         class="inline-flex px-4 py-2 bg-blue-900 text-white rounded-xl text-xs font-semibold hover:bg-blue-950 transition">
-                                        Detail
+                                        Detail PO
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-16 text-center">
+                                <td colspan="7" class="px-6 py-16 text-center">
                                     <div
                                         class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold mb-4">
-                                        TD
+                                        PO
                                     </div>
 
                                     <h3 class="text-lg font-bold text-slate-900">
-                                        Belum Ada Data Tender
+                                        Belum Ada Purchase Order
                                     </h3>
 
                                     <p class="text-sm text-slate-500 mt-2">
-                                        Tender akan muncul setelah Supply Chain membuat tender dari pengajuan Planner.
+                                        PO akan tampil setelah Supply Chain membuat PO untuk vendor ini.
                                     </p>
                                 </td>
                             </tr>
@@ -192,7 +169,7 @@
         </div>
 
         <div class="mt-6">
-            {{ $tenders->links() }}
+            {{ $purchaseOrders->links() }}
         </div>
 
     </div>
