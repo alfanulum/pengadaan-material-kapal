@@ -57,7 +57,9 @@ async function initFirebaseNotifications() {
             console.log('[FCM] Foreground message:', payload);
             showToastNotification(
                 payload.notification?.title || 'Pesan Baru',
-                payload.notification?.body || 'Anda memiliki pesan baru'
+                payload.notification?.body || 'Anda memiliki pesan baru',
+                'info',
+                payload.notification?.image || null
             );
         });
 
@@ -103,7 +105,7 @@ async function saveFcmToken(token) {
  * @param {string} title
  * @param {string} body
  */
-export function showToastNotification(title, body, type = 'info') {
+export function showToastNotification(title, body, type = 'info', imageUrl = null) {
     const container = document.getElementById('toast-container');
     if (!container) return;
 
@@ -120,23 +122,31 @@ export function showToastNotification(title, body, type = 'info') {
     const toast = document.createElement('div');
     toast.id = id;
     toast.className = `
-        flex items-start gap-3 p-4 rounded-2xl shadow-2xl border
+        flex flex-col gap-3 p-4 rounded-2xl shadow-2xl border
         bg-gradient-to-br ${color.bg} ${color.border}
         text-white max-w-sm w-full
         transform translate-x-full opacity-0
         transition-all duration-500 ease-out
     `.trim().replace(/\s+/g, ' ');
 
+    let imageHtml = '';
+    if (imageUrl) {
+        imageHtml = `<img src="${imageUrl}" class="w-full h-32 object-cover rounded-xl mt-2 mb-1" alt="Attachment" />`;
+    }
+
     toast.innerHTML = `
-        <div class="text-2xl mt-0.5 flex-shrink-0">${color.icon}</div>
-        <div class="flex-1 min-w-0">
-            <p class="font-bold text-sm truncate">${title}</p>
-            <p class="text-xs text-white/80 mt-0.5 line-clamp-2">${body}</p>
+        <div class="flex items-start gap-3">
+            <div class="text-2xl mt-0.5 flex-shrink-0">${color.icon}</div>
+            <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm truncate">${title}</p>
+                <p class="text-xs text-white/80 mt-0.5 line-clamp-2">${body}</p>
+                ${imageHtml}
+            </div>
+            <button onclick="document.getElementById('${id}').remove()"
+                class="text-white/60 hover:text-white transition text-lg leading-none flex-shrink-0 mt-0.5">
+                ×
+            </button>
         </div>
-        <button onclick="document.getElementById('${id}').remove()"
-            class="text-white/60 hover:text-white transition text-lg leading-none flex-shrink-0 mt-0.5">
-            ×
-        </button>
     `;
 
     container.appendChild(toast);

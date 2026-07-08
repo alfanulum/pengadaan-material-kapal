@@ -12,6 +12,7 @@ class TenderClarification extends Model
         'engineer_id',
         'sender_id',
         'message',
+        'attachment',
         'status',
     ];
 

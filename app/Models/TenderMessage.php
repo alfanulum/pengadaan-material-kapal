@@ -15,6 +15,7 @@ class TenderMessage extends Model
         'role',
         'type',
         'message',
+        'attachment',
         'is_read',
     ];
 

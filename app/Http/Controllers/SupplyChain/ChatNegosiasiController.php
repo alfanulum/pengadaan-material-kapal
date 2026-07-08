@@ -69,11 +69,16 @@ class ChatNegosiasiController extends Controller
         FirebaseService $firebase
     ) {
         $request->validate([
-            'message' => 'required|string|max:2000'
+            'message' => 'nullable|string|max:2000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
         ]);
+        if (!$request->message && !$request->hasFile('attachment')) {
+            return back()->with('error', 'Pesan atau gambar harus diisi');
+        }
 
 
-        // SIMPAN PESAN
+        $attachmentPath = $request->hasFile('attachment') ? $request->file('attachment')->store('chat_attachments', 'public') : null;
+
         TenderMessage::create([
             'tender_id' => $tenderId,
             'vendor_id' => $vendorId,
@@ -81,6 +86,7 @@ class ChatNegosiasiController extends Controller
             'role' => 'supply_chain',
             'type' => 'negotiation',
             'message' => $request->message,
+            'attachment' => $attachmentPath,
             'is_read' => false
         ]);
 
@@ -105,7 +111,8 @@ class ChatNegosiasiController extends Controller
                 $firebase->sendNotification(
                     $user->fcm_token,
                     'Negosiasi dari ' . Auth::user()->name,
-                    \Illuminate\Support\Str::limit($request->message, 80)
+                    $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
+                    $attachmentPath ? asset('storage/' . $attachmentPath) : null
                 );
             }
         }
@@ -136,6 +143,7 @@ class ChatNegosiasiController extends Controller
                     'id'          => $msg->id,
                     'sender_id'   => $msg->sender_id,
                     'message'     => $msg->message,
+                    'attachment_url' => $msg->attachment ? asset('storage/' . $msg->attachment) : null,
                     'role'        => $msg->sender_id == auth()->id() ? 'me' : 'other',
                     'sender_name' => $msg->role === 'supply_chain' ? 'Supply Chain (Anda)' : 'Vendor',
                     'time'        => $msg->created_at->format('d M H:i'),

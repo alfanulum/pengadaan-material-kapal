@@ -25,6 +25,7 @@ messaging.onBackgroundMessage(function (payload) {
         icon: '/favicon.ico',
         badge: '/favicon.ico',
         tag: 'chat-notification',
+        image: payload.notification?.image || null,
         requireInteraction: false,
         data: payload.data || {}
     };

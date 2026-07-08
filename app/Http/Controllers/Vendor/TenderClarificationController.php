@@ -76,10 +76,12 @@ class TenderClarificationController extends Controller
     ) {
 
         $request->validate([
-
-            'message' => 'required|string|max:2000'
-
+            'message' => 'nullable|string|max:2000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
         ]);
+        if (!$request->message && !$request->hasFile('attachment')) {
+            return back()->with('error', 'Pesan atau gambar harus diisi');
+        }
 
 
 
@@ -109,7 +111,9 @@ class TenderClarificationController extends Controller
 
         // SIMPAN PESAN
 
-        TenderClarification::create([
+        $attachmentPath = $request->hasFile('attachment') ? $request->file('attachment')->store('chat_attachments', 'public') : null;
+
+        $chat = TenderClarification::create([
 
             'tender_id' => $invitation->tender_id,
 
@@ -123,9 +127,8 @@ class TenderClarificationController extends Controller
             'sender_id' => Auth::id(),
 
             'message' => $request->message,
-
+            'attachment' => $attachmentPath,
             'status' => 'terkirim',
-
         ]);
 
 
@@ -149,7 +152,8 @@ class TenderClarificationController extends Controller
             $firebase->sendNotification(
                 $engineer->fcm_token,
                 'Klarifikasi dari ' . Auth::user()->name,
-                \Illuminate\Support\Str::limit($request->message, 80)
+                $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
+                $attachmentPath ? asset('storage/' . $attachmentPath) : null
             );
         }
 
@@ -232,8 +236,12 @@ class TenderClarificationController extends Controller
     ) {
 
         $request->validate([
-            'message' => 'required|string|max:2000'
+            'message' => 'nullable|string|max:2000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
         ]);
+        if (!$request->message && !$request->hasFile('attachment')) {
+            return back()->with('error', 'Pesan atau gambar harus diisi');
+        }
 
         $vendor = Vendor::where('user_id', Auth::id())->firstOrFail();
 
@@ -241,13 +249,16 @@ class TenderClarificationController extends Controller
             abort(403);
         }
 
-        TenderMessage::create([
+        $attachmentPath = $request->hasFile('attachment') ? $request->file('attachment')->store('chat_attachments', 'public') : null;
+
+        $msg = TenderMessage::create([
             'tender_id' => $invitation->tender_id,
             'vendor_id' => $vendor->id,
             'sender_id' => Auth::id(),
             'role'      => 'vendor',
             'type'      => 'negotiation',
             'message'   => $request->message,
+            'attachment'=> $attachmentPath,
             'is_read'   => false,
         ]);
 
@@ -265,7 +276,8 @@ class TenderClarificationController extends Controller
                 $firebase->sendNotification(
                     $scUser->fcm_token,
                     'Negosiasi dari ' . Auth::user()->name,
-                    \Illuminate\Support\Str::limit($request->message, 80)
+                    $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
+                    $attachmentPath ? asset('storage/' . $attachmentPath) : null
                 );
             }
         }
@@ -306,6 +318,7 @@ class TenderClarificationController extends Controller
                     'id'        => $msg->id,
                     'sender_id' => $msg->sender_id,
                     'message'   => $msg->message,
+                    'attachment_url' => $msg->attachment ? asset('storage/' . $msg->attachment) : null,
                     'role'      => $msg->sender_id == auth()->id() ? 'me' : 'other',
                     'sender_name' => $msg->sender->name ?? 'Engineer',
                     'time'      => $msg->created_at->format('d-m-Y H:i'),
@@ -335,6 +348,7 @@ class TenderClarificationController extends Controller
                     'id'        => $msg->id,
                     'sender_id' => $msg->sender_id,
                     'message'   => $msg->message,
+                    'attachment_url' => $msg->attachment ? asset('storage/' . $msg->attachment) : null,
                     'role'      => $msg->sender_id == auth()->id() ? 'me' : 'other',
                     'sender_name' => $msg->role === 'vendor' ? 'Anda / Vendor' : 'Supply Chain',
                     'time'      => $msg->created_at->format('d-m-Y H:i'),

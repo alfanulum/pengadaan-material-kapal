@@ -25,12 +25,13 @@ class FirebaseService
     public function sendNotification(
         string $token,
         string $title,
-        string $body
+        string $body,
+        ?string $imageUrl = null
     ) {
-
         $notification = Notification::create(
             $title,
-            $body
+            $body,
+            $imageUrl
         );
 
 
