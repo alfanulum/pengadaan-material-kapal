@@ -104,14 +104,44 @@ class ChatNegosiasiController extends Controller
 
                 $firebase->sendNotification(
                     $user->fcm_token,
-                    'Pesan Negosiasi Baru',
-                    Auth::user()->name .
-                        ' mengirim pesan negosiasi'
+                    'Negosiasi dari ' . Auth::user()->name,
+                    \Illuminate\Support\Str::limit($request->message, 80)
                 );
             }
         }
 
 
+        // Return JSON for AJAX requests (no page reload)
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json(['status' => 'ok', 'message' => 'Pesan terkirim']);
+        }
+
         return back();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | AJAX: GET MESSAGES (for real-time polling)
+    |--------------------------------------------------------------------------
+    */
+    public function messagesAjax($tenderId, $vendorId)
+    {
+        $messages = TenderMessage::where('tender_id', $tenderId)
+            ->where('vendor_id', $vendorId)
+            ->where('type', 'negotiation')
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function ($msg) use ($vendorId) {
+                return [
+                    'id'          => $msg->id,
+                    'sender_id'   => $msg->sender_id,
+                    'message'     => $msg->message,
+                    'role'        => $msg->sender_id == auth()->id() ? 'me' : 'other',
+                    'sender_name' => $msg->role === 'supply_chain' ? 'Supply Chain (Anda)' : 'Vendor',
+                    'time'        => $msg->created_at->format('d M H:i'),
+                ];
+            });
+
+        return response()->json(['messages' => $messages]);
     }
 }

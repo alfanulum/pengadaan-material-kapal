@@ -63,12 +63,12 @@
             </div>
 
             {{-- Chat Area --}}
-            <div class="p-6 md:p-8 max-h-[560px] overflow-y-auto space-y-5 bg-slate-50">
+            <div id="chatBox" class="p-6 md:p-8 max-h-[560px] overflow-y-auto space-y-5 bg-slate-50">
 
                 @forelse ($messages as $chat)
                     @if ($chat->sender_id == auth()->id())
                         {{-- Bubble Engineer --}}
-                        <div class="flex justify-end">
+                        <div class="flex justify-end" data-msg-id="{{ $chat->id }}">
                             <div class="max-w-[78%]">
                                 <div class="mb-1 text-right">
                                     <span class="text-xs font-bold text-blue-800">
@@ -89,7 +89,7 @@
                         </div>
                     @else
                         {{-- Bubble Vendor --}}
-                        <div class="flex justify-start">
+                        <div class="flex justify-start" data-msg-id="{{ $chat->id }}">
                             <div class="max-w-[78%]">
                                 <div class="mb-1">
                                     <span class="text-xs font-bold text-slate-600">
@@ -130,7 +130,7 @@
             </div>
 
             {{-- Form Balasan --}}
-            <form action="{{ route('engineer.clarifications.reply', [$tender->id, $vendor->id]) }}" method="POST"
+            <form action="{{ route('engineer.clarifications.reply', [$tender->id, $vendor->id]) }}" method="POST" id="chatForm"
                 class="p-6 md:p-8 border-t border-slate-200 bg-white">
                 @csrf
 
@@ -143,7 +143,7 @@
                     </p>
                 </div>
 
-                <textarea name="message" rows="5"
+                <textarea name="message" id="messageInput" rows="5"
                     class="w-full rounded-2xl border-slate-300 focus:border-blue-800 focus:ring-blue-800 text-base"
                     placeholder="Contoh: Gunakan material grade AH36 sesuai kebutuhan konstruksi kapal.">{{ old('message') }}</textarea>
 
@@ -156,7 +156,7 @@
                         Jawaban ini akan langsung tampil di halaman detail tender vendor.
                     </p>
 
-                    <button type="submit"
+                    <button type="submit" id="sendBtn"
                         class="inline-flex items-center justify-center px-8 py-4 bg-blue-900 text-white rounded-2xl font-bold hover:bg-blue-950 transition shadow-lg">
                         Kirim Jawaban
                     </button>
@@ -165,4 +165,183 @@
         </div>
 
     </div>
+
+    {{-- ============================================================
+         CHAT ENGINE: AJAX SEND + 5s POLLING + TOAST NOTIFICATION
+         ============================================================ --}}
+    <script>
+    (function () {
+        const chatBox     = document.getElementById('chatBox');
+        const sendForm    = document.getElementById('chatForm');
+        const input       = document.getElementById('messageInput');
+        const sendBtn     = document.getElementById('sendBtn');
+
+        const sendUrl     = "{{ route('engineer.clarifications.reply', [$tender->id, $vendor->id]) }}";
+        const pollUrl     = "{{ route('engineer.clarifications.messages.ajax', [$tender->id, $vendor->id]) }}";
+        const csrfToken   = document.querySelector('meta[name="csrf-token"]').content;
+
+        let lastId    = {{ $messages->last()->id ?? 0 }};
+        let isPolling = true;
+        let isSending = false;
+
+        /* ── Helpers ── */
+        const now = () => {
+            const d = new Date();
+            return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        };
+
+        const escHtml = (s) => {
+            const d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        };
+
+        const scrollBottom = () => { chatBox.scrollTop = chatBox.scrollHeight; };
+
+        const toast = (title, body, type = 'info') => {
+            if (window.showToastNotification) {
+                window.showToastNotification(title, body, type);
+            }
+        };
+
+        /* ── Build bubble ── */
+        const buildBubble = (msg, tempId = null) => {
+            const id  = tempId ? `data-temp-id="${tempId}"` : `data-msg-id="${msg.id}"`;
+            const isMe = msg.role === 'me';
+
+            if (isMe) {
+                return `<div class="flex justify-end" ${id}>
+                    <div class="max-w-[78%]">
+                        <div class="mb-1 text-right">
+                            <span class="text-xs font-bold text-blue-800">Engineer</span>
+                        </div>
+                        <div class="rounded-3xl rounded-tr-md bg-blue-900 text-white px-5 py-4 shadow-sm ${tempId ? 'opacity-70' : ''}">
+                            <p class="text-base leading-relaxed">${escHtml(msg.message)}</p>
+                            <p class="text-xs text-blue-100 mt-3">${msg.time}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            return `<div class="flex justify-start" ${id}>
+                <div class="max-w-[78%]">
+                    <div class="mb-1">
+                        <span class="text-xs font-bold text-slate-600">${escHtml(msg.sender_name)}</span>
+                    </div>
+                    <div class="rounded-3xl rounded-tl-md bg-white border border-slate-200 text-slate-800 px-5 py-4 shadow-sm">
+                        <p class="text-base leading-relaxed">${escHtml(msg.message)}</p>
+                        <p class="text-xs text-slate-400 mt-3">${msg.time}</p>
+                    </div>
+                </div>
+            </div>`;
+        };
+
+        const appendBubble = (html) => {
+            document.querySelector('#chatBox .text-center.py-16')?.remove();
+            const wrap = document.createElement('div');
+            wrap.innerHTML = html.trim();
+            const el = wrap.firstElementChild;
+            chatBox.appendChild(el);
+            scrollBottom();
+            return el;
+        };
+
+        /* ── AJAX SEND ── */
+        sendForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const text = input.value.trim();
+            if (!text || isSending) return;
+
+            isSending = true;
+            sendBtn.disabled = true;
+            const originalText = sendBtn.innerHTML;
+            sendBtn.innerHTML = `<span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>`;
+
+            // Optimistic UI: show bubble immediately
+            const tempId = 'temp-' + Date.now();
+            const el = appendBubble(buildBubble({ role: 'me', message: text, time: now(), id: 0 }, tempId));
+
+            input.value = '';
+            input.focus();
+
+            try {
+                const res = await fetch(sendUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                    body: new URLSearchParams({ message: text }),
+                });
+
+                if (res.ok) {
+                    el.querySelector('div > div')?.classList.remove('opacity-70');
+                } else {
+                    el.remove();
+                    toast('Gagal Kirim', 'Jawaban gagal dikirim, coba lagi.', 'error');
+                    input.value = text;
+                }
+            } catch (err) {
+                el.remove();
+                toast('Koneksi Error', 'Periksa koneksi internet Anda.', 'error');
+                input.value = text;
+            } finally {
+                isSending = false;
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = originalText;
+            }
+        });
+
+        /* ── POLLING (5s) ── */
+        const poll = async () => {
+            if (!isPolling) return;
+            try {
+                const res  = await fetch(pollUrl, {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await res.json();
+
+                const fresh = data.messages.filter(m => m.id > lastId);
+
+                fresh.forEach(msg => {
+                    lastId = Math.max(lastId, msg.id);
+
+                    if (msg.role === 'me') {
+                        const existing = chatBox.querySelector(`[data-msg-id="${msg.id}"]`);
+                        if (existing) return;
+                        const temp = chatBox.querySelector('[data-temp-id]');
+                        if (temp) {
+                            temp.dataset.msgId = msg.id;
+                            delete temp.dataset.tempId;
+                            return;
+                        }
+                    }
+
+                    appendBubble(buildBubble(msg));
+
+                    if (msg.role === 'other') {
+                        if (window.showToastNotification) {
+                            window.showToastNotification('💬 Klarifikasi dari ' + msg.sender_name, msg.message.substring(0, 80));
+                        }
+                    }
+                });
+
+            } catch (e) { /* silent */ }
+
+            setTimeout(poll, 5000);
+        };
+
+        /* ── Visibility API ── */
+        document.addEventListener('visibilitychange', () => {
+            isPolling = !document.hidden;
+            if (!document.hidden) poll();
+        });
+
+        /* ── Init ── */
+        scrollBottom();
+        setTimeout(poll, 5000);
+    })();
+    </script>
 </x-app-layout>

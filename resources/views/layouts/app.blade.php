@@ -30,6 +30,26 @@
             {{ $slot }}
         </main>
     </div>
+
+    {{-- ============================================================
+         GLOBAL TOAST NOTIFICATION CONTAINER
+         Firebase foreground notifications & chat alerts appear here
+         ============================================================ --}}
+    <div id="toast-container"
+        class="fixed top-5 right-5 z-[9999] flex flex-col gap-3 pointer-events-none"
+        style="max-width: 360px; width: calc(100vw - 2.5rem);">
+        {{-- Toasts are injected here dynamically by firebase-init.js --}}
+    </div>
+
+    <style>
+        #toast-container > * {
+            pointer-events: auto;
+        }
+        #toast-container .toast-item {
+            backdrop-filter: blur(12px);
+        }
+    </style>
+
 </body>
 
 </html>

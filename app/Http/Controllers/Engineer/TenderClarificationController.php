@@ -127,18 +127,18 @@ class TenderClarificationController extends Controller
         ) {
 
             $firebase->sendNotification(
-
                 $vendorUser->fcm_token,
-
-                'Balasan Klarifikasi',
-
-                Auth::user()->name .
-                    ' membalas pertanyaan teknis Anda'
-
+                'Klarifikasi dari ' . Auth::user()->name,
+                \Illuminate\Support\Str::limit($request->message, 80)
             );
         }
 
 
+
+        // Return JSON for AJAX requests (no page reload)
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json(['status' => 'ok', 'message' => 'Jawaban terkirim']);
+        }
 
         return redirect()
 
@@ -154,5 +154,33 @@ class TenderClarificationController extends Controller
                 'success',
                 'Jawaban klarifikasi berhasil dikirim.'
             );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | AJAX: GET MESSAGES (for real-time polling)
+    |--------------------------------------------------------------------------
+    */
+    public function messagesAjax(Tender $tender, Vendor $vendor)
+    {
+        $messages = TenderClarification::with('sender')
+            ->where('tender_id', $tender->id)
+            ->where('vendor_id', $vendor->id)
+            ->where('engineer_id', Auth::id())
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function ($msg) {
+                return [
+                    'id'          => $msg->id,
+                    'sender_id'   => $msg->sender_id,
+                    'message'     => $msg->message,
+                    'role'        => $msg->sender_id == auth()->id() ? 'me' : 'other',
+                    'sender_name' => $msg->sender_id == auth()->id() ? 'Engineer (Anda)' : ($msg->sender->name ?? 'Vendor'),
+                    'time'        => $msg->created_at->format('d-m-Y H:i'),
+                ];
+            });
+
+        return response()->json(['messages' => $messages]);
     }
 }

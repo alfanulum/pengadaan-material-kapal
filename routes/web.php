@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplyChain\PurchaseOrderController as SupplyChainPurch
 use App\Http\Controllers\Vendor\PurchaseOrderController as VendorPurchaseOrderController;
 use App\Http\Controllers\Vendor\TenderClarificationController as VendorTenderClarificationController;
 use App\Http\Controllers\Engineer\TenderClarificationController as EngineerTenderClarificationController;
+use App\Http\Controllers\FcmTokenController;
 use App\Services\FirebaseService;
 
 Route::get('/test-firebase', function (
@@ -33,6 +34,11 @@ Route::get('/test-firebase', function (
 Route::get('/', function () {
     return view('welcome');
 });
+
+// FCM Token storage (must be inside auth middleware)
+Route::post('/fcm-token', [FcmTokenController::class, 'update'])
+    ->middleware('auth')
+    ->name('fcm.token.update');
 
 Route::get('/dashboard', function () {
     $role = Auth::user()->role;
@@ -88,6 +94,10 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/clarifications/{tender}/{vendor}', [EngineerTenderClarificationController::class, 'reply'])
             ->name('clarifications.reply');
+
+        // AJAX polling for real-time chat
+        Route::get('/clarifications/{tender}/{vendor}/messages', [EngineerTenderClarificationController::class, 'messagesAjax'])
+            ->name('clarifications.messages.ajax');
     });
 
     Route::get('/material-requests', [MaterialRequestController::class, 'index'])
@@ -195,6 +205,12 @@ Route::middleware('auth')->group(function () {
             '/tenders/{tender}/negotiation/{vendor}',
             [ChatNegosiasiController::class, 'send']
         )->name('chat.negosiasi.send');
+
+        // AJAX polling for real-time chat
+        Route::get(
+            '/tenders/{tender}/negotiation/{vendor}/messages',
+            [ChatNegosiasiController::class, 'messagesAjax']
+        )->name('chat.negosiasi.messages.ajax');
     });
 
 
@@ -241,6 +257,17 @@ Route::middleware('auth')->group(function () {
             '/tenders/{invitation}/chat-negotiation',
             [VendorTenderClarificationController::class, 'sendNegotiation']
         )->name('tenders.chat.negotiation.send');
+
+        // AJAX polling for real-time chat
+        Route::get(
+            '/tenders/{invitation}/chat/messages',
+            [VendorTenderClarificationController::class, 'clarificationMessagesAjax']
+        )->name('tenders.chat.messages.ajax');
+
+        Route::get(
+            '/tenders/{invitation}/chat-negotiation/messages',
+            [VendorTenderClarificationController::class, 'negotiationMessagesAjax']
+        )->name('tenders.chat.negotiation.messages.ajax');
     });
     // gudang
     Route::get('/gudang/dashboard', function () {
