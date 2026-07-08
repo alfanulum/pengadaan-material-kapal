@@ -400,6 +400,29 @@
             {{-- Kanan --}}
             <div class="lg:col-span-1 space-y-8">
 
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">
+                        Chat Negosiasi
+                    </h3>
+
+                    <p class="text-sm text-slate-500 mb-5">
+                        Diskusi harga & penawaran antara Supply Chain dan Vendor.
+                    </p>
+
+                    {{-- BUTTON CHAT --}}
+                    <a href="{{ route('supply-chain.chat.negosiasi.index', $tender->id) }}"
+                        class="w-full inline-flex items-center justify-center px-5 py-4 bg-amber-600 text-white rounded-2xl font-bold hover:bg-amber-700 transition">
+
+                        💬 Buka Chat Negosiasi
+                    </a>
+
+                    <p class="text-xs text-slate-400 mt-3 text-center">
+                        Klik untuk membuka ruang diskusi tender ini
+                    </p>
+
+                </div>
+
                 {{-- Vendor Diundang --}}
                 <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="px-6 py-5 border-b border-slate-200">

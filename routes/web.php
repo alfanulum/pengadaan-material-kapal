@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MaterialRequestController;
+use App\Http\Controllers\Vendor\TenderClarificationController;
+use App\Http\Controllers\SupplyChain\ChatNegosiasiController;
 use App\Http\Controllers\PlannerMaterialRequestController;
 use App\Http\Controllers\SupplyChain\VendorController;
 use App\Http\Controllers\SupplyChain\MaterialRequestController as SupplyChainMaterialRequestController;
@@ -11,9 +13,23 @@ use App\Http\Controllers\SupplyChain\TenderController;
 use App\Http\Controllers\Vendor\TenderController as VendorTenderController;
 use App\Http\Controllers\SupplyChain\PurchaseOrderController as SupplyChainPurchaseOrderController;
 use App\Http\Controllers\Vendor\PurchaseOrderController as VendorPurchaseOrderController;
+use App\Http\Controllers\Vendor\TenderClarificationController as VendorTenderClarificationController;
+use App\Http\Controllers\Engineer\TenderClarificationController as EngineerTenderClarificationController;
+use App\Services\FirebaseService;
+
+Route::get('/test-firebase', function (
+    App\Services\FirebaseService $firebase
+) {
+
+    $firebase->sendNotification(
+        'TOKEN_FIREBASE_KAMU',
+        'Test Notification',
+        'Firebase Laravel berhasil'
+    );
 
 
-
+    return "terkirim";
+});
 Route::get('/', function () {
     return view('welcome');
 });
@@ -59,9 +75,20 @@ Route::middleware('auth')->group(function () {
 
 
     // engineer
-    Route::get('/engineer/dashboard', function () {
-        return view('dashboards.engineer');
-    })->name('engineer.dashboard');
+    Route::prefix('engineer')->name('engineer.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboards.engineer');
+        })->name('dashboard');
+
+        Route::get('/clarifications', [EngineerTenderClarificationController::class, 'index'])
+            ->name('clarifications.index');
+
+        Route::get('/clarifications/{tender}/{vendor}', [EngineerTenderClarificationController::class, 'show'])
+            ->name('clarifications.show');
+
+        Route::post('/clarifications/{tender}/{vendor}', [EngineerTenderClarificationController::class, 'reply'])
+            ->name('clarifications.reply');
+    });
 
     Route::get('/material-requests', [MaterialRequestController::class, 'index'])
         ->name('material-requests.index');
@@ -149,6 +176,25 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/purchase-orders/{purchaseOrder}', [SupplyChainPurchaseOrderController::class, 'show'])
             ->name('purchase-orders.show');
+
+        // CHAT NEGOSIASI
+        // LIST CHAT PER TENDER
+        Route::get(
+            '/tenders/{tender}/negotiation',
+            [ChatNegosiasiController::class, 'index']
+        )->name('chat.negosiasi.index');
+
+        // CHAT DETAIL PER VENDOR
+        Route::get(
+            '/tenders/{tender}/negotiation/{vendor}',
+            [ChatNegosiasiController::class, 'show']
+        )->name('chat.negosiasi.show');
+
+        // SEND MESSAGE
+        Route::post(
+            '/tenders/{tender}/negotiation/{vendor}',
+            [ChatNegosiasiController::class, 'send']
+        )->name('chat.negosiasi.send');
     });
 
 
@@ -172,12 +218,36 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/purchase-orders/{purchaseOrder}', [VendorPurchaseOrderController::class, 'show'])
             ->name('purchase-orders.show');
-    });
 
+        // OPEN CHAT
+        Route::get(
+            '/tenders/{invitation}/chat',
+            [VendorTenderClarificationController::class, 'chat']
+        )->name('tenders.chat');
+
+        // SEND MESSAGE
+        Route::post(
+            '/tenders/{invitation}/chat',
+            [VendorTenderClarificationController::class, 'store']
+        )->name('tenders.chat.send');
+
+        // NEGOTIATION (FIXED)
+        Route::get(
+            '/tenders/{invitation}/chat-negotiation',
+            [VendorTenderClarificationController::class, 'negotiation']
+        )->name('tenders.chat.negotiation');
+
+        Route::post(
+            '/tenders/{invitation}/chat-negotiation',
+            [VendorTenderClarificationController::class, 'sendNegotiation']
+        )->name('tenders.chat.negotiation.send');
+    });
     // gudang
     Route::get('/gudang/dashboard', function () {
         return view('dashboards.gudang');
     })->name('gudang.dashboard');
 });
+
+
 
 require __DIR__ . '/auth.php';

@@ -35,6 +35,10 @@ class Tender extends Model
         return $this->hasOne(PurchaseOrder::class);
     }
 
+    public function clarifications()
+    {
+        return $this->hasMany(TenderClarification::class);
+    }
     public function vendors()
     {
         return $this->belongsToMany(Vendor::class, 'tender_invitations')

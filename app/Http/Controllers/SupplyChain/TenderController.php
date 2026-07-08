@@ -77,6 +77,8 @@ class TenderController extends Controller
             'invitations.vendor',
             'quotations.vendor',
             'purchaseOrder',
+            'clarifications.vendor',
+            'clarifications.sender',
         ]);
 
         return view('supply-chain.tenders.show', compact('tender'));

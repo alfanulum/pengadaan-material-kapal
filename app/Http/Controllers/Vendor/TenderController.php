@@ -8,6 +8,7 @@ use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
 use App\Models\VendorQuotation;
 use Illuminate\Http\Request;
+use App\Models\TenderClarification;
 
 class TenderController extends Controller
 {
@@ -46,7 +47,33 @@ class TenderController extends Controller
             ]);
         }
 
-        return view('vendor.tenders.show', compact('vendor', 'invitation'));
+        /*
+    |--------------------------------------------------------------------------
+    | Tandai pesan engineer sebagai dibaca
+    |--------------------------------------------------------------------------
+    */
+        TenderClarification::where('tender_id', $invitation->tender_id)
+            ->where('vendor_id', $vendor->id)
+            ->where('sender_id', '!=', Auth::id())
+            ->where('status', 'terkirim')
+            ->update([
+                'status' => 'dibaca'
+            ]);
+
+        $clarifications = TenderClarification::with('sender')
+            ->where('tender_id', $invitation->tender_id)
+            ->where('vendor_id', $vendor->id)
+            ->orderBy('created_at')
+            ->get();
+
+        return view(
+            'vendor.tenders.show',
+            compact(
+                'vendor',
+                'invitation',
+                'clarifications'
+            )
+        );
     }
 
     public function storeQuotation(Request $request, $id)
