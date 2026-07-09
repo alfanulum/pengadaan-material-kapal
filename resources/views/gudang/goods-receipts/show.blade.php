@@ -223,6 +223,44 @@
                     </div>
                 </div>
 
+                {{-- --- Foto Bukti Penerimaan --- --}}
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-6">
+                    <div class="px-6 py-4 border-b border-slate-200">
+                        <h3 class="text-base font-bold text-slate-900">📷 Foto Bukti Penerimaan Barang</h3>
+                        <p class="text-sm text-slate-500 mt-0.5">Format: JPG, PNG, WEBP. Maksimal 5 MB per gambar. Bisa upload lebih dari satu gambar.</p>
+                    </div>
+                    <div class="p-6">
+                        <div id="foto-container" class="space-y-3">
+                            {{-- Item foto pertama --}}
+                            <div class="foto-item bg-slate-50 rounded-2xl border border-slate-200 p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Foto</label>
+                                        <input type="file" name="foto[]" accept="image/jpeg,image/png,image/webp"
+                                            class="w-full text-sm text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition"
+                                            onchange="previewImage(this)">
+                                        <div class="mt-2 hidden preview-container">
+                                            <img src="" alt="Preview" class="h-20 rounded-lg object-cover border border-slate-200 preview-img">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Foto</label>
+                                        <input type="text" name="keterangan_foto[]"
+                                            placeholder="cth: Kondisi barang saat diterima"
+                                            class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="tambahFoto()"
+                            class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-dashed border-slate-300 text-slate-600 rounded-xl text-sm font-semibold hover:bg-slate-50 hover:text-slate-900 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Tambah Foto
+                        </button>
+                    </div>
+                </div>
+
                 {{-- --- Form Tambahan jika Bermasalah --- --}}
                 <div x-show="kondisi === 'kerusakan' || kondisi === 'tidak_sesuai_spesifikasi'"
                     x-transition:enter="transition ease-out duration-300"
@@ -264,42 +302,7 @@
                             </div>
                         </div>
 
-                        {{-- Upload Foto Dokumentasi --}}
-                        <div>
-                            <label class="block text-sm font-semibold text-red-800 mb-2">
-                                📷 Upload Foto Dokumentasi
-                            </label>
-                            <p class="text-xs text-red-600 mb-4">Upload foto bukti: kondisi material, label barang, jumlah barang, dan kerusakan (maks. 5 MB per foto)</p>
-
-                            <div id="foto-container" class="space-y-3">
-                                {{-- Item foto pertama --}}
-                                <div class="foto-item bg-white rounded-2xl border border-red-200 p-4">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                                        <div class="md:col-span-2">
-                                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Foto</label>
-                                            <input type="file" name="foto[]" accept="image/*"
-                                                class="w-full text-sm text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 transition"
-                                                onchange="previewImage(this)">
-                                            <div class="mt-2 hidden preview-container">
-                                                <img src="" alt="Preview" class="h-20 rounded-lg object-cover border border-slate-200 preview-img">
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan Foto</label>
-                                            <input type="text" name="keterangan_foto[]"
-                                                placeholder="cth: Foto kerusakan bagian depan"
-                                                class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:ring-2 focus:ring-red-300 focus:border-red-300 transition">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="button" onclick="tambahFoto()"
-                                class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-dashed border-red-300 text-red-600 rounded-xl text-sm font-semibold hover:bg-red-50 transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                Tambah Foto
-                            </button>
-                        </div>
+                        {{-- Foto Documentation Moved --}}
                     </div>
                 </div>
 

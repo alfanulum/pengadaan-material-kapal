@@ -58,8 +58,14 @@ class GoodsReceiptController extends Controller
             'detail_permasalahan' => 'nullable|string|max:2000',
             'jumlah_rusak'        => 'nullable|integer|min:0',
             'tindakan_selanjutnya'=> 'nullable|in:terima_dengan_catatan,minta_penggantian,retur_sebagian,tolak_barang',
+            'foto'                => 'nullable|array|max:10',
             'foto.*'              => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'keterangan_foto.*'   => 'nullable|string|max:255',
+        ], [
+            'foto.max' => 'Maksimal upload 10 gambar.',
+            'foto.*.image' => 'File harus berupa gambar.',
+            'foto.*.mimes' => 'Format gambar tidak didukung. Gunakan JPG, PNG, atau WEBP.',
+            'foto.*.max' => 'Ukuran gambar maksimal 5 MB per file.',
         ]);
 
         // Tentukan status penerimaan
@@ -145,20 +151,23 @@ class GoodsReceiptController extends Controller
             ->whereNotNull('fcm_token')
             ->get();
 
-        $kondisi    = $receipt->kondisi_label;
+        $status = $receipt->status_label;
         $isProblematic = in_array($receipt->kondisi_barang, ['kerusakan', 'tidak_sesuai_spesifikasi']);
 
         $title = $isProblematic
-            ? '⚠️ Barang Bermasalah — ' . $po->kode_po
-            : '✅ Barang Diterima — ' . $po->kode_po;
+            ? 'Laporan Penerimaan Perlu Ditinjau'
+            : 'Laporan Penerimaan Baru';
 
         $body = $isProblematic
-            ? "Gudang melaporkan masalah pada PO {$po->kode_po}. Kondisi: {$kondisi}. Segera tindak lanjuti."
-            : "Gudang telah menerima barang PO {$po->kode_po}. Kondisi: {$kondisi}.";
+            ? "Gudang telah menyimpan laporan penerimaan untuk Purchase Order {$po->kode_po} dengan status {$status}. Silakan cek pada menu Laporan Penerimaan."
+            : "Gudang telah menyimpan laporan penerimaan untuk Purchase Order {$po->kode_po}. Silakan cek pada menu Laporan Penerimaan.";
+
+        $url = route('supply-chain.goods-receipt-reports.show', $receipt->id);
+        $data = ['click_action' => $url];
 
         foreach ($supplyChainUsers as $user) {
             try {
-                $this->firebase->sendNotification($user->fcm_token, $title, $body);
+                $this->firebase->sendNotification($user->fcm_token, $title, $body, null, $data);
             } catch (\Throwable $e) {
                 // Log error but don't block
                 logger()->error("Firebase notify failed for user {$user->id}: " . $e->getMessage());

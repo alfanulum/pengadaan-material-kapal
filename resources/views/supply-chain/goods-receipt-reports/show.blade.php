@@ -220,14 +220,17 @@
             </div>
 
             {{-- ============================================================
-                 FOTO DOKUMENTASI
+                 FOTO BUKTI PENERIMAAN
                  ============================================================ --}}
-            @if ($r->photos->count() > 0)
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
                 <h3 class="text-base font-bold text-slate-900 mb-5">
-                    📷 Foto Dokumentasi Gudang
-                    <span class="text-sm font-normal text-slate-500 ml-2">({{ $r->photos->count() }} foto)</span>
+                    📷 Foto Bukti Penerimaan Barang
+                    @if ($r->photos->count() > 0)
+                        <span class="text-sm font-normal text-slate-500 ml-2">({{ $r->photos->count() }} foto)</span>
+                    @endif
                 </h3>
+                
+                @if ($r->photos->count() > 0)
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     @foreach ($r->photos as $photo)
                     <div class="group">
@@ -243,8 +246,12 @@
                     </div>
                     @endforeach
                 </div>
+                @else
+                <div class="p-8 text-center bg-slate-50 rounded-2xl border border-slate-100">
+                    <p class="text-sm font-semibold text-slate-500">Belum ada foto bukti penerimaan.</p>
+                </div>
+                @endif
             </div>
-            @endif
 
             {{-- ============================================================
                  TOMBOL TINDAK LANJUT

@@ -26,7 +26,8 @@ class FirebaseService
         string $token,
         string $title,
         string $body,
-        ?string $imageUrl = null
+        ?string $imageUrl = null,
+        array $data = []
     ) {
         $notification = Notification::create(
             $title,
@@ -39,6 +40,9 @@ class FirebaseService
             ->withToken($token)
             ->withNotification($notification);
 
+        if (!empty($data)) {
+            $message = $message->withData($data);
+        }
 
         return $this->messaging->send($message);
     }
