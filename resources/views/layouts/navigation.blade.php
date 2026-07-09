@@ -45,6 +45,11 @@
                             class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
                             Tender
                         </x-nav-link>
+
+                        <x-nav-link :href="route('supply-chain.goods-receipt-reports.index')" :active="request()->routeIs('supply-chain.goods-receipt-reports.*')"
+                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                            Laporan Penerimaan
+                        </x-nav-link>
                     @endif
 
                     @if (Auth::user()->role === 'engineer')
@@ -58,6 +63,13 @@
                         <x-nav-link :href="route('planner.material-requests.index')" :active="request()->routeIs('planner.material-requests.*')"
                             class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
                             Verifikasi Pengajuan
+                        </x-nav-link>
+                    @endif
+
+                    @if (Auth::user()->role === 'gudang')
+                        <x-nav-link :href="route('gudang.goods-receipts.index')" :active="request()->routeIs('gudang.goods-receipts.*')"
+                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                            Penerimaan Barang
                         </x-nav-link>
                     @endif
                 </div>
@@ -139,6 +151,10 @@
                 <x-responsive-nav-link :href="route('supply-chain.tenders.index')" :active="request()->routeIs('supply-chain.tenders.*')" class="text-white hover:bg-white/10">
                     Tender
                 </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('supply-chain.goods-receipt-reports.index')" :active="request()->routeIs('supply-chain.goods-receipt-reports.*')" class="text-white hover:bg-white/10">
+                    Laporan Penerimaan
+                </x-responsive-nav-link>
             @endif
 
             @if (Auth::user()->role === 'engineer')
@@ -150,6 +166,12 @@
             @if (Auth::user()->role === 'planner')
                 <x-responsive-nav-link :href="route('planner.material-requests.index')" :active="request()->routeIs('planner.material-requests.*')" class="text-white hover:bg-white/10">
                     Verifikasi Pengajuan
+                </x-responsive-nav-link>
+            @endif
+
+            @if (Auth::user()->role === 'gudang')
+                <x-responsive-nav-link :href="route('gudang.goods-receipts.index')" :active="request()->routeIs('gudang.goods-receipts.*')" class="text-white hover:bg-white/10">
+                    Penerimaan Barang
                 </x-responsive-nav-link>
             @endif
         </div>

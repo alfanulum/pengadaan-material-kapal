@@ -14,7 +14,14 @@ class MaterialRequestController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('supply-chain.material-requests.index', compact('materialRequests'));
+        $newRequests = MaterialRequest::with(['project', 'user', 'items'])
+            ->whereIn('status', ['approved_planner', 'disetujui'])
+            ->doesntHave('tender')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('supply-chain.material-requests.index', compact('materialRequests', 'newRequests'));
     }
 
     public function show($id)

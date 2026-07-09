@@ -17,6 +17,9 @@ use App\Http\Controllers\Vendor\TenderClarificationController as VendorTenderCla
 use App\Http\Controllers\Engineer\TenderClarificationController as EngineerTenderClarificationController;
 use App\Http\Controllers\FcmTokenController;
 use App\Services\FirebaseService;
+use App\Http\Controllers\Gudang\DashboardController as GudangDashboardController;
+use App\Http\Controllers\Gudang\GoodsReceiptController;
+use App\Http\Controllers\SupplyChain\GoodsReceiptReportController;
 
 Route::get('/test-firebase', function (
     App\Services\FirebaseService $firebase
@@ -82,9 +85,7 @@ Route::middleware('auth')->group(function () {
 
     // engineer
     Route::prefix('engineer')->name('engineer.')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboards.engineer');
-        })->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Engineer\DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('/clarifications', [EngineerTenderClarificationController::class, 'index'])
             ->name('clarifications.index');
@@ -98,6 +99,10 @@ Route::middleware('auth')->group(function () {
         // AJAX polling for real-time chat
         Route::get('/clarifications/{tender}/{vendor}/messages', [EngineerTenderClarificationController::class, 'messagesAjax'])
             ->name('clarifications.messages.ajax');
+
+        // Monitoring Kebutuhan Material
+        Route::get('/monitoring', [\App\Http\Controllers\Engineer\MonitoringController::class, 'index'])->name('monitoring.index');
+        Route::get('/monitoring/{id}', [\App\Http\Controllers\Engineer\MonitoringController::class, 'show'])->name('monitoring.show');
     });
 
     Route::get('/material-requests', [MaterialRequestController::class, 'index'])
@@ -148,9 +153,7 @@ Route::middleware('auth')->group(function () {
     //     return view('dashboards.supply');
     // })->name('supply.dashboard');
 
-    Route::get('/supply-chain/dashboard', function () {
-        return view('dashboards.supply');
-    })->name('supply-chain.dashboard');
+    Route::get('/supply-chain/dashboard', [\App\Http\Controllers\SupplyChain\DashboardController::class, 'index'])->name('supply-chain.dashboard');
 
     Route::prefix('supply-chain')->name('supply-chain.')->group(function () {
         Route::resource('vendors', VendorController::class);
@@ -211,6 +214,13 @@ Route::middleware('auth')->group(function () {
             '/tenders/{tender}/negotiation/{vendor}/messages',
             [ChatNegosiasiController::class, 'messagesAjax']
         )->name('chat.negosiasi.messages.ajax');
+
+        // Laporan Penerimaan Barang (dari Gudang)
+        Route::get('/goods-receipts', [\App\Http\Controllers\SupplyChain\GoodsReceiptController::class, 'index'])->name('goods-receipts.index');
+        Route::get('/goods-receipts/{goodsReceipt}', [\App\Http\Controllers\SupplyChain\GoodsReceiptController::class, 'show'])->name('goods-receipts.show');
+
+        // Monitoring Pengadaan Material
+        Route::resource('monitoring', \App\Http\Controllers\SupplyChain\MonitoringController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
     });
 
 
@@ -229,11 +239,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/tenders/{id}/quotation', [VendorTenderController::class, 'storeQuotation'])
             ->name('tenders.quotation.store');
 
-        Route::get('/purchase-orders', [VendorPurchaseOrderController::class, 'index'])
-            ->name('purchase-orders.index');
-
-        Route::get('/purchase-orders/{purchaseOrder}', [VendorPurchaseOrderController::class, 'show'])
-            ->name('purchase-orders.show');
+        Route::get('/purchase-orders', [VendorPurchaseOrderController::class, 'index'])->name('purchase-orders.index');
+        Route::get('/purchase-orders/{purchaseOrder}', [VendorPurchaseOrderController::class, 'show'])->name('purchase-orders.show');
+        Route::post('/purchase-orders/{purchaseOrder}/ship', [VendorPurchaseOrderController::class, 'ship'])->name('purchase-orders.ship');
 
         // OPEN CHAT
         Route::get(
@@ -270,9 +278,22 @@ Route::middleware('auth')->group(function () {
         )->name('tenders.chat.negotiation.messages.ajax');
     });
     // gudang
-    Route::get('/gudang/dashboard', function () {
-        return view('dashboards.gudang');
-    })->name('gudang.dashboard');
+    Route::get('/gudang/dashboard', [GudangDashboardController::class, 'index'])->name('gudang.dashboard');
+
+    Route::prefix('gudang')->name('gudang.')->group(function () {
+        Route::get('/goods-receipts', [GoodsReceiptController::class, 'index'])->name('goods-receipts.index');
+        Route::get('/goods-receipts/report/{receipt}', [GoodsReceiptController::class, 'showReport'])->name('goods-receipts.report');
+        Route::get('/goods-receipts/{purchaseOrder}', [GoodsReceiptController::class, 'show'])->name('goods-receipts.show');
+        Route::post('/goods-receipts/{purchaseOrder}', [GoodsReceiptController::class, 'store'])->name('goods-receipts.store');
+    });
+
+    // Supply Chain — Laporan Penerimaan Gudang
+    Route::prefix('supply-chain')->name('supply-chain.')->group(function () {
+        Route::get('/goods-receipt-reports', [GoodsReceiptReportController::class, 'index'])->name('goods-receipt-reports.index');
+        Route::get('/goods-receipt-reports/{goodsReceiptReport}', [GoodsReceiptReportController::class, 'show'])->name('goods-receipt-reports.show');
+        Route::post('/goods-receipt-reports/{goodsReceiptReport}/confirm', [GoodsReceiptReportController::class, 'confirm'])->name('goods-receipt-reports.confirm');
+        Route::post('/goods-receipt-reports/{goodsReceiptReport}/return', [GoodsReceiptReportController::class, 'processReturn'])->name('goods-receipt-reports.return');
+    });
 });
 
 

@@ -12,10 +12,12 @@ class PurchaseOrder extends Model
         'vendor_id',
         'vendor_quotation_id',
         'tanggal_po',
+        'tanggal_pengiriman',
         'deadline_pengiriman',
         'total_harga',
         'catatan',
         'status',
+        'is_archived',
     ];
 
     public function tender()
@@ -37,4 +39,15 @@ class PurchaseOrder extends Model
     {
         return $this->hasMany(PurchaseOrderItem::class);
     }
+
+    public function goodsReceipt()
+    {
+        return $this->hasOne(GoodsReceipt::class);
+    }
+
+    public function shipment()
+    {
+        return $this->hasOne(Shipment::class);
+    }
 }
+

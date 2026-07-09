@@ -118,216 +118,152 @@
             {{-- Grid Menu --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                {{-- 1 Kelola Vendor --}}
+                {{-- 01 Kelola Vendor --}}
                 <a href="{{ route('supply-chain.vendors.index') }}"
                     class="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition min-h-[260px] flex flex-col">
-                    <div
-                        class="absolute -top-10 -right-10 w-28 h-28 bg-blue-100 rounded-full blur-2xl group-hover:bg-blue-200 transition">
-                    </div>
-
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-blue-100 rounded-full blur-2xl group-hover:bg-blue-200 transition"></div>
                     <div class="relative flex flex-col h-full">
                         <div class="flex items-center justify-between mb-6">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-lg">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-lg">
                                 01
                             </div>
-
                             <span class="px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-bold">
                                 Aktif
                             </span>
                         </div>
-
                         <p class="text-sm text-slate-500">Vendor</p>
                         <h3 class="text-2xl font-bold text-slate-900 mt-1 group-hover:text-blue-900">
                             Kelola Vendor
                         </h3>
-
                         <p class="text-sm text-slate-500 mt-3 leading-relaxed">
                             Tambah, edit, lihat detail, dan atur status vendor penyedia material kapal.
                         </p>
-
                         <div class="mt-auto pt-6 flex items-center justify-between">
                             <span class="text-sm font-bold text-blue-900">Buka Vendor</span>
-                            <span
-                                class="w-9 h-9 rounded-xl bg-blue-900 text-white flex items-center justify-center group-hover:bg-blue-950 transition">
+                            <span class="w-9 h-9 rounded-xl bg-blue-900 text-white flex items-center justify-center group-hover:bg-blue-950 transition">
                                 →
                             </span>
                         </div>
                     </div>
                 </a>
 
-                {{-- 2 Permintaan dari Planner --}}
+                {{-- 02 Permintaan dari Planner --}}
                 <a href="{{ route('supply-chain.material-requests.index') }}"
                     class="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition min-h-[260px] flex flex-col">
-                    <div
-                        class="absolute -top-10 -right-10 w-28 h-28 bg-cyan-100 rounded-full blur-2xl group-hover:bg-cyan-200 transition">
-                    </div>
-
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-cyan-100 rounded-full blur-2xl group-hover:bg-cyan-200 transition"></div>
                     <div class="relative flex flex-col h-full">
                         <div class="flex items-center justify-between mb-6">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-cyan-100 text-cyan-900 flex items-center justify-center font-bold text-lg">
+                            <div class="w-14 h-14 rounded-2xl bg-cyan-100 text-cyan-900 flex items-center justify-center font-bold text-lg">
                                 02
                             </div>
-
                             <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold">
                                 Masuk
                             </span>
                         </div>
-
                         <p class="text-sm text-slate-500">Permintaan</p>
                         <h3 class="text-2xl font-bold text-slate-900 mt-1 group-hover:text-cyan-900">
                             Dari Planner
                         </h3>
-
                         <p class="text-sm text-slate-500 mt-3 leading-relaxed">
                             Lihat pengajuan material yang sudah disetujui Planner dan siap diproses ke tahap tender.
                         </p>
-
                         <div class="mt-auto pt-6 flex items-center justify-between">
                             <span class="text-sm font-bold text-cyan-900">Lihat Pengajuan</span>
-                            <span
-                                class="w-9 h-9 rounded-xl bg-cyan-900 text-white flex items-center justify-center group-hover:bg-cyan-950 transition">
+                            <span class="w-9 h-9 rounded-xl bg-cyan-900 text-white flex items-center justify-center group-hover:bg-cyan-950 transition">
                                 →
                             </span>
                         </div>
                     </div>
                 </a>
 
-                {{-- 3 Kelola Tender --}}
+                {{-- 03 Kelola Tender --}}
                 <a href="{{ route('supply-chain.tenders.index') }}"
                     class="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition min-h-[260px] flex flex-col">
-                    <div
-                        class="absolute -top-10 -right-10 w-28 h-28 bg-indigo-100 rounded-full blur-2xl group-hover:bg-indigo-200 transition">
-                    </div>
-
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-indigo-100 rounded-full blur-2xl group-hover:bg-indigo-200 transition"></div>
                     <div class="relative flex flex-col h-full">
                         <div class="flex items-center justify-between mb-6">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-900 flex items-center justify-center font-bold text-lg">
+                            <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-900 flex items-center justify-center font-bold text-lg">
                                 03
                             </div>
-
                             <span class="px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold">
                                 Tender
                             </span>
                         </div>
-
                         <p class="text-sm text-slate-500">Tender</p>
                         <h3 class="text-2xl font-bold text-slate-900 mt-1 group-hover:text-indigo-900">
                             Kelola Tender
                         </h3>
-
                         <p class="text-sm text-slate-500 mt-3 leading-relaxed">
                             Buat tender, undang vendor, lihat penawaran, dan pilih vendor pemenang.
                         </p>
-
                         <div class="mt-auto pt-6 flex items-center justify-between">
-                            <span class="text-sm font-bold text-indigo-900">Masuk ke Tender</span>
-                            <span
-                                class="w-9 h-9 rounded-xl bg-indigo-900 text-white flex items-center justify-center group-hover:bg-indigo-950 transition">
+                            <span class="text-sm font-bold text-indigo-900">Masuk ke Tender &rarr;</span>
+                            <span class="w-9 h-9 rounded-xl bg-indigo-900 text-white flex items-center justify-center group-hover:bg-indigo-950 transition">
                                 →
                             </span>
                         </div>
                     </div>
                 </a>
 
-                {{-- 4 Monitoring Purchase Order --}}
-                <a href="{{ route('supply-chain.purchase-orders.index') }}"
+                {{-- 04 Laporan Penerimaan --}}
+                <a href="{{ route('supply-chain.goods-receipts.index') }}"
                     class="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition min-h-[260px] flex flex-col">
-                    <div
-                        class="absolute -top-10 -right-10 w-28 h-28 bg-emerald-100 rounded-full blur-2xl group-hover:bg-emerald-200 transition">
-                    </div>
-
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-amber-100 rounded-full blur-2xl group-hover:bg-amber-200 transition"></div>
                     <div class="relative flex flex-col h-full">
                         <div class="flex items-center justify-between mb-6">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-900 flex items-center justify-center font-bold text-lg">
+                            <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-lg">
                                 04
                             </div>
-
-                            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
-                                PO
+                            <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold">
+                                Gudang
                             </span>
                         </div>
-
-                        <p class="text-sm text-slate-500">Purchase Order</p>
-                        <h3 class="text-2xl font-bold text-slate-900 mt-1 group-hover:text-emerald-900">
-                            Monitoring PO
+                        <p class="text-sm text-slate-500">Penerimaan</p>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1 group-hover:text-amber-900">
+                            Laporan Penerimaan
                         </h3>
-
                         <p class="text-sm text-slate-500 mt-3 leading-relaxed">
-                            Lihat daftar Purchase Order yang dibuat dari vendor terpilih dan penawaran yang disetujui.
+                            Lihat seluruh laporan penerimaan barang yang dibuat gudang setelah material tiba dan diperiksa.
                         </p>
-
                         <div class="mt-auto pt-6 flex items-center justify-between">
-                            <span class="text-sm font-bold text-emerald-900">Lihat PO</span>
-                            <span
-                                class="w-9 h-9 rounded-xl bg-emerald-900 text-white flex items-center justify-center group-hover:bg-emerald-950 transition">
+                            <span class="text-sm font-bold text-amber-900">Lihat Laporan &rarr;</span>
+                            <span class="w-9 h-9 rounded-xl bg-amber-800 text-white flex items-center justify-center group-hover:bg-amber-900 transition">
                                 →
                             </span>
                         </div>
                     </div>
                 </a>
 
-                {{-- 5 Pengiriman Barang --}}
-                <div
-                    class="md:col-span-2 relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 p-7 md:p-8 shadow-xl text-white border border-blue-900">
-                    <div class="absolute -top-16 -right-16 w-44 h-44 bg-cyan-300/20 rounded-full blur-3xl"></div>
-                    <div class="absolute -bottom-16 -left-16 w-44 h-44 bg-blue-300/20 rounded-full blur-3xl"></div>
-
-                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-                        <div class="lg:col-span-2">
-                            <div class="flex items-center justify-between mb-6">
-                                <div
-                                    class="w-14 h-14 rounded-2xl bg-white/15 text-white flex items-center justify-center font-bold text-lg border border-white/10">
-                                    05
-                                </div>
-
-                                <span
-                                    class="px-3 py-1 rounded-full bg-white/15 text-white text-xs font-bold border border-white/10">
-                                    Tahap Berikutnya
-                                </span>
+                {{-- 05 Monitoring Pengadaan Material --}}
+                <a href="{{ route('supply-chain.monitoring.index') }}"
+                    class="md:col-span-2 group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition min-h-[260px] flex flex-col">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-pink-100 rounded-full blur-2xl group-hover:bg-pink-200 transition"></div>
+                    <div class="relative flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-pink-100 text-pink-900 flex items-center justify-center font-bold text-lg">
+                                05
                             </div>
-
-                            <p class="text-sm text-blue-100">Shipment</p>
-                            <h3 class="text-3xl md:text-4xl font-bold mt-1">
-                                Pengiriman Barang
-                            </h3>
-
-                            <p class="text-sm md:text-base text-blue-100 mt-4 leading-relaxed max-w-3xl">
-                                Setelah PO dikirim ke vendor, tahap berikutnya adalah monitoring pengiriman material
-                                sampai barang diterima dan divalidasi oleh gudang.
-                            </p>
+                            <span class="px-3 py-1 rounded-full bg-pink-50 text-pink-700 text-xs font-bold">
+                                Tracking
+                            </span>
                         </div>
-
-                        <div class="grid grid-cols-1 gap-4">
-                            <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
-                                <p class="text-xs text-blue-100">Next Flow</p>
-                                <p class="font-bold text-lg mt-1">PO → Pengiriman</p>
-                            </div>
-
-                            <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
-                                <p class="text-xs text-blue-100">Status</p>
-                                <p class="font-bold text-lg mt-1">Belum Dibuat</p>
-                            </div>
+                        <p class="text-sm text-slate-500">Monitoring</p>
+                        <h3 class="text-2xl font-bold text-slate-900 mt-1 group-hover:text-pink-900">
+                            Monitoring Pengadaan Material
+                        </h3>
+                        <p class="text-sm text-slate-500 mt-3 leading-relaxed max-w-xl">
+                            Pantau proses pengadaan material mulai dari tender dibuat, barang dikirim vendor, hingga barang diterima oleh gudang.
+                        </p>
+                        <div class="mt-auto pt-6 flex items-center justify-between max-w-[200px]">
+                            <span class="text-sm font-bold text-pink-900">Lihat Monitoring &rarr;</span>
+                            <span class="w-9 h-9 rounded-xl bg-pink-700 text-white flex items-center justify-center group-hover:bg-pink-800 transition">
+                                →
+                            </span>
                         </div>
                     </div>
-
-                    <div class="relative z-10 mt-6 flex items-center justify-between">
-                        <span class="text-sm font-bold text-white">
-                            Fitur ini dilanjutkan setelah Purchase Order selesai.
-                        </span>
-
-                        <span
-                            class="px-4 py-2 rounded-xl bg-white/15 text-white text-sm font-bold border border-white/10">
-                            Coming Next
-                        </span>
-                    </div>
-                </div>
+                </a>
 
             </div>
-
         </div>
     </div>
 </x-app-layout>
