@@ -206,7 +206,7 @@
                 </a>
 
                 {{-- 04 Laporan Penerimaan --}}
-                <a href="{{ route('supply-chain.goods-receipts.index') }}"
+                <a href="{{ route('supply-chain.goods-receipt-reports.index') }}"
                     class="group relative overflow-hidden bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition min-h-[260px] flex flex-col">
                     <div class="absolute -top-10 -right-10 w-28 h-28 bg-amber-100 rounded-full blur-2xl group-hover:bg-amber-200 transition"></div>
                     <div class="relative flex flex-col h-full">

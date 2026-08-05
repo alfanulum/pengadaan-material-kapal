@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class GoodsReceiptPhoto extends Model
 {
+    protected $table = 'foto_penerimaan_barang';
+
     protected $fillable = [
         'goods_receipt_id',
         'file_path',

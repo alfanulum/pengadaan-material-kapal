@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'vendor.approved'   => \App\Http\Middleware\VendorApproved::class,
+            'supply_chain.only' => \App\Http\Middleware\SupplyChainOnly::class,
+            'engineer.only'     => \App\Http\Middleware\EngineerOnly::class,
+            'planner.only'      => \App\Http\Middleware\PlannerOnly::class,
+            'gudang.only'       => \App\Http\Middleware\GudangOnly::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

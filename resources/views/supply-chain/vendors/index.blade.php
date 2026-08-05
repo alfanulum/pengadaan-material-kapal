@@ -6,7 +6,7 @@
                     Data Vendor
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">
-                    Kelola data vendor penyedia material kapal untuk proses tender dan procurement.
+                    Kelola data vendor dan verifikasi registrasi vendor baru.
                 </p>
             </div>
 
@@ -40,18 +40,24 @@
                     </p>
 
                     <h3 class="text-3xl md:text-4xl font-bold leading-tight">
-                        Kelola Vendor Pengadaan Material
+                        Kelola & Verifikasi Vendor
                     </h3>
 
                     <p class="mt-4 text-blue-100 max-w-3xl text-base leading-relaxed">
-                        Supply Chain dapat menambahkan vendor, mengelola data kontak,
-                        melihat detail vendor, serta menentukan status vendor aktif atau nonaktif.
+                        Supply Chain dapat menambahkan vendor secara langsung, memverifikasi registrasi vendor mandiri,
+                        serta mengelola status keaktifan vendor.
                     </p>
                 </div>
 
-                <div class="bg-white/10 border border-white/10 rounded-2xl p-5 min-w-[180px]">
-                    <p class="text-sm text-blue-100">Total Vendor</p>
-                    <p class="text-3xl font-bold mt-1">{{ $vendors->total() }}</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/10 border border-white/10 rounded-2xl p-5 text-center">
+                        <p class="text-3xl font-bold">{{ $counts['semua'] }}</p>
+                        <p class="text-sm text-blue-100 mt-1">Total Vendor</p>
+                    </div>
+                    <div class="bg-amber-400/20 border border-amber-300/30 rounded-2xl p-5 text-center">
+                        <p class="text-3xl font-bold text-amber-200">{{ $counts['menunggu'] }}</p>
+                        <p class="text-sm text-amber-200 mt-1">Menunggu</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,39 +68,52 @@
             </div>
         @endif
 
-        {{-- Table --}}
+        @if (session('error'))
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        {{-- Tab Filter Status Registrasi --}}
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-200">
-                <h3 class="text-lg font-bold text-slate-900">
-                    Daftar Vendor
-                </h3>
-                <p class="text-sm text-slate-500 mt-1">
-                    Data vendor yang dapat diundang dalam proses tender.
-                </p>
+            <div class="px-6 pt-5 border-b border-slate-200">
+                <div class="flex flex-wrap gap-1">
+                    @foreach ([
+                        'semua'     => ['label' => 'Semua Vendor',          'count' => $counts['semua'],    'color' => 'blue'],
+                        'menunggu'  => ['label' => 'Menunggu Verifikasi',   'count' => $counts['menunggu'], 'color' => 'amber'],
+                        'disetujui' => ['label' => 'Disetujui',             'count' => $counts['disetujui'],'color' => 'green'],
+                        'ditolak'   => ['label' => 'Ditolak',               'count' => $counts['ditolak'],  'color' => 'red'],
+                    ] as $key => $tab)
+                        @php
+                            $isActive = $filterStatus === $key;
+                            $colorClasses = match($tab['color']) {
+                                'amber' => $isActive ? 'border-amber-500 text-amber-700 bg-amber-50' : 'border-transparent text-slate-500 hover:text-amber-600',
+                                'green' => $isActive ? 'border-green-600 text-green-700 bg-green-50' : 'border-transparent text-slate-500 hover:text-green-600',
+                                'red'   => $isActive ? 'border-red-600 text-red-700 bg-red-50' : 'border-transparent text-slate-500 hover:text-red-600',
+                                default => $isActive ? 'border-blue-700 text-blue-900 bg-blue-50' : 'border-transparent text-slate-500 hover:text-blue-700',
+                            };
+                        @endphp
+                        <a href="{{ request()->fullUrlWithQuery(['filter' => $key]) }}"
+                            class="inline-flex items-center gap-2 px-4 py-2.5 border-b-2 text-sm font-semibold transition {{ $colorClasses }}">
+                            {{ $tab['label'] }}
+                            <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">{{ $tab['count'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
             </div>
 
+            {{-- Tabel --}}
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Kode
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Vendor
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Kontak
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                PIC
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Status
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Aksi
-                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Kode</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Vendor / Perusahaan</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">PIC</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Kontak</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal Daftar</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
 
@@ -106,35 +125,48 @@
                                 </td>
 
                                 <td class="px-6 py-4 text-sm">
-                                    <div class="font-bold text-slate-900">
-                                        {{ $vendor->nama_vendor }}
-                                    </div>
-                                    <div class="text-xs text-slate-500 mt-1">
-                                        {{ $vendor->kategori ?? 'Kategori belum diisi' }}
-                                    </div>
-                                </td>
-
-                                <td class="px-6 py-4 text-sm text-slate-700">
-                                    <div>{{ $vendor->email ?? '-' }}</div>
-                                    <div class="text-xs text-slate-500 mt-1">
-                                        {{ $vendor->telepon ?? '-' }}
-                                    </div>
+                                    <div class="font-bold text-slate-900">{{ $vendor->nama_vendor }}</div>
+                                    <div class="text-xs text-slate-500 mt-1">{{ $vendor->kategori ?? 'Kategori belum diisi' }}</div>
                                 </td>
 
                                 <td class="px-6 py-4 text-sm text-slate-700 whitespace-nowrap">
                                     {{ $vendor->pic ?? '-' }}
                                 </td>
 
+                                <td class="px-6 py-4 text-sm text-slate-700">
+                                    <div>{{ $vendor->email ?? '-' }}</div>
+                                    <div class="text-xs text-slate-500 mt-1">{{ $vendor->telepon ?? '-' }}</div>
+                                </td>
+
+                                <td class="px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
+                                    @if ($vendor->tanggal_daftar)
+                                        {{ $vendor->tanggal_daftar->format('d M Y') }}
+                                    @elseif ($vendor->created_at)
+                                        {{ $vendor->created_at->format('d M Y') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+
                                 <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                    @if ($vendor->status == 'aktif')
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-                                            Aktif
+                                    @php
+                                        $regStatus = $vendor->status_registrasi ?? 'disetujui';
+                                    @endphp
+                                    @if ($regStatus === 'menunggu')
+                                        <span class="inline-flex px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+                                            ⏳ Menunggu Verifikasi
+                                        </span>
+                                    @elseif ($regStatus === 'disetujui')
+                                        <span class="inline-flex px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+                                            ✅ Disetujui
+                                        </span>
+                                    @elseif ($regStatus === 'ditolak')
+                                        <span class="inline-flex px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
+                                            ❌ Ditolak
                                         </span>
                                     @else
-                                        <span
-                                            class="inline-flex px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
-                                            Nonaktif
+                                        <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                                            {{ $regStatus }}
                                         </span>
                                     @endif
                                 </td>
@@ -167,7 +199,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-16 text-center">
+                                <td colspan="7" class="px-6 py-16 text-center">
                                     <div
                                         class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold mb-4">
                                         VD
@@ -178,7 +210,7 @@
                                     </h3>
 
                                     <p class="text-sm text-slate-500 mt-2">
-                                        Data vendor yang ditambahkan Supply Chain akan tampil di halaman ini.
+                                        Tidak ada vendor dengan filter yang dipilih.
                                     </p>
                                 </td>
                             </tr>

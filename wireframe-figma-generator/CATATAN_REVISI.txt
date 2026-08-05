@@ -1,0 +1,17 @@
+REVISI WIREFRAME LOW-FIDELITY KLASIK
+
+Perubahan utama:
+1. Seluruh warna dibuat hitam, putih, dan abu-abu.
+2. Gradient, shadow, radius modern, dan warna status dihilangkan.
+3. Logo, foto, gambar, dan ikon diganti kotak placeholder bertanda X.
+4. Dashboard, tabel, form, chat, timeline, dan kartu dibuat lebih sederhana.
+5. Tampilan login tidak lagi memakai panel branding modern dua kolom.
+6. Semua 43 halaman tetap tersedia di plugin.
+7. Hasil Figma tetap editable sebagai layer, bukan screenshot.
+
+Cara pakai:
+- Preview: buka preview/index.html.
+- Figma Desktop: Plugins > Development > Import from manifest.
+- Pilih figma-plugin/manifest.json.
+- Jalankan PT PAL Wireframe Generator lalu Generate.
+- Hapus frame lama dan generate ulang agar desain revisi terlihat.

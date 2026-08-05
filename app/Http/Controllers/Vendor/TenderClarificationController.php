@@ -191,6 +191,10 @@ class TenderClarificationController extends Controller
             abort(403);
         }
 
+        // Guard: hanya vendor terpilih yang boleh mengakses fitur negosiasi
+        if ($invitation->status !== 'terpilih') {
+            abort(403, 'Penawaran Anda belum dipilih. Fitur negosiasi belum tersedia.');
+        }
 
 
         $messages = TenderMessage::where(
@@ -215,13 +219,16 @@ class TenderClarificationController extends Controller
 
             ->get();
 
+        // Tentukan apakah Supply Chain sudah mengirim pesan pertama
+        $scHasSentFirst = $messages->where('role', 'supply_chain')->count() > 0;
 
 
         return view(
             'vendor.tenders.chat-negotiation',
             compact(
                 'invitation',
-                'messages'
+                'messages',
+                'scHasSentFirst'
             )
         );
     }
@@ -247,6 +254,28 @@ class TenderClarificationController extends Controller
 
         if ($invitation->vendor_id !== $vendor->id) {
             abort(403);
+        }
+
+        // Guard: hanya vendor terpilih yang boleh mengirim pesan negosiasi
+        if ($invitation->status !== 'terpilih') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['error' => 'Penawaran Anda belum dipilih.'], 403);
+            }
+            abort(403, 'Penawaran Anda belum dipilih. Fitur negosiasi belum tersedia.');
+        }
+
+        // Guard: Vendor tidak boleh mengirim pesan pertama — Supply Chain harus mulai lebih dulu
+        $scHasSentFirst = TenderMessage::where('tender_id', $invitation->tender_id)
+            ->where('vendor_id', $vendor->id)
+            ->where('type', 'negotiation')
+            ->where('role', 'supply_chain')
+            ->exists();
+
+        if (!$scHasSentFirst) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['error' => 'Menunggu pesan pertama dari Supply Chain.'], 403);
+            }
+            return back()->with('error', 'Silakan tunggu Supply Chain membuka percakapan terlebih dahulu.');
         }
 
         $attachmentPath = $request->hasFile('attachment') ? $request->file('attachment')->store('chat_attachments', 'public') : null;
@@ -335,6 +364,11 @@ class TenderClarificationController extends Controller
         $vendor = Vendor::where('user_id', Auth::id())->firstOrFail();
 
         if ($invitation->vendor_id !== $vendor->id) {
+            abort(403);
+        }
+
+        // Guard: hanya vendor terpilih yang boleh polling pesan negosiasi
+        if ($invitation->status !== 'terpilih') {
             abort(403);
         }
 

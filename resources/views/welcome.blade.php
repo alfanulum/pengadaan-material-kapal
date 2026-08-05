@@ -45,11 +45,6 @@
                             class="px-5 py-2.5 rounded-xl border border-white/30 text-white font-medium hover:bg-white/10 transition">
                             Login
                         </a>
-
-                        <a href="{{ route('register') }}"
-                            class="px-5 py-2.5 rounded-xl bg-white text-blue-900 font-semibold shadow hover:bg-slate-100 transition">
-                            Register
-                        </a>
                     @endauth
                 </div>
 
@@ -83,11 +78,6 @@
                         <a href="{{ route('login') }}"
                             class="px-6 py-3 rounded-xl bg-white text-blue-900 font-semibold shadow-lg hover:bg-slate-100 transition">
                             Masuk ke Sistem
-                        </a>
-
-                        <a href="{{ route('register') }}"
-                            class="px-6 py-3 rounded-xl border border-white/30 text-white font-medium hover:bg-white/10 transition">
-                            Daftar Akun
                         </a>
                     </div>
 

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TenderInvitation extends Model
 {
+    protected $table = 'undangan_tender';
+
     protected $fillable = [
         'tender_id',
         'vendor_id',

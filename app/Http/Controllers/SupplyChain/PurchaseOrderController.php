@@ -69,7 +69,7 @@ class PurchaseOrderController extends Controller
     {
         $request->validate([
             'tender_id'           => 'required|exists:tenders,id',
-            'vendor_quotation_id' => 'required|exists:vendor_quotations,id',
+            'vendor_quotation_id' => 'required|exists:penawaran_vendor,id',
             'tanggal_po'          => 'required|date',
             'deadline_pengiriman' => 'nullable|date|after_or_equal:tanggal_po',
             'catatan'             => 'nullable|string',

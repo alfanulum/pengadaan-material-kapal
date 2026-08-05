@@ -17,10 +17,20 @@
                     {{ $goodsReceipt->purchaseOrder->vendor->nama_vendor ?? '-' }}
                 </p>
             </div>
-            <a href="{{ route('supply-chain.goods-receipts.index') }}"
-                class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition text-sm">
-                ← Kembali ke Daftar
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('supply-chain.goods-receipt-reports.pdf', $goodsReceipt->id) }}"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-red-700 text-white rounded-xl font-semibold border border-red-700 hover:bg-red-800 transition text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Unduh PDF
+                </a>
+                <a href="{{ route('supply-chain.goods-receipts.index') }}"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition text-sm">
+                    ← Kembali ke Daftar
+                </a>
+            </div>
         </div>
     </x-slot>
 
@@ -186,7 +196,7 @@
                             <tr>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Nama Barang</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Spesifikasi</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Qty Pesan</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Jumlah Pesan</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase">Satuan</th>
                             </tr>
                         </thead>

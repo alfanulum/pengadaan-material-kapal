@@ -8,7 +8,7 @@
                     Percakapan Negosiasi Penawaran
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">
-                    Diskusi harga & komersial antara Vendor dan Supply Chain.
+                    Diskusi harga &amp; komersial antara Vendor dan Supply Chain.
                 </p>
             </div>
 
@@ -56,7 +56,7 @@
                             Percakapan Negosiasi Harga
                         </h3>
                         <p class="text-sm text-slate-500 mt-1">
-                            Diskusi nilai penawaran & kesepakatan komersial.
+                            Diskusi nilai penawaran &amp; kesepakatan komersial.
                         </p>
                     </div>
 
@@ -123,25 +123,45 @@
 
                 @empty
 
-                    <div class="text-center py-16">
-                        <div
-                            class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold mb-4">
-                            NG
+                    @if (!$scHasSentFirst)
+                        {{-- Supply Chain belum mengirim pesan pertama --}}
+                        <div class="text-center py-16">
+                            <div
+                                class="mx-auto w-16 h-16 rounded-2xl bg-amber-50 text-amber-400 flex items-center justify-center font-bold mb-4 text-2xl">
+                                ⏳
+                            </div>
+
+                            <h3 class="text-lg font-bold text-slate-900">
+                                Menunggu Supply Chain
+                            </h3>
+
+                            <p class="text-sm text-slate-500 mt-2 max-w-xs mx-auto">
+                                Penawaran Anda telah dipilih. Supply Chain akan segera membuka percakapan negosiasi.
+                                Anda akan dapat membalas setelah Supply Chain mengirim pesan pertama.
+                            </p>
                         </div>
+                    @else
+                        <div class="text-center py-16">
+                            <div
+                                class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold mb-4">
+                                NG
+                            </div>
 
-                        <h3 class="text-lg font-bold text-slate-900">
-                            Belum Ada Negosiasi
-                        </h3>
+                            <h3 class="text-lg font-bold text-slate-900">
+                                Belum Ada Negosiasi
+                            </h3>
 
-                        <p class="text-sm text-slate-500 mt-2">
-                            Mulai diskusi harga dengan supply chain.
-                        </p>
-                    </div>
+                            <p class="text-sm text-slate-500 mt-2">
+                                Mulai diskusi harga dengan supply chain.
+                            </p>
+                        </div>
+                    @endif
                 @endforelse
 
             </div>
 
-            {{-- INPUT --}}
+            {{-- INPUT: nonaktif jika SC belum mengirim pesan pertama --}}
+            @if ($scHasSentFirst)
             <form action="{{ route('vendor.tenders.chat.negotiation.send', $invitation->id) }}" method="POST" id="chatForm" enctype="multipart/form-data"
                 class="relative p-6 md:p-8 border-t border-slate-200 bg-white flex gap-3 items-center">
 
@@ -169,6 +189,14 @@
                 </button>
 
             </form>
+            @else
+            {{-- Vendor belum bisa mengirim — Supply Chain belum memulai percakapan --}}
+            <div class="p-6 border-t border-slate-200 bg-amber-50 text-center">
+                <p class="text-sm text-amber-700 font-semibold">
+                    ⏳ Menunggu pesan pertama dari Supply Chain sebelum Anda dapat membalas.
+                </p>
+            </div>
+            @endif
 
         </div>
 
@@ -181,12 +209,12 @@
     (function () {
         const chatBox     = document.getElementById('chatBox');
         const sendForm    = document.getElementById('chatForm');
-        const input       = document.getElementById('messageInput');
-        const attachmentInput = document.getElementById('attachmentInput');
-        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-        const imagePreview = document.getElementById('imagePreview');
-        const removeImageBtn = document.getElementById('removeImageBtn');
-        const sendBtn     = document.getElementById('sendBtn');
+        const input       = sendForm ? document.getElementById('messageInput') : null;
+        const attachmentInput = sendForm ? document.getElementById('attachmentInput') : null;
+        const imagePreviewContainer = sendForm ? document.getElementById('imagePreviewContainer') : null;
+        const imagePreview = sendForm ? document.getElementById('imagePreview') : null;
+        const removeImageBtn = sendForm ? document.getElementById('removeImageBtn') : null;
+        const sendBtn     = sendForm ? document.getElementById('sendBtn') : null;
 
         const sendUrl     = "{{ route('vendor.tenders.chat.negotiation.send', $invitation->id) }}";
         const pollUrl     = "{{ route('vendor.tenders.chat.negotiation.messages.ajax', $invitation->id) }}";
@@ -286,91 +314,94 @@
             return el;
         };
 
-        attachmentInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                if (!file.type.startsWith('image/')) {
-                    toast('Error', 'Hanya file gambar yang diperbolehkan.', 'error');
-                    this.value = '';
-                    return;
+        /* ── Form send (hanya jika form tersedia / scHasSentFirst) ── */
+        if (sendForm && attachmentInput) {
+            attachmentInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    if (!file.type.startsWith('image/')) {
+                        toast('Error', 'Hanya file gambar yang diperbolehkan.', 'error');
+                        this.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreviewContainer.classList.remove('hidden');
+                    }
+                    reader.readAsDataURL(file);
                 }
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result;
-                    imagePreviewContainer.classList.remove('hidden');
-                }
-                reader.readAsDataURL(file);
-            }
-        });
+            });
 
-        removeImageBtn.addEventListener('click', function() {
-            attachmentInput.value = '';
-            imagePreview.src = '';
-            imagePreviewContainer.classList.add('hidden');
-        });
+            removeImageBtn.addEventListener('click', function() {
+                attachmentInput.value = '';
+                imagePreview.src = '';
+                imagePreviewContainer.classList.add('hidden');
+            });
 
-        /* ── AJAX SEND ── */
-        sendForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            /* ── AJAX SEND ── */
+            sendForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            const text = input.value.trim();
-            const file = attachmentInput.files[0];
+                const text = input.value.trim();
+                const file = attachmentInput.files[0];
 
-            if (!text && !file) return;
-            if (isSending) return;
+                if (!text && !file) return;
+                if (isSending) return;
 
-            isSending = true;
-            sendBtn.disabled = true;
-            sendBtn.innerHTML = `<span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>`;
+                isSending = true;
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = `<span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>`;
 
-            // Optimistic UI
-            const tempId = 'temp-' + Date.now();
-            const previewUrl = file ? imagePreview.src : null;
-            const el = appendBubble(buildBubble({ role: 'me', message: text, time: now(), id: 0, attachment_url: previewUrl }, tempId));
+                // Optimistic UI
+                const tempId = 'temp-' + Date.now();
+                const previewUrl = file ? imagePreview.src : null;
+                const el = appendBubble(buildBubble({ role: 'me', message: text, time: now(), id: 0, attachment_url: previewUrl }, tempId));
 
-            input.value = '';
-            attachmentInput.value = '';
-            imagePreview.src = '';
-            imagePreviewContainer.classList.add('hidden');
-            input.focus();
+                input.value = '';
+                attachmentInput.value = '';
+                imagePreview.src = '';
+                imagePreviewContainer.classList.add('hidden');
+                input.focus();
 
-            try {
-                const formData = new FormData();
-                if (text) formData.append('message', text);
-                if (file) {
-                    const compressedFile = await compressImage(file);
-                    formData.append('attachment', compressedFile);
-                }
+                try {
+                    const formData = new FormData();
+                    if (text) formData.append('message', text);
+                    if (file) {
+                        const compressedFile = await compressImage(file);
+                        formData.append('attachment', compressedFile);
+                    }
 
-                const res = await fetch(sendUrl, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json',
-                    },
-                    body: formData,
-                });
+                    const res = await fetch(sendUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                        body: formData,
+                    });
 
-                if (res.ok) {
-                    el.querySelector('div > div')?.classList.remove('opacity-70');
-                } else {
+                    if (res.ok) {
+                        el.querySelector('div > div')?.classList.remove('opacity-70');
+                    } else {
+                        el.remove();
+                        toast('Gagal Kirim', 'Pesan gagal dikirim, coba lagi.', 'error');
+                        input.value = text;
+                    }
+                } catch (err) {
                     el.remove();
-                    toast('Gagal Kirim', 'Pesan gagal dikirim, coba lagi.', 'error');
+                    toast('Koneksi Error', 'Periksa koneksi internet Anda.', 'error');
                     input.value = text;
+                } finally {
+                    isSending = false;
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = 'Kirim';
                 }
-            } catch (err) {
-                el.remove();
-                toast('Koneksi Error', 'Periksa koneksi internet Anda.', 'error');
-                input.value = text;
-            } finally {
-                isSending = false;
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = 'Kirim';
-            }
-        });
+            });
+        }
 
-        /* ── POLLING (5s) ── */
+        /* ── POLLING (5s) — selalu berjalan agar vendor dapat melihat pesan SC ── */
         const poll = async () => {
             if (!isPolling) return;
             try {
@@ -400,6 +431,11 @@
                     if (msg.role === 'other') {
                         if (window.showToastNotification) {
                             window.showToastNotification('💰 Negosiasi dari ' + msg.sender_name, msg.message.substring(0, 80));
+                        }
+                        // Jika SC baru saja mengirim pesan pertama dan form belum ada,
+                        // reload halaman agar form input vendor aktif
+                        if (!sendForm) {
+                            setTimeout(() => { window.location.reload(); }, 1000);
                         }
                     }
                 });

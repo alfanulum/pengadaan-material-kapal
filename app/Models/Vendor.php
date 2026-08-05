@@ -16,11 +16,26 @@ class Vendor extends Model
         'alamat',
         'kategori',
         'status',
+        'status_registrasi',
+        'alasan_penolakan',
+        'tanggal_daftar',
+        'tanggal_verifikasi',
+        'id_verifikator',
+    ];
+
+    protected $casts = [
+        'tanggal_daftar'      => 'datetime',
+        'tanggal_verifikasi'  => 'datetime',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function verifikator()
+    {
+        return $this->belongsTo(User::class, 'id_verifikator');
     }
 
     public function invitations()
@@ -36,5 +51,42 @@ class Vendor extends Model
     public function purchaseOrders()
     {
         return $this->hasMany(PurchaseOrder::class);
+    }
+
+    /**
+     * Cek apakah vendor sudah disetujui dan dapat menggunakan fitur penuh.
+     */
+    public function isApproved(): bool
+    {
+        return $this->status_registrasi === 'disetujui';
+    }
+
+    /**
+     * Cek apakah vendor masih menunggu verifikasi.
+     */
+    public function isPending(): bool
+    {
+        return $this->status_registrasi === 'menunggu';
+    }
+
+    /**
+     * Cek apakah vendor ditolak.
+     */
+    public function isRejected(): bool
+    {
+        return $this->status_registrasi === 'ditolak';
+    }
+
+    /**
+     * Label status registrasi vendor.
+     */
+    public function getStatusRegistrasiLabelAttribute(): string
+    {
+        return match ($this->status_registrasi) {
+            'menunggu'  => 'Menunggu Verifikasi',
+            'disetujui' => 'Disetujui',
+            'ditolak'   => 'Ditolak',
+            default     => ucfirst($this->status_registrasi ?? 'Tidak Diketahui'),
+        };
     }
 }

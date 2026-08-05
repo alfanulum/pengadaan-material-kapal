@@ -20,6 +20,8 @@ use App\Services\FirebaseService;
 use App\Http\Controllers\Gudang\DashboardController as GudangDashboardController;
 use App\Http\Controllers\Gudang\GoodsReceiptController;
 use App\Http\Controllers\SupplyChain\GoodsReceiptReportController;
+use App\Http\Controllers\SupplyChain\GoodsReceiptPdfController;
+use App\Http\Controllers\Auth\VendorRegisterController;
 
 Route::get('/test-firebase', function (
     App\Services\FirebaseService $firebase
@@ -37,6 +39,10 @@ Route::get('/test-firebase', function (
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Registrasi Vendor Mandiri (publik, tidak perlu login)
+Route::get('/vendor/register', [VendorRegisterController::class, 'create'])->name('vendor.register');
+Route::post('/vendor/register', [VendorRegisterController::class, 'store'])->name('vendor.register.store');
 
 // FCM Token storage (must be inside auth middleware)
 Route::post('/fcm-token', [FcmTokenController::class, 'update'])
@@ -84,7 +90,7 @@ Route::middleware('auth')->group(function () {
 
 
     // engineer
-    Route::prefix('engineer')->name('engineer.')->group(function () {
+    Route::prefix('engineer')->name('engineer.')->middleware('engineer.only')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Engineer\DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('/clarifications', [EngineerTenderClarificationController::class, 'index'])
@@ -105,58 +111,61 @@ Route::middleware('auth')->group(function () {
         Route::get('/monitoring/{id}', [\App\Http\Controllers\Engineer\MonitoringController::class, 'show'])->name('monitoring.show');
     });
 
-    Route::get('/material-requests', [MaterialRequestController::class, 'index'])
-        ->name('material-requests.index');
+    Route::middleware('engineer.only')->group(function () {
+        Route::get('/material-requests', [MaterialRequestController::class, 'index'])
+            ->name('material-requests.index');
 
-    Route::get('/material-requests/create', [MaterialRequestController::class, 'create'])
-        ->name('material-requests.create');
+        Route::get('/material-requests/create', [MaterialRequestController::class, 'create'])
+            ->name('material-requests.create');
 
-    Route::post('/material-requests', [MaterialRequestController::class, 'store'])
-        ->name('material-requests.store');
+        Route::post('/material-requests', [MaterialRequestController::class, 'store'])
+            ->name('material-requests.store');
 
-    Route::get('/material-requests/{id}', [MaterialRequestController::class, 'show'])
-        ->name('material-requests.show');
+        Route::get('/material-requests/{id}', [MaterialRequestController::class, 'show'])
+            ->name('material-requests.show');
 
-    Route::get('/material-requests/{id}/edit', [MaterialRequestController::class, 'edit'])
-        ->name('material-requests.edit');
+        Route::get('/material-requests/{id}/edit', [MaterialRequestController::class, 'edit'])
+            ->name('material-requests.edit');
 
-    Route::put('/material-requests/{id}', [MaterialRequestController::class, 'update'])
-        ->name('material-requests.update');
+        Route::put('/material-requests/{id}', [MaterialRequestController::class, 'update'])
+            ->name('material-requests.update');
 
-    Route::delete('/material-requests/{id}', [MaterialRequestController::class, 'destroy'])
-        ->name('material-requests.destroy');
+        Route::delete('/material-requests/{id}', [MaterialRequestController::class, 'destroy'])
+            ->name('material-requests.destroy');
+    });
 
 
-    // palanner
-    Route::get('/planner/dashboard', function () {
-        return view('dashboards.planner');
-    })->name('planner.dashboard');
+    // planner
+    Route::middleware('planner.only')->group(function () {
+        Route::get('/planner/dashboard', function () {
+            return view('dashboards.planner');
+        })->name('planner.dashboard');
 
-    Route::get('/planner/material-requests', [PlannerMaterialRequestController::class, 'index'])
-        ->name('planner.material-requests.index');
+        Route::get('/planner/material-requests', [PlannerMaterialRequestController::class, 'index'])
+            ->name('planner.material-requests.index');
 
-    Route::get('/planner/material-requests/{id}', [PlannerMaterialRequestController::class, 'show'])
-        ->name('planner.material-requests.show');
+        Route::get('/planner/material-requests/{id}', [PlannerMaterialRequestController::class, 'show'])
+            ->name('planner.material-requests.show');
 
-    Route::post('/planner/material-requests/{id}/documents', [PlannerMaterialRequestController::class, 'uploadDocuments'])
-        ->name('planner.material-requests.documents');
+        Route::post('/planner/material-requests/{id}/documents', [PlannerMaterialRequestController::class, 'uploadDocuments'])
+            ->name('planner.material-requests.documents');
 
-    Route::post('/planner/material-requests/{id}/approve', [PlannerMaterialRequestController::class, 'approve'])
-        ->name('planner.material-requests.approve');
+        Route::post('/planner/material-requests/{id}/approve', [PlannerMaterialRequestController::class, 'approve'])
+            ->name('planner.material-requests.approve');
 
-    Route::post('/planner/material-requests/{id}/reject', [PlannerMaterialRequestController::class, 'reject'])
-        ->name('planner.material-requests.reject');
+        Route::post('/planner/material-requests/{id}/reject', [PlannerMaterialRequestController::class, 'reject'])
+            ->name('planner.material-requests.reject');
+    });
 
 
     // supplychain
-    // Route::get('/supply-chain/dashboard', function () {
-    //     return view('dashboards.supply');
-    // })->name('supply.dashboard');
+    Route::get('/supply-chain/dashboard', [\App\Http\Controllers\SupplyChain\DashboardController::class, 'index'])->middleware('supply_chain.only')->name('supply-chain.dashboard');
 
-    Route::get('/supply-chain/dashboard', [\App\Http\Controllers\SupplyChain\DashboardController::class, 'index'])->name('supply-chain.dashboard');
-
-    Route::prefix('supply-chain')->name('supply-chain.')->group(function () {
+    Route::prefix('supply-chain')->name('supply-chain.')->middleware('supply_chain.only')->group(function () {
+        // Vendor management — termasuk verifikasi registrasi
         Route::resource('vendors', VendorController::class);
+        Route::post('/vendors/{vendor}/approve', [VendorController::class, 'approve'])->name('vendors.approve');
+        Route::post('/vendors/{vendor}/reject', [VendorController::class, 'reject'])->name('vendors.reject');
 
         Route::get('/material-requests', [SupplyChainMaterialRequestController::class, 'index'])
             ->name('material-requests.index');
@@ -191,25 +200,21 @@ Route::middleware('auth')->group(function () {
             ->name('purchase-orders.show');
 
         // CHAT NEGOSIASI
-        // LIST CHAT PER TENDER
         Route::get(
             '/tenders/{tender}/negotiation',
             [ChatNegosiasiController::class, 'index']
         )->name('chat.negosiasi.index');
 
-        // CHAT DETAIL PER VENDOR
         Route::get(
             '/tenders/{tender}/negotiation/{vendor}',
             [ChatNegosiasiController::class, 'show']
         )->name('chat.negosiasi.show');
 
-        // SEND MESSAGE
         Route::post(
             '/tenders/{tender}/negotiation/{vendor}',
             [ChatNegosiasiController::class, 'send']
         )->name('chat.negosiasi.send');
 
-        // AJAX polling for real-time chat
         Route::get(
             '/tenders/{tender}/negotiation/{vendor}/messages',
             [ChatNegosiasiController::class, 'messagesAjax']
@@ -223,13 +228,45 @@ Route::middleware('auth')->group(function () {
         Route::resource('monitoring', \App\Http\Controllers\SupplyChain\MonitoringController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
     });
 
+    // Supply Chain — Laporan Penerimaan Gudang
+    Route::prefix('supply-chain')->name('supply-chain.')->middleware('supply_chain.only')->group(function () {
+        Route::get('/goods-receipt-reports', [GoodsReceiptReportController::class, 'index'])->name('goods-receipt-reports.index');
+        Route::get('/goods-receipt-reports/{goodsReceiptReport}', [GoodsReceiptReportController::class, 'show'])->name('goods-receipt-reports.show');
+        Route::post('/goods-receipt-reports/{goodsReceiptReport}/confirm', [GoodsReceiptReportController::class, 'confirm'])->name('goods-receipt-reports.confirm');
+        Route::post('/goods-receipt-reports/{goodsReceiptReport}/return', [GoodsReceiptReportController::class, 'processReturn'])->name('goods-receipt-reports.return');
 
-    // Vendor
+        // =========================================================
+        // UNDUH PDF LAPORAN PENERIMAAN MATERIAL
+        // =========================================================
+        Route::get('/goods-receipt-reports/{goodsReceipt}/pdf', [GoodsReceiptPdfController::class, 'download'])
+            ->name('goods-receipt-reports.pdf');
+    });
+
+
+    // =========================================================
+    // VENDOR DASHBOARD — Dashboard utama (semua vendor boleh akses)
+    // =========================================================
     Route::get('/vendor/dashboard', function () {
-        return view('dashboards.vendor');
+        $vendor = \App\Models\Vendor::where('user_id', Auth::id())->first();
+        return view('dashboards.vendor', compact('vendor'));
     })->name('vendor.dashboard');
 
-    Route::prefix('vendor')->name('vendor.')->group(function () {
+    // Route untuk vendor yang ditolak: perbaiki data registrasi
+    Route::get('/vendor/resubmit', function () {
+        $vendor = \App\Models\Vendor::where('user_id', Auth::id())->first();
+        if (!$vendor || $vendor->status_registrasi !== 'ditolak') {
+            return redirect()->route('vendor.dashboard');
+        }
+        return view('vendor.resubmit', compact('vendor'));
+    })->name('vendor.resubmit');
+
+    Route::post('/vendor/resubmit', [VendorController::class, 'resubmit'])->name('vendor.resubmit.store');
+
+    // =========================================================
+    // VENDOR ROUTES — Hanya vendor yang sudah DISETUJUI
+    // Dilindungi middleware vendor.approved
+    // =========================================================
+    Route::prefix('vendor')->name('vendor.')->middleware('vendor.approved')->group(function () {
         Route::get('/tenders', [VendorTenderController::class, 'index'])
             ->name('tenders.index');
 
@@ -255,7 +292,7 @@ Route::middleware('auth')->group(function () {
             [VendorTenderClarificationController::class, 'store']
         )->name('tenders.chat.send');
 
-        // NEGOTIATION (FIXED)
+        // NEGOTIATION
         Route::get(
             '/tenders/{invitation}/chat-negotiation',
             [VendorTenderClarificationController::class, 'negotiation']
@@ -277,22 +314,15 @@ Route::middleware('auth')->group(function () {
             [VendorTenderClarificationController::class, 'negotiationMessagesAjax']
         )->name('tenders.chat.negotiation.messages.ajax');
     });
-    // gudang
-    Route::get('/gudang/dashboard', [GudangDashboardController::class, 'index'])->name('gudang.dashboard');
 
-    Route::prefix('gudang')->name('gudang.')->group(function () {
+    // gudang
+    Route::get('/gudang/dashboard', [GudangDashboardController::class, 'index'])->middleware('gudang.only')->name('gudang.dashboard');
+
+    Route::prefix('gudang')->name('gudang.')->middleware('gudang.only')->group(function () {
         Route::get('/goods-receipts', [GoodsReceiptController::class, 'index'])->name('goods-receipts.index');
         Route::get('/goods-receipts/report/{receipt}', [GoodsReceiptController::class, 'showReport'])->name('goods-receipts.report');
         Route::get('/goods-receipts/{purchaseOrder}', [GoodsReceiptController::class, 'show'])->name('goods-receipts.show');
         Route::post('/goods-receipts/{purchaseOrder}', [GoodsReceiptController::class, 'store'])->name('goods-receipts.store');
-    });
-
-    // Supply Chain — Laporan Penerimaan Gudang
-    Route::prefix('supply-chain')->name('supply-chain.')->group(function () {
-        Route::get('/goods-receipt-reports', [GoodsReceiptReportController::class, 'index'])->name('goods-receipt-reports.index');
-        Route::get('/goods-receipt-reports/{goodsReceiptReport}', [GoodsReceiptReportController::class, 'show'])->name('goods-receipt-reports.show');
-        Route::post('/goods-receipt-reports/{goodsReceiptReport}/confirm', [GoodsReceiptReportController::class, 'confirm'])->name('goods-receipt-reports.confirm');
-        Route::post('/goods-receipt-reports/{goodsReceiptReport}/return', [GoodsReceiptReportController::class, 'processReturn'])->name('goods-receipt-reports.return');
     });
 });
 

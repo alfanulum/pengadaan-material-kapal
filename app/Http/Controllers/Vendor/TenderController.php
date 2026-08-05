@@ -75,12 +75,17 @@ class TenderController extends Controller
             ->orderBy('created_at')
             ->get();
 
+        $quotation = VendorQuotation::where('tender_id', $invitation->tender_id)
+            ->where('vendor_id', $vendor->id)
+            ->first();
+
         return view(
             'vendor.tenders.show',
             compact(
                 'vendor',
                 'invitation',
-                'clarifications'
+                'clarifications',
+                'quotation'
             )
         );
     }
@@ -88,10 +93,18 @@ class TenderController extends Controller
     public function storeQuotation(Request $request, $id)
     {
         $request->validate([
-            'harga_penawaran'    => 'required|numeric|min:0',
-            'estimasi_pengiriman'=> 'nullable|integer|min:1',
-            'catatan'            => 'nullable|string',
-            'file_penawaran'     => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+            'harga_penawaran'     => 'required|numeric|min:0',
+            'estimasi_pengiriman' => 'nullable|integer|min:1',
+            'catatan'             => 'nullable|string',
+            'file_penawaran'      => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+        ], [
+            'harga_penawaran.required' => 'Harga penawaran wajib diisi.',
+            'harga_penawaran.numeric'  => 'Harga penawaran harus berupa angka.',
+            'harga_penawaran.min'      => 'Harga penawaran tidak boleh kurang dari 0.',
+            'estimasi_pengiriman.integer' => 'Estimasi pengiriman harus berupa angka bulat (hari).',
+            'file_penawaran.file'      => 'File penawaran yang diunggah tidak valid.',
+            'file_penawaran.mimes'     => 'Format file penawaran harus berupa PDF, DOC, DOCX, XLS, atau XLSX.',
+            'file_penawaran.max'       => 'Ukuran file penawaran tidak boleh melebihi 10 MB.',
         ]);
 
         $vendor = Vendor::where('user_id', Auth::id())->firstOrFail();
@@ -101,7 +114,12 @@ class TenderController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        $filePath = null;
+        // Cari data penawaran yang sudah ada (jika ada) untuk mempertahankan file lama jika vendor tidak mengunggah file baru
+        $existingQuotation = VendorQuotation::where('tender_id', $invitation->tender_id)
+            ->where('vendor_id', $vendor->id)
+            ->first();
+
+        $filePath = $existingQuotation ? $existingQuotation->file_penawaran : null;
 
         if ($request->hasFile('file_penawaran')) {
             $filePath = $request->file('file_penawaran')->store('vendor-quotations', 'public');

@@ -50,12 +50,27 @@
                             class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
                             Laporan Penerimaan
                         </x-nav-link>
+
+                        <x-nav-link :href="route('supply-chain.monitoring.index')" :active="request()->routeIs('supply-chain.monitoring.*')"
+                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                            Monitoring
+                        </x-nav-link>
                     @endif
 
                     @if (Auth::user()->role === 'engineer')
                         <x-nav-link :href="route('material-requests.index')" :active="request()->routeIs('material-requests.*')"
                             class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
                             Pengajuan Material
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('engineer.clarifications.index')" :active="request()->routeIs('engineer.clarifications.*')"
+                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                            Klarifikasi Spesifikasi
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('engineer.monitoring.index')" :active="request()->routeIs('engineer.monitoring.*')"
+                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                            Monitoring
                         </x-nav-link>
                     @endif
 
@@ -70,6 +85,18 @@
                         <x-nav-link :href="route('gudang.goods-receipts.index')" :active="request()->routeIs('gudang.goods-receipts.*')"
                             class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
                             Penerimaan Barang
+                        </x-nav-link>
+                    @endif
+
+                    @if (Auth::user()->role === 'vendor')
+                        <x-nav-link :href="route('vendor.tenders.index')" :active="request()->routeIs('vendor.tenders.*')"
+                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                            Tender Masuk
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('vendor.purchase-orders.index')" :active="request()->routeIs('vendor.purchase-orders.*')"
+                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                            Purchase Order
                         </x-nav-link>
                     @endif
                 </div>
@@ -155,11 +182,23 @@
                 <x-responsive-nav-link :href="route('supply-chain.goods-receipt-reports.index')" :active="request()->routeIs('supply-chain.goods-receipt-reports.*')" class="text-white hover:bg-white/10">
                     Laporan Penerimaan
                 </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('supply-chain.monitoring.index')" :active="request()->routeIs('supply-chain.monitoring.*')" class="text-white hover:bg-white/10">
+                    Monitoring
+                </x-responsive-nav-link>
             @endif
 
             @if (Auth::user()->role === 'engineer')
                 <x-responsive-nav-link :href="route('material-requests.index')" :active="request()->routeIs('material-requests.*')" class="text-white hover:bg-white/10">
                     Pengajuan Material
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('engineer.clarifications.index')" :active="request()->routeIs('engineer.clarifications.*')" class="text-white hover:bg-white/10">
+                    Klarifikasi Spesifikasi
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('engineer.monitoring.index')" :active="request()->routeIs('engineer.monitoring.*')" class="text-white hover:bg-white/10">
+                    Monitoring
                 </x-responsive-nav-link>
             @endif
 
@@ -172,6 +211,16 @@
             @if (Auth::user()->role === 'gudang')
                 <x-responsive-nav-link :href="route('gudang.goods-receipts.index')" :active="request()->routeIs('gudang.goods-receipts.*')" class="text-white hover:bg-white/10">
                     Penerimaan Barang
+                </x-responsive-nav-link>
+            @endif
+
+            @if (Auth::user()->role === 'vendor')
+                <x-responsive-nav-link :href="route('vendor.tenders.index')" :active="request()->routeIs('vendor.tenders.*')" class="text-white hover:bg-white/10">
+                    Tender Masuk
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('vendor.purchase-orders.index')" :active="request()->routeIs('vendor.purchase-orders.*')" class="text-white hover:bg-white/10">
+                    Purchase Order
                 </x-responsive-nav-link>
             @endif
         </div>

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TenderMessage extends Model
 {
-    protected $table = 'tender_messages';
+    protected $table = 'tender_negosiasi';
 
     protected $fillable = [
         'tender_id',

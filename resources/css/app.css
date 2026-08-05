@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .auth-input {
+        @apply w-full bg-[#EEF4FF] text-[#111827] border border-[#52627A] rounded-[18px] h-[62px] px-[20px] focus:bg-[#EEF4FF] focus:border-blue-700 focus:ring-2 focus:ring-blue-700/20 outline-none transition placeholder-[#9CA3AF] shadow-none !important;
+    }
+    
+    .auth-input:-webkit-autofill,
+    .auth-input:-webkit-autofill:hover, 
+    .auth-input:-webkit-autofill:focus, 
+    .auth-input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 100px #EEF4FF inset !important;
+        -webkit-text-fill-color: #111827 !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    textarea.auth-input {
+        @apply h-auto py-4 !important;
+    }
+
+    .auth-label {
+        @apply block text-[#CBD1DB] font-medium text-sm mb-1.5 !important;
+    }
+}

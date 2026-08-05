@@ -27,21 +27,9 @@
                         Kelola pengajuan material, verifikasi planner, tender vendor,
                         purchase order, dan monitoring pengadaan secara terintegrasi.
                     </p>
-
-                    <div class="mt-8 grid grid-cols-2 gap-4">
-                        <div class="bg-white/10 border border-white/10 rounded-2xl p-4">
-                            <p class="text-2xl font-bold">6</p>
-                            <p class="text-sm text-blue-100">Role Sistem</p>
-                        </div>
-
-                        <div class="bg-white/10 border border-white/10 rounded-2xl p-4">
-                            <p class="text-2xl font-bold">Real-time</p>
-                            <p class="text-sm text-blue-100">Monitoring</p>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="relative z-10 text-sm text-blue-100">
+                <div class="relative z-10 text-sm text-blue-100 mt-8">
                     © {{ date('Y') }} PT PAL Indonesia
                 </div>
             </div>
@@ -69,21 +57,21 @@
                     @csrf
 
                     <div>
-                        <x-input-label for="email" value="Email" />
+                        <x-input-label for="email" value="Email" class="auth-label" />
                         <x-text-input id="email"
-                            class="block mt-2 w-full rounded-xl border-slate-300 focus:border-blue-700 focus:ring-blue-700"
+                            class="auth-input"
                             type="email" name="email" :value="old('email')" required autofocus
-                            autocomplete="username" />
+                            autocomplete="username" placeholder="Masukkan email Anda" />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
                     <div class="mt-5">
-                        <x-input-label for="password" value="Password" />
-                        <div class="relative mt-2">
+                        <x-input-label for="password" value="Password" class="auth-label" />
+                        <div class="relative">
                             <x-text-input id="password"
-                                class="block w-full pr-10 rounded-xl border-slate-300 focus:border-blue-700 focus:ring-blue-700"
-                                type="password" name="password" required autocomplete="current-password" />
-                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 focus:outline-none">
+                                class="auth-input !pr-14"
+                                type="password" name="password" required autocomplete="current-password" placeholder="Masukkan password Anda" />
+                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 flex items-center pr-4 text-[#52627A] hover:text-blue-700 focus:outline-none">
                                 <svg id="eye-icon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -99,7 +87,7 @@
                     <div class="flex items-center justify-between mt-5">
                         <label for="remember_me" class="inline-flex items-center">
                             <input id="remember_me" type="checkbox"
-                                class="rounded border-slate-300 text-blue-800 shadow-sm focus:ring-blue-700"
+                                class="rounded-[6px] border-[#CBD1DB] bg-[#EEF4FF] text-blue-800 shadow-sm focus:ring-blue-700 w-5 h-5 cursor-pointer"
                                 name="remember">
                             <span class="ms-2 text-sm text-slate-600">
                                 Ingat saya
@@ -126,7 +114,22 @@
                         </a>
                     </div>
 
-                    <div class="mt-6 text-center">
+                    <div class="mt-4 text-center">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-slate-200"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-3 bg-white text-slate-400">atau</span>
+                            </div>
+                        </div>
+                        <a href="{{ route('vendor.register') }}"
+                            class="mt-4 w-full inline-flex items-center justify-center px-5 py-2.5 bg-cyan-700 text-white rounded-xl text-sm font-semibold hover:bg-cyan-800 transition">
+                            🏢 Daftar sebagai Vendor
+                        </a>
+                    </div>
+
+                    <div class="mt-4 text-center">
                         <a href="{{ url('/') }}" class="text-sm text-slate-500 hover:text-blue-800">
                             ← Kembali ke halaman utama
                         </a>

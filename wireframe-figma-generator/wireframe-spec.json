@@ -1,0 +1,3387 @@
+{
+  "meta": {
+    "project": "Sistem Pengadaan Material Kapal – PT PAL Indonesia",
+    "generated": "2026-07-28",
+    "ui_framework": "Tailwind CSS",
+    "font": "Figtree",
+    "nav_type": "horizontal_top_navbar",
+    "roles": [
+      "engineer",
+      "planner",
+      "supply_chain",
+      "vendor",
+      "gudang"
+    ]
+  },
+  "pages": [
+    {
+      "id": "login",
+      "name": "Login",
+      "role": "all",
+      "route": "/login",
+      "view": "auth/login.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": false,
+        "navbar": false
+      },
+      "components": [
+        {
+          "type": "two-column-layout",
+          "note": "kiri panel branding biru, kanan form login"
+        },
+        {
+          "type": "branding-panel",
+          "title": "PT PAL INDONESIA",
+          "subtitle": "Sistem Informasi Pengadaan Material Kapal",
+          "stats": [
+            {
+              "value": "6",
+              "label": "Role Sistem"
+            },
+            {
+              "value": "Real-time",
+              "label": "Monitoring"
+            }
+          ]
+        },
+        {
+          "type": "title",
+          "text": "Login Sistem"
+        },
+        {
+          "type": "subtitle",
+          "text": "Masukkan email dan password untuk mengakses sistem."
+        },
+        {
+          "type": "input",
+          "id": "input-email",
+          "label": "Email",
+          "input_type": "email"
+        },
+        {
+          "type": "input",
+          "id": "input-password",
+          "label": "Password",
+          "input_type": "password",
+          "has_toggle": true
+        },
+        {
+          "type": "checkbox",
+          "id": "checkbox-remember",
+          "label": "Ingat saya"
+        },
+        {
+          "type": "link",
+          "id": "link-forgot",
+          "text": "Lupa password?"
+        },
+        {
+          "type": "button",
+          "id": "btn-login-submit",
+          "text": "Masuk",
+          "variant": "primary",
+          "full_width": true
+        },
+        {
+          "type": "link",
+          "id": "link-register",
+          "text": "Daftar sekarang"
+        },
+        {
+          "type": "link",
+          "id": "link-back-home",
+          "text": "← Kembali ke halaman utama"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-login-submit",
+          "action": "navigate",
+          "destination": "dashboard-engineer",
+          "note": "jika role=engineer"
+        },
+        {
+          "source": "btn-login-submit",
+          "action": "navigate",
+          "destination": "dashboard-planner",
+          "note": "jika role=planner"
+        },
+        {
+          "source": "btn-login-submit",
+          "action": "navigate",
+          "destination": "dashboard-supply-chain",
+          "note": "jika role=supply_chain"
+        },
+        {
+          "source": "btn-login-submit",
+          "action": "navigate",
+          "destination": "dashboard-vendor",
+          "note": "jika role=vendor"
+        },
+        {
+          "source": "btn-login-submit",
+          "action": "navigate",
+          "destination": "dashboard-gudang",
+          "note": "jika role=gudang"
+        },
+        {
+          "source": "link-register",
+          "action": "navigate",
+          "destination": "register"
+        },
+        {
+          "source": "link-back-home",
+          "action": "navigate",
+          "destination": "welcome"
+        }
+      ]
+    },
+    {
+      "id": "register",
+      "name": "Register",
+      "role": "all",
+      "route": "/register",
+      "view": "auth/register.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": false,
+        "navbar": false
+      },
+      "components": [
+        {
+          "type": "title",
+          "text": "Daftar Akun"
+        },
+        {
+          "type": "input",
+          "id": "input-reg-name",
+          "label": "Nama Lengkap"
+        },
+        {
+          "type": "input",
+          "id": "input-reg-email",
+          "label": "Email",
+          "input_type": "email"
+        },
+        {
+          "type": "input",
+          "id": "input-reg-password",
+          "label": "Password",
+          "input_type": "password"
+        },
+        {
+          "type": "input",
+          "id": "input-reg-confirm",
+          "label": "Konfirmasi Password",
+          "input_type": "password"
+        },
+        {
+          "type": "button",
+          "id": "btn-register-submit",
+          "text": "Daftar",
+          "variant": "primary",
+          "full_width": true
+        },
+        {
+          "type": "link",
+          "id": "link-to-login",
+          "text": "Sudah punya akun? Login"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-register-submit",
+          "action": "navigate",
+          "destination": "login"
+        },
+        {
+          "source": "link-to-login",
+          "action": "navigate",
+          "destination": "login"
+        }
+      ]
+    },
+    {
+      "id": "welcome",
+      "name": "Halaman Utama",
+      "role": "public",
+      "route": "/",
+      "view": "welcome.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": false,
+        "navbar": false
+      },
+      "components": [
+        {
+          "type": "hero",
+          "title": "Sistem Pengadaan Material Kapal",
+          "subtitle": "PT PAL Indonesia"
+        },
+        {
+          "type": "button",
+          "id": "btn-welcome-login",
+          "text": "Login",
+          "variant": "primary"
+        },
+        {
+          "type": "button",
+          "id": "btn-welcome-register",
+          "text": "Register",
+          "variant": "secondary"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-welcome-login",
+          "action": "navigate",
+          "destination": "login"
+        },
+        {
+          "source": "btn-welcome-register",
+          "action": "navigate",
+          "destination": "register"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-engineer",
+      "name": "Dashboard Engineer",
+      "role": "Engineer",
+      "route": "/engineer/dashboard",
+      "view": "dashboards/engineer.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "navbar_items": [
+        "Dashboard",
+        "Pengajuan Material"
+      ],
+      "header": {
+        "title": "Dashboard Engineer",
+        "subtitle": "Pengajuan kebutuhan material kapal, monitoring status permintaan, dan klarifikasi spesifikasi vendor."
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Ajukan Material dan Jawab Klarifikasi Teknis",
+          "button_id": "btn-eng-buat",
+          "button_text": "Buat Pengajuan",
+          "info_card": {
+            "label": "Fokus Engineer",
+            "title": "Pengajuan → Verifikasi → Klarifikasi"
+          }
+        },
+        {
+          "type": "section-title",
+          "text": "Alur Kerja Engineer"
+        },
+        {
+          "type": "step-cards",
+          "steps": [
+            {
+              "step": "01",
+              "title": "Buat Pengajuan Material"
+            },
+            {
+              "step": "02",
+              "title": "Tunggu Verifikasi Planner"
+            },
+            {
+              "step": "03",
+              "title": "Pantau Monitoring Kebutuhan"
+            },
+            {
+              "step": "04",
+              "title": "Jawab Klarifikasi Vendor"
+            }
+          ]
+        },
+        {
+          "type": "section-title",
+          "text": "Menu Engineer"
+        },
+        {
+          "type": "menu-cards",
+          "columns": 2,
+          "cards": [
+            {
+              "id": "menu-card-01",
+              "number": "01",
+              "tag": "Form",
+              "category": "Pengajuan",
+              "title": "Permintaan Material",
+              "desc": "Membuat pengajuan kebutuhan material kapal.",
+              "cta": "Buat Pengajuan"
+            },
+            {
+              "id": "menu-card-02",
+              "number": "02",
+              "tag": "Chat",
+              "category": "Spesifikasi",
+              "title": "Klarifikasi Spesifikasi",
+              "desc": "Menjawab pertanyaan vendor terkait spesifikasi.",
+              "cta": "Buka Klarifikasi"
+            },
+            {
+              "id": "menu-card-03",
+              "number": "03",
+              "tag": "Data",
+              "category": "Permintaan",
+              "title": "Daftar Pengajuan",
+              "desc": "Melihat seluruh pengajuan material yang sudah dibuat.",
+              "cta": "Lihat Daftar"
+            },
+            {
+              "id": "menu-card-04",
+              "number": "04",
+              "tag": "Track",
+              "category": "Monitoring",
+              "title": "Monitoring Kebutuhan Material",
+              "desc": "Pantau perkembangan kebutuhan material.",
+              "cta": "Pantau Proses"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "menu-card-01",
+          "action": "navigate",
+          "destination": "material-requests-create"
+        },
+        {
+          "source": "menu-card-02",
+          "action": "navigate",
+          "destination": "engineer-clarifications-index"
+        },
+        {
+          "source": "menu-card-03",
+          "action": "navigate",
+          "destination": "material-requests-index"
+        },
+        {
+          "source": "menu-card-04",
+          "action": "navigate",
+          "destination": "engineer-monitoring-index"
+        },
+        {
+          "source": "btn-eng-buat",
+          "action": "navigate",
+          "destination": "material-requests-create"
+        }
+      ]
+    },
+    {
+      "id": "material-requests-index",
+      "name": "Daftar Pengajuan Material",
+      "role": "Engineer",
+      "route": "/material-requests",
+      "view": "material-requests/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Daftar Pengajuan Material",
+        "buttons": [
+          {
+            "id": "btn-back-eng-dash",
+            "text": "Kembali ke Dashboard",
+            "variant": "secondary"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Pantau Status Pengajuan Material"
+        },
+        {
+          "type": "table",
+          "id": "tbl-material-requests",
+          "columns": [
+            "Kode",
+            "Project",
+            "Barang",
+            "Qty",
+            "Tanggal Dibutuhkan",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "MR-2024-001",
+              "Kapal Perang 001",
+              "Pipa Besi A36 Sch40",
+              "50 Batang",
+              "15 Jan 2025",
+              "[BADGE: Diajukan]",
+              "[Detail] [Edit] [Hapus]"
+            ],
+            [
+              "MR-2024-002",
+              "Kapal Tanker 002",
+              "Baut Stainless M20",
+              "200 Buah",
+              "20 Jan 2025",
+              "[BADGE: Disetujui]",
+              "[Detail]"
+            ],
+            [
+              "MR-2024-003",
+              "Kapal Ferry 003",
+              "Cat Epoxy Marine",
+              "30 Kaleng",
+              "25 Jan 2025",
+              "[BADGE: Ditolak]",
+              "[Detail]"
+            ]
+          ],
+          "status_badges": {
+            "Diajukan": "yellow",
+            "Disetujui": "green",
+            "Ditolak": "red"
+          }
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-back-eng-dash",
+          "action": "navigate",
+          "destination": "dashboard-engineer"
+        },
+        {
+          "source": "tbl-material-requests-btn-detail",
+          "action": "navigate",
+          "destination": "material-requests-show"
+        },
+        {
+          "source": "tbl-material-requests-btn-edit",
+          "action": "navigate",
+          "destination": "material-requests-edit"
+        }
+      ]
+    },
+    {
+      "id": "material-requests-create",
+      "name": "Buat Pengajuan Material",
+      "role": "Engineer",
+      "route": "/material-requests/create",
+      "view": "material-requests/create.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Buat Pengajuan Material",
+        "buttons": [
+          {
+            "id": "btn-back-to-dash-create",
+            "text": "Kembali ke Dashboard",
+            "variant": "secondary"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Form Pengajuan Kebutuhan Material"
+        },
+        {
+          "type": "two-column-layout",
+          "note": "kiri panel info, kanan form"
+        },
+        {
+          "type": "info-panel",
+          "title": "Catatan Pengajuan",
+          "steps": [
+            "Pilih project yang sesuai.",
+            "Isi spesifikasi material dengan lengkap.",
+            "Tentukan jumlah dan satuan.",
+            "Isi tanggal kebutuhan."
+          ]
+        },
+        {
+          "type": "form",
+          "id": "form-create-mr",
+          "fields": [
+            {
+              "type": "select",
+              "id": "select-project",
+              "label": "Project",
+              "placeholder": "-- Pilih Project --"
+            },
+            {
+              "type": "input",
+              "id": "input-nama-barang",
+              "label": "Nama Barang"
+            },
+            {
+              "type": "textarea",
+              "id": "input-spesifikasi",
+              "label": "Spesifikasi"
+            },
+            {
+              "type": "input",
+              "id": "input-qty",
+              "label": "Jumlah (Qty)",
+              "input_type": "number"
+            },
+            {
+              "type": "input",
+              "id": "input-satuan",
+              "label": "Satuan"
+            },
+            {
+              "type": "input",
+              "id": "input-tanggal",
+              "label": "Tanggal Dibutuhkan",
+              "input_type": "date"
+            },
+            {
+              "type": "textarea",
+              "id": "input-catatan",
+              "label": "Catatan"
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "id": "btn-add-item",
+          "text": "+ Tambah Item",
+          "variant": "secondary"
+        },
+        {
+          "type": "button",
+          "id": "btn-simpan-mr",
+          "text": "Simpan Pengajuan",
+          "variant": "primary"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-simpan-mr",
+          "action": "navigate",
+          "destination": "material-requests-index"
+        },
+        {
+          "source": "btn-back-to-dash-create",
+          "action": "navigate",
+          "destination": "dashboard-engineer"
+        }
+      ]
+    },
+    {
+      "id": "material-requests-show",
+      "name": "Detail Pengajuan Material",
+      "role": "Engineer",
+      "route": "/material-requests/{id}",
+      "view": "material-requests/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Detail Pengajuan Material"
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Pengajuan",
+          "fields": [
+            "Kode Pengajuan",
+            "Project",
+            "Status",
+            "Tanggal Diajukan",
+            "Tanggal Dibutuhkan",
+            "Catatan"
+          ]
+        },
+        {
+          "type": "table",
+          "id": "tbl-detail-items",
+          "title": "Daftar Item Barang",
+          "columns": [
+            "No",
+            "Nama Barang",
+            "Spesifikasi",
+            "Qty",
+            "Satuan"
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-edit-mr",
+              "text": "Edit",
+              "variant": "secondary",
+              "condition": "if status=diajukan"
+            },
+            {
+              "id": "btn-hapus-mr",
+              "text": "Hapus",
+              "variant": "danger",
+              "condition": "if status=diajukan"
+            },
+            {
+              "id": "btn-kembali-mr-show",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-edit-mr",
+          "action": "navigate",
+          "destination": "material-requests-edit"
+        },
+        {
+          "source": "btn-kembali-mr-show",
+          "action": "navigate",
+          "destination": "material-requests-index"
+        }
+      ]
+    },
+    {
+      "id": "material-requests-edit",
+      "name": "Edit Pengajuan Material",
+      "role": "Engineer",
+      "route": "/material-requests/{id}/edit",
+      "view": "material-requests/edit.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Edit Pengajuan Material"
+      },
+      "components": [
+        {
+          "type": "form",
+          "id": "form-edit-mr",
+          "fields": [
+            {
+              "type": "select",
+              "id": "select-project-edit",
+              "label": "Project"
+            },
+            {
+              "type": "input",
+              "id": "input-nama-barang-edit",
+              "label": "Nama Barang"
+            },
+            {
+              "type": "textarea",
+              "id": "input-spesifikasi-edit",
+              "label": "Spesifikasi"
+            },
+            {
+              "type": "input",
+              "id": "input-qty-edit",
+              "label": "Qty",
+              "input_type": "number"
+            },
+            {
+              "type": "input",
+              "id": "input-satuan-edit",
+              "label": "Satuan"
+            },
+            {
+              "type": "input",
+              "id": "input-tanggal-edit",
+              "label": "Tanggal Dibutuhkan",
+              "input_type": "date"
+            },
+            {
+              "type": "textarea",
+              "id": "input-catatan-edit",
+              "label": "Catatan"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-update-mr",
+              "text": "Update Pengajuan",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-edit",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-update-mr",
+          "action": "navigate",
+          "destination": "material-requests-index"
+        },
+        {
+          "source": "btn-kembali-edit",
+          "action": "navigate",
+          "destination": "material-requests-index"
+        }
+      ]
+    },
+    {
+      "id": "engineer-clarifications-index",
+      "name": "Daftar Klarifikasi Teknis",
+      "role": "Engineer",
+      "route": "/engineer/clarifications",
+      "view": "engineer/clarifications/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Klarifikasi Teknis"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-clarifications",
+          "columns": [
+            "Tender",
+            "Vendor",
+            "Pesan Terakhir",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "TDR-2024-001 – Baja Plat",
+              "PT Baja Sentosa",
+              "Apakah spesifikasi bisa diubah ke A242?",
+              "[Buka Chat]"
+            ],
+            [
+              "TDR-2024-002 – Pipa PVC",
+              "CV Pipa Jaya",
+              "Konfirmasi ukuran diameter pipa.",
+              "[Buka Chat]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-clarifications-btn-chat",
+          "action": "navigate",
+          "destination": "engineer-clarification-show"
+        }
+      ]
+    },
+    {
+      "id": "engineer-clarification-show",
+      "name": "Chat Klarifikasi Teknis",
+      "role": "Engineer",
+      "route": "/engineer/clarifications/{tender}/{vendor}",
+      "view": "engineer/clarifications/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "chat-header",
+          "info": "Tender: TDR-2024-001 | Vendor: PT Baja Sentosa"
+        },
+        {
+          "type": "chat-messages",
+          "sample": [
+            {
+              "sender": "Vendor",
+              "text": "Apakah spesifikasi baja bisa diubah ke grade A242?"
+            },
+            {
+              "sender": "Engineer",
+              "text": "Ya, grade A242 diperbolehkan asalkan tebal minimum 10mm."
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "input-pesan-clarification",
+          "placeholder": "Tulis balasan..."
+        },
+        {
+          "type": "button",
+          "id": "btn-kirim-clarification",
+          "text": "Kirim",
+          "variant": "primary"
+        }
+      ],
+      "interactions": []
+    },
+    {
+      "id": "engineer-monitoring-index",
+      "name": "Monitoring Kebutuhan Material",
+      "role": "Engineer",
+      "route": "/engineer/monitoring",
+      "view": "engineer/monitoring/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Monitoring Kebutuhan Material"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-eng-monitoring",
+          "columns": [
+            "Kode MR",
+            "Project",
+            "Material",
+            "Status Pengadaan",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "MR-2024-001",
+              "Kapal Perang 001",
+              "Pipa Besi A36",
+              "Tender Berlangsung",
+              "[Lihat Detail]"
+            ],
+            [
+              "MR-2024-002",
+              "Kapal Tanker 002",
+              "Baut Stainless",
+              "PO Diterbitkan",
+              "[Lihat Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-eng-monitoring-btn",
+          "action": "navigate",
+          "destination": "engineer-monitoring-show"
+        }
+      ]
+    },
+    {
+      "id": "engineer-monitoring-show",
+      "name": "Detail Monitoring Kebutuhan",
+      "role": "Engineer",
+      "route": "/engineer/monitoring/{id}",
+      "view": "engineer/monitoring/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Material Request"
+        },
+        {
+          "type": "timeline",
+          "steps": [
+            "Pengajuan Dibuat",
+            "Diverifikasi Planner",
+            "Tender Dibuat",
+            "Vendor Terpilih",
+            "PO Diterbitkan",
+            "Barang Dikirim",
+            "Barang Diterima"
+          ]
+        },
+        {
+          "type": "button",
+          "id": "btn-kembali-monitoring-eng",
+          "text": "Kembali",
+          "variant": "secondary"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-kembali-monitoring-eng",
+          "action": "navigate",
+          "destination": "engineer-monitoring-index"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-planner",
+      "name": "Dashboard Planner",
+      "role": "Planner",
+      "route": "/planner/dashboard",
+      "view": "dashboards/planner.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "navbar_items": [
+        "Dashboard",
+        "Verifikasi Pengajuan"
+      ],
+      "header": {
+        "title": "Dashboard Planner",
+        "subtitle": "Verifikasi pengajuan material dari Engineer sebelum diteruskan ke Supply Chain."
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Verifikasi Pengajuan Material Kapal",
+          "button_id": "btn-planner-hero",
+          "button_text": "Lihat Pengajuan Material",
+          "info_card": {
+            "title": "Alur Kerja Planner",
+            "steps": [
+              {
+                "no": "1",
+                "title": "Review Pengajuan"
+              },
+              {
+                "no": "2",
+                "title": "Lengkapi Dokumen"
+              },
+              {
+                "no": "3",
+                "title": "Approval"
+              }
+            ]
+          }
+        },
+        {
+          "type": "info-cards",
+          "columns": 3,
+          "cards": [
+            {
+              "number": "01",
+              "title": "Pengajuan Material",
+              "desc": "Melihat daftar pengajuan material dari Engineer."
+            },
+            {
+              "number": "02",
+              "title": "Dokumen Planner",
+              "desc": "Menambahkan total RAB, dokumen RAB, dan perizinan."
+            },
+            {
+              "number": "03",
+              "title": "Keputusan Approval",
+              "desc": "Setujui atau tolak pengajuan material."
+            }
+          ]
+        },
+        {
+          "type": "shortcut-panel",
+          "title": "Pengajuan Menunggu Verifikasi",
+          "button": {
+            "id": "btn-planner-shortcut",
+            "text": "Buka Pengajuan",
+            "variant": "primary"
+          }
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-planner-shortcut",
+          "action": "navigate",
+          "destination": "planner-material-requests-index"
+        },
+        {
+          "source": "btn-planner-hero",
+          "action": "navigate",
+          "destination": "planner-material-requests-index"
+        }
+      ]
+    },
+    {
+      "id": "planner-material-requests-index",
+      "name": "Daftar Verifikasi Pengajuan",
+      "role": "Planner",
+      "route": "/planner/material-requests",
+      "view": "planner/material-requests/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Verifikasi Pengajuan Material"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-planner-mr",
+          "columns": [
+            "Kode",
+            "Project",
+            "Barang",
+            "Qty",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "MR-2024-001",
+              "Kapal Perang 001",
+              "Pipa Besi A36",
+              "50 Batang",
+              "[BADGE: Diajukan]",
+              "[Verifikasi]"
+            ],
+            [
+              "MR-2024-002",
+              "Kapal Tanker 002",
+              "Baut M20",
+              "200 Buah",
+              "[BADGE: Disetujui]",
+              "[Detail]"
+            ],
+            [
+              "MR-2024-003",
+              "Kapal Ferry 003",
+              "Cat Epoxy",
+              "30 Kaleng",
+              "[BADGE: Ditolak]",
+              "[Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-planner-mr-btn-verifikasi",
+          "action": "navigate",
+          "destination": "planner-material-requests-show"
+        }
+      ]
+    },
+    {
+      "id": "planner-material-requests-show",
+      "name": "Detail & Verifikasi Pengajuan",
+      "role": "Planner",
+      "route": "/planner/material-requests/{id}",
+      "view": "planner/material-requests/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Pengajuan",
+          "fields": [
+            "Kode",
+            "Project",
+            "Engineer",
+            "Status",
+            "Tanggal Diajukan",
+            "Tanggal Dibutuhkan"
+          ]
+        },
+        {
+          "type": "table",
+          "id": "tbl-planner-items",
+          "title": "Daftar Item",
+          "columns": [
+            "No",
+            "Nama Barang",
+            "Spesifikasi",
+            "Qty",
+            "Satuan"
+          ]
+        },
+        {
+          "type": "form",
+          "id": "form-planner-dokumen",
+          "title": "Dokumen Planner",
+          "fields": [
+            {
+              "type": "input",
+              "id": "input-total-rab",
+              "label": "Total RAB (Rp)",
+              "input_type": "number"
+            },
+            {
+              "type": "file-upload",
+              "id": "upload-rab",
+              "label": "Upload Dokumen RAB (PDF)"
+            },
+            {
+              "type": "file-upload",
+              "id": "upload-perizinan",
+              "label": "Upload Dokumen Perizinan (PDF)"
+            },
+            {
+              "type": "textarea",
+              "id": "input-catatan-planner",
+              "label": "Catatan Planner"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-upload-dokumen",
+              "text": "Upload Dokumen",
+              "variant": "secondary"
+            },
+            {
+              "id": "btn-setujui",
+              "text": "Setujui",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-tolak",
+              "text": "Tolak",
+              "variant": "danger"
+            },
+            {
+              "id": "btn-kembali-planner",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-setujui",
+          "action": "navigate",
+          "destination": "planner-material-requests-index"
+        },
+        {
+          "source": "btn-tolak",
+          "action": "navigate",
+          "destination": "planner-material-requests-index"
+        },
+        {
+          "source": "btn-kembali-planner",
+          "action": "navigate",
+          "destination": "planner-material-requests-index"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-supply-chain",
+      "name": "Dashboard Supply Chain",
+      "role": "Supply Chain",
+      "route": "/supply-chain/dashboard",
+      "view": "dashboards/supply.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "navbar_items": [
+        "Dashboard",
+        "Vendor",
+        "Permintaan",
+        "Tender",
+        "Laporan Penerimaan"
+      ],
+      "header": {
+        "title": "Dashboard Supply Chain",
+        "subtitle": "Kelola vendor, permintaan planner, tender, penawaran vendor, dan pemilihan vendor pemenang."
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Kelola Pengadaan Material Kapal",
+          "buttons": [
+            {
+              "id": "btn-sc-permintaan",
+              "text": "Permintaan Planner"
+            },
+            {
+              "id": "btn-sc-tender",
+              "text": "Kelola Tender"
+            }
+          ],
+          "info_card": {
+            "steps": [
+              "1 – Vendor & Permintaan",
+              "2 – Tender & Penawaran",
+              "3 – Vendor Pemenang"
+            ]
+          }
+        },
+        {
+          "type": "section-title",
+          "text": "Menu Supply Chain"
+        },
+        {
+          "type": "menu-cards",
+          "columns": 2,
+          "cards": [
+            {
+              "id": "sc-menu-01",
+              "number": "01",
+              "tag": "Aktif",
+              "category": "Vendor",
+              "title": "Kelola Vendor",
+              "desc": "Tambah, edit, lihat detail, dan atur status vendor.",
+              "cta": "Buka Vendor"
+            },
+            {
+              "id": "sc-menu-02",
+              "number": "02",
+              "tag": "Masuk",
+              "category": "Permintaan",
+              "title": "Dari Planner",
+              "desc": "Lihat pengajuan material yang sudah disetujui Planner.",
+              "cta": "Lihat Pengajuan"
+            },
+            {
+              "id": "sc-menu-03",
+              "number": "03",
+              "tag": "Tender",
+              "category": "Tender",
+              "title": "Kelola Tender",
+              "desc": "Buat tender, undang vendor, lihat penawaran, pilih vendor pemenang.",
+              "cta": "Masuk ke Tender"
+            },
+            {
+              "id": "sc-menu-04",
+              "number": "04",
+              "tag": "Gudang",
+              "category": "Penerimaan",
+              "title": "Laporan Penerimaan",
+              "desc": "Lihat laporan penerimaan barang dari gudang.",
+              "cta": "Lihat Laporan"
+            },
+            {
+              "id": "sc-menu-05",
+              "number": "05",
+              "tag": "Tracking",
+              "category": "Monitoring",
+              "title": "Monitoring Pengadaan Material",
+              "desc": "Pantau proses pengadaan dari tender hingga barang diterima.",
+              "cta": "Lihat Monitoring",
+              "span": 2
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "sc-menu-01",
+          "action": "navigate",
+          "destination": "sc-vendors-index"
+        },
+        {
+          "source": "sc-menu-02",
+          "action": "navigate",
+          "destination": "sc-material-requests-index"
+        },
+        {
+          "source": "sc-menu-03",
+          "action": "navigate",
+          "destination": "sc-tenders-index"
+        },
+        {
+          "source": "sc-menu-04",
+          "action": "navigate",
+          "destination": "sc-goods-receipt-reports-index"
+        },
+        {
+          "source": "sc-menu-05",
+          "action": "navigate",
+          "destination": "sc-monitoring-index"
+        },
+        {
+          "source": "btn-sc-permintaan",
+          "action": "navigate",
+          "destination": "sc-material-requests-index"
+        },
+        {
+          "source": "btn-sc-tender",
+          "action": "navigate",
+          "destination": "sc-tenders-index"
+        }
+      ]
+    },
+    {
+      "id": "sc-vendors-index",
+      "name": "Kelola Vendor",
+      "role": "Supply Chain",
+      "route": "/supply-chain/vendors",
+      "view": "supply-chain/vendors/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Data Vendor",
+        "buttons": [
+          {
+            "id": "btn-tambah-vendor",
+            "text": "Tambah Vendor",
+            "variant": "primary"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-vendors",
+          "columns": [
+            "Nama Vendor",
+            "Email",
+            "No. Telepon",
+            "Spesialisasi",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PT Baja Sentosa",
+              "info@bajasentosa.com",
+              "021-1234567",
+              "Baja & Logam",
+              "[BADGE: Aktif]",
+              "[Detail] [Edit] [Hapus]"
+            ],
+            [
+              "CV Pipa Jaya",
+              "info@pipajaya.com",
+              "021-7654321",
+              "Pipa & Fitting",
+              "[BADGE: Aktif]",
+              "[Detail] [Edit] [Hapus]"
+            ],
+            [
+              "UD Kimia Raya",
+              "kimiaraya@mail.com",
+              "031-9876543",
+              "Cat Marine",
+              "[BADGE: Nonaktif]",
+              "[Detail] [Edit] [Hapus]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-tambah-vendor",
+          "action": "navigate",
+          "destination": "sc-vendors-create"
+        },
+        {
+          "source": "tbl-vendors-btn-detail",
+          "action": "navigate",
+          "destination": "sc-vendors-show"
+        },
+        {
+          "source": "tbl-vendors-btn-edit",
+          "action": "navigate",
+          "destination": "sc-vendors-edit"
+        }
+      ]
+    },
+    {
+      "id": "sc-vendors-create",
+      "name": "Tambah Vendor",
+      "role": "Supply Chain",
+      "route": "/supply-chain/vendors/create",
+      "view": "supply-chain/vendors/create.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Tambah Vendor"
+      },
+      "components": [
+        {
+          "type": "form",
+          "id": "form-create-vendor",
+          "fields": [
+            {
+              "type": "input",
+              "id": "input-vendor-name",
+              "label": "Nama Vendor"
+            },
+            {
+              "type": "input",
+              "id": "input-vendor-email",
+              "label": "Email",
+              "input_type": "email"
+            },
+            {
+              "type": "input",
+              "id": "input-vendor-telp",
+              "label": "No. Telepon"
+            },
+            {
+              "type": "textarea",
+              "id": "input-vendor-alamat",
+              "label": "Alamat"
+            },
+            {
+              "type": "input",
+              "id": "input-vendor-spesialisasi",
+              "label": "Spesialisasi"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-simpan-vendor",
+              "text": "Simpan",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-vendor",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-simpan-vendor",
+          "action": "navigate",
+          "destination": "sc-vendors-index"
+        },
+        {
+          "source": "btn-kembali-vendor",
+          "action": "navigate",
+          "destination": "sc-vendors-index"
+        }
+      ]
+    },
+    {
+      "id": "sc-material-requests-index",
+      "name": "Daftar Permintaan Material (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/material-requests",
+      "view": "supply-chain/material-requests/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Permintaan Material dari Planner"
+      },
+      "components": [
+        {
+          "type": "filter-bar",
+          "filters": [
+            {
+              "type": "select",
+              "id": "filter-status-sc-mr",
+              "label": "Filter Status",
+              "options": [
+                "Semua",
+                "Disetujui",
+                "Diproses"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "id": "tbl-sc-mr",
+          "columns": [
+            "Kode",
+            "Project",
+            "Engineer",
+            "Status",
+            "Tanggal",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "MR-2024-001",
+              "Kapal Perang 001",
+              "John Doe",
+              "[BADGE: Disetujui]",
+              "01 Jan 2025",
+              "[Detail] [Buat Tender]"
+            ],
+            [
+              "MR-2024-002",
+              "Kapal Tanker 002",
+              "Jane Doe",
+              "[BADGE: Disetujui]",
+              "05 Jan 2025",
+              "[Detail] [Buat Tender]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-sc-mr-btn-detail",
+          "action": "navigate",
+          "destination": "sc-material-requests-show"
+        },
+        {
+          "source": "tbl-sc-mr-btn-tender",
+          "action": "navigate",
+          "destination": "sc-tenders-create"
+        }
+      ]
+    },
+    {
+      "id": "sc-material-requests-show",
+      "name": "Detail Permintaan Material (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/material-requests/{id}",
+      "view": "supply-chain/material-requests/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Pengajuan",
+          "fields": [
+            "Kode",
+            "Project",
+            "Engineer",
+            "Status",
+            "Total RAB",
+            "Dokumen RAB",
+            "Dokumen Perizinan",
+            "Catatan Planner"
+          ]
+        },
+        {
+          "type": "table",
+          "title": "Daftar Item",
+          "columns": [
+            "No",
+            "Nama Barang",
+            "Spesifikasi",
+            "Qty",
+            "Satuan"
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-buat-tender-from-show",
+              "text": "Buat Tender",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-sc-mr-show",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-buat-tender-from-show",
+          "action": "navigate",
+          "destination": "sc-tenders-create"
+        },
+        {
+          "source": "btn-kembali-sc-mr-show",
+          "action": "navigate",
+          "destination": "sc-material-requests-index"
+        }
+      ]
+    },
+    {
+      "id": "sc-tenders-index",
+      "name": "Daftar Tender",
+      "role": "Supply Chain",
+      "route": "/supply-chain/tenders",
+      "view": "supply-chain/tenders/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Data Tender",
+        "buttons": [
+          {
+            "id": "btn-kembali-dash-tender",
+            "text": "Kembali ke Dashboard",
+            "variant": "secondary"
+          },
+          {
+            "id": "btn-buat-dari-pengajuan",
+            "text": "+ Buat dari Pengajuan",
+            "variant": "primary"
+          }
+        ]
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Monitoring Tender Vendor",
+          "stat_card": {
+            "label": "Total Tender",
+            "value": "12"
+          }
+        },
+        {
+          "type": "table",
+          "id": "tbl-tenders",
+          "columns": [
+            "Nama Tender",
+            "No MR",
+            "Deadline Penawaran",
+            "Vendor Diundang",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "Tender Pipa 2024",
+              "MR-2024-001",
+              "15 Feb 2025",
+              "3 Vendor",
+              "[BADGE: Berlangsung]",
+              "[Detail]"
+            ],
+            [
+              "Tender Baut 2024",
+              "MR-2024-002",
+              "20 Feb 2025",
+              "2 Vendor",
+              "[BADGE: Selesai]",
+              "[Detail]"
+            ],
+            [
+              "Tender Cat 2024",
+              "MR-2024-003",
+              "25 Feb 2025",
+              "4 Vendor",
+              "[BADGE: Berlangsung]",
+              "[Detail]"
+            ]
+          ]
+        },
+        {
+          "type": "pagination"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-buat-dari-pengajuan",
+          "action": "navigate",
+          "destination": "sc-material-requests-index"
+        },
+        {
+          "source": "tbl-tenders-btn-detail",
+          "action": "navigate",
+          "destination": "sc-tenders-show"
+        }
+      ]
+    },
+    {
+      "id": "sc-tenders-create",
+      "name": "Buat Tender",
+      "role": "Supply Chain",
+      "route": "/supply-chain/material-requests/{materialRequest}/tenders/create",
+      "view": "supply-chain/tenders/create.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Buat Tender"
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Material Request"
+        },
+        {
+          "type": "form",
+          "id": "form-create-tender",
+          "fields": [
+            {
+              "type": "input",
+              "id": "input-nama-tender",
+              "label": "Nama Tender"
+            },
+            {
+              "type": "input",
+              "id": "input-deadline-tender",
+              "label": "Deadline Penawaran",
+              "input_type": "date"
+            },
+            {
+              "type": "textarea",
+              "id": "input-catatan-tender",
+              "label": "Catatan Tender"
+            },
+            {
+              "type": "checkbox-group",
+              "id": "checklist-vendor",
+              "label": "Pilih Vendor yang Diundang",
+              "note": "Daftar vendor dari database"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-simpan-tender",
+              "text": "Simpan Tender",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-create-tender",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-simpan-tender",
+          "action": "navigate",
+          "destination": "sc-tenders-index"
+        },
+        {
+          "source": "btn-kembali-create-tender",
+          "action": "navigate",
+          "destination": "sc-material-requests-index"
+        }
+      ]
+    },
+    {
+      "id": "sc-tenders-show",
+      "name": "Detail Tender",
+      "role": "Supply Chain",
+      "route": "/supply-chain/tenders/{tender}",
+      "view": "supply-chain/tenders/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Detail Tender"
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Tender",
+          "fields": [
+            "Nama Tender",
+            "Material Request",
+            "Deadline Penawaran",
+            "Catatan"
+          ]
+        },
+        {
+          "type": "table",
+          "id": "tbl-vendor-diundang",
+          "title": "Vendor Diundang",
+          "columns": [
+            "Vendor",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PT Baja Sentosa",
+              "[BADGE: Ditawar]",
+              "[Buka Negosiasi]"
+            ],
+            [
+              "CV Pipa Jaya",
+              "[BADGE: Dibaca]",
+              "[Buka Negosiasi]"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "id": "tbl-penawaran",
+          "title": "Penawaran Masuk",
+          "columns": [
+            "Vendor",
+            "Harga Total",
+            "Estimasi Pengiriman",
+            "File",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PT Baja Sentosa",
+              "Rp 150.000.000",
+              "14 hari",
+              "[Download]",
+              "[Pilih Vendor]"
+            ]
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-buat-po",
+              "text": "Buat PO",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-tender-show",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-buat-po",
+          "action": "navigate",
+          "destination": "sc-purchase-orders-create"
+        },
+        {
+          "source": "tbl-vendor-diundang-btn-negosiasi",
+          "action": "navigate",
+          "destination": "sc-chat-negosiasi-index"
+        }
+      ]
+    },
+    {
+      "id": "sc-chat-negosiasi-index",
+      "name": "Negosiasi Tender – Daftar Vendor",
+      "role": "Supply Chain",
+      "route": "/supply-chain/tenders/{tender}/negotiation",
+      "view": "supply-chain/chatnegosiasi/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-negosiasi-vendors",
+          "columns": [
+            "Vendor",
+            "Pesan Terakhir",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PT Baja Sentosa",
+              "Harga final sudah kami kirim...",
+              "[Masuk Chat]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-negosiasi-vendors-btn-chat",
+          "action": "navigate",
+          "destination": "sc-chat-negosiasi-show"
+        }
+      ]
+    },
+    {
+      "id": "sc-chat-negosiasi-show",
+      "name": "Chat Negosiasi",
+      "role": "Supply Chain",
+      "route": "/supply-chain/tenders/{tender}/negotiation/{vendor}",
+      "view": "supply-chain/chatnegosiasi/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "chat-header",
+          "info": "Negosiasi dengan PT Baja Sentosa – Tender Pipa 2024"
+        },
+        {
+          "type": "chat-messages",
+          "sample": [
+            {
+              "sender": "Supply Chain",
+              "text": "Apakah harga bisa diturunkan 5%?"
+            },
+            {
+              "sender": "Vendor",
+              "text": "Kami bisa turunkan 3%, final price Rp 145.500.000."
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "input-pesan-negosiasi",
+          "placeholder": "Tulis pesan negosiasi..."
+        },
+        {
+          "type": "button",
+          "id": "btn-kirim-negosiasi",
+          "text": "Kirim",
+          "variant": "primary"
+        }
+      ],
+      "interactions": []
+    },
+    {
+      "id": "sc-purchase-orders-index",
+      "name": "Daftar Purchase Order (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/purchase-orders",
+      "view": "supply-chain/purchase-orders/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Purchase Order"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-sc-po",
+          "columns": [
+            "No PO",
+            "Tender",
+            "Vendor",
+            "Deadline Pengiriman",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PO-2024-001",
+              "Tender Pipa 2024",
+              "PT Baja Sentosa",
+              "28 Feb 2025",
+              "[BADGE: Dikirim]",
+              "[Detail]"
+            ],
+            [
+              "PO-2024-002",
+              "Tender Baut 2024",
+              "CV Pipa Jaya",
+              "05 Mar 2025",
+              "[BADGE: Selesai]",
+              "[Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-sc-po-btn-detail",
+          "action": "navigate",
+          "destination": "sc-purchase-orders-show"
+        }
+      ]
+    },
+    {
+      "id": "sc-purchase-orders-create",
+      "name": "Buat Purchase Order",
+      "role": "Supply Chain",
+      "route": "/supply-chain/tenders/{tender}/purchase-orders/create",
+      "view": "supply-chain/purchase-orders/create.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Buat Purchase Order"
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Vendor Terpilih & Info Tender"
+        },
+        {
+          "type": "table",
+          "id": "tbl-po-items",
+          "title": "Item Barang PO",
+          "columns": [
+            "Nama Barang",
+            "Spesifikasi",
+            "Qty",
+            "Satuan",
+            "Harga Satuan",
+            "Subtotal"
+          ]
+        },
+        {
+          "type": "form",
+          "id": "form-create-po",
+          "fields": [
+            {
+              "type": "input",
+              "id": "input-po-deadline",
+              "label": "Deadline Pengiriman",
+              "input_type": "date"
+            },
+            {
+              "type": "textarea",
+              "id": "input-po-catatan",
+              "label": "Catatan PO"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-simpan-po",
+              "text": "Simpan PO",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-create-po",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-simpan-po",
+          "action": "navigate",
+          "destination": "sc-purchase-orders-index"
+        },
+        {
+          "source": "btn-kembali-create-po",
+          "action": "navigate",
+          "destination": "sc-tenders-show"
+        }
+      ]
+    },
+    {
+      "id": "sc-goods-receipts-index",
+      "name": "Daftar Laporan Penerimaan (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/goods-receipts",
+      "view": "supply-chain/goods-receipts/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Laporan Penerimaan Barang"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-sc-goods-receipts",
+          "columns": [
+            "No PO",
+            "Vendor",
+            "Tanggal Terima",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PO-2024-001",
+              "PT Baja Sentosa",
+              "01 Mar 2025",
+              "[BADGE: Menunggu Konfirmasi]",
+              "[Detail]"
+            ],
+            [
+              "PO-2024-002",
+              "CV Pipa Jaya",
+              "03 Mar 2025",
+              "[BADGE: Dikonfirmasi]",
+              "[Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-sc-receipts-btn-detail",
+          "action": "navigate",
+          "destination": "sc-goods-receipts-show"
+        }
+      ]
+    },
+    {
+      "id": "sc-goods-receipt-reports-index",
+      "name": "Laporan Penerimaan Gudang (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/goods-receipt-reports",
+      "view": "supply-chain/goods-receipt-reports/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Laporan Penerimaan dari Gudang"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-sc-receipt-reports",
+          "columns": [
+            "No Laporan",
+            "No PO",
+            "Vendor",
+            "Tanggal Laporan",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "LPB-2024-001",
+              "PO-2024-001",
+              "PT Baja Sentosa",
+              "02 Mar 2025",
+              "[BADGE: Menunggu Konfirmasi]",
+              "[Detail]"
+            ],
+            [
+              "LPB-2024-002",
+              "PO-2024-002",
+              "CV Pipa Jaya",
+              "04 Mar 2025",
+              "[BADGE: Dikonfirmasi]",
+              "[Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-sc-receipt-reports-btn-detail",
+          "action": "navigate",
+          "destination": "sc-goods-receipt-reports-show"
+        }
+      ]
+    },
+    {
+      "id": "sc-goods-receipt-reports-show",
+      "name": "Detail Laporan Penerimaan Gudang (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/goods-receipt-reports/{goodsReceiptReport}",
+      "view": "supply-chain/goods-receipt-reports/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Detail Laporan Penerimaan",
+          "fields": [
+            "No Laporan",
+            "No PO",
+            "Vendor",
+            "Tanggal Penerimaan",
+            "Status"
+          ]
+        },
+        {
+          "type": "image-placeholder",
+          "label": "Foto Barang Diterima"
+        },
+        {
+          "type": "table",
+          "title": "Detail Item",
+          "columns": [
+            "Nama Barang",
+            "Qty Pesan",
+            "Qty Diterima",
+            "Kondisi",
+            "Catatan"
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-konfirmasi-report",
+              "text": "Konfirmasi",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-retur-report",
+              "text": "Retur / Kembalikan",
+              "variant": "danger"
+            },
+            {
+              "id": "btn-kembali-report-sc",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-konfirmasi-report",
+          "action": "navigate",
+          "destination": "sc-goods-receipt-reports-index"
+        },
+        {
+          "source": "btn-retur-report",
+          "action": "navigate",
+          "destination": "sc-goods-receipt-reports-index"
+        },
+        {
+          "source": "btn-kembali-report-sc",
+          "action": "navigate",
+          "destination": "sc-goods-receipt-reports-index"
+        }
+      ]
+    },
+    {
+      "id": "sc-monitoring-index",
+      "name": "Monitoring Pengadaan (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/monitoring",
+      "view": "supply-chain/monitoring/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Monitoring Pengadaan Material"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-sc-monitoring",
+          "columns": [
+            "No PO",
+            "Tender",
+            "Vendor",
+            "Status Pengiriman",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PO-2024-001",
+              "Tender Pipa 2024",
+              "PT Baja Sentosa",
+              "[BADGE: Dikirim]",
+              "[Detail]"
+            ],
+            [
+              "PO-2024-002",
+              "Tender Baut 2024",
+              "CV Pipa Jaya",
+              "[BADGE: Selesai]",
+              "[Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-sc-monitoring-btn-detail",
+          "action": "navigate",
+          "destination": "sc-monitoring-show"
+        }
+      ]
+    },
+    {
+      "id": "sc-monitoring-show",
+      "name": "Detail Monitoring Pengadaan (SC)",
+      "role": "Supply Chain",
+      "route": "/supply-chain/monitoring/{id}",
+      "view": "supply-chain/monitoring/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Purchase Order & Pengiriman"
+        },
+        {
+          "type": "timeline",
+          "steps": [
+            "PO Diterbitkan",
+            "Vendor Konfirmasi Pengiriman",
+            "Barang Dikirim",
+            "Barang Diterima Gudang",
+            "Selesai"
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-edit-monitoring-sc",
+              "text": "Edit Status",
+              "variant": "secondary"
+            },
+            {
+              "id": "btn-kembali-monitoring-sc",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-edit-monitoring-sc",
+          "action": "navigate",
+          "destination": "sc-monitoring-edit"
+        },
+        {
+          "source": "btn-kembali-monitoring-sc",
+          "action": "navigate",
+          "destination": "sc-monitoring-index"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-vendor",
+      "name": "Dashboard Vendor",
+      "role": "Vendor",
+      "route": "/vendor/dashboard",
+      "view": "dashboards/vendor.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "navbar_items": [
+        "Dashboard"
+      ],
+      "header": {
+        "title": "Dashboard Vendor",
+        "subtitle": "Portal vendor untuk memantau tender masuk, mengirim penawaran, melihat Purchase Order, dan memproses pengiriman."
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Pantau Tender, Purchase Order, dan Pengiriman Material",
+          "buttons": [
+            {
+              "id": "btn-vendor-buka-tender",
+              "text": "Buka Tender Masuk"
+            },
+            {
+              "id": "btn-vendor-lihat-po",
+              "text": "Lihat Purchase Order"
+            }
+          ],
+          "info_card": {
+            "label": "Fokus Vendor",
+            "title": "Tender → PO → Pengiriman",
+            "stats": [
+              {
+                "label": "Aksi Utama",
+                "value": "Kirim Penawaran"
+              },
+              {
+                "label": "Setelah Terpilih",
+                "value": "Terima PO"
+              }
+            ]
+          }
+        },
+        {
+          "type": "section-title",
+          "text": "Akses Vendor"
+        },
+        {
+          "type": "menu-cards",
+          "columns": 2,
+          "cards": [
+            {
+              "id": "vendor-menu-01",
+              "number": "01",
+              "tag": "Tender",
+              "category": "Undangan Vendor",
+              "title": "Tender Masuk",
+              "desc": "Lihat daftar undangan tender, detail material, deadline, dan kirim penawaran.",
+              "cta": "Buka Tender"
+            },
+            {
+              "id": "vendor-menu-02",
+              "number": "02",
+              "tag": "PO",
+              "category": "Purchase Order",
+              "title": "Purchase Order Masuk",
+              "desc": "Lihat PO yang dikirim Supply Chain setelah vendor dipilih.",
+              "cta": "Lihat PO"
+            }
+          ]
+        },
+        {
+          "type": "workflow-steps",
+          "title": "Alur Kerja Vendor",
+          "steps": [
+            "01 – Terima Tender",
+            "02 – Cek Material",
+            "03 – Kirim Penawaran",
+            "04 – Terima PO",
+            "05 – Pengiriman"
+          ]
+        },
+        {
+          "type": "status-legend",
+          "title": "Keterangan Status Tender & PO",
+          "items": [
+            {
+              "status": "Dikirim",
+              "desc": "Tender dikirim SC, belum dibuka vendor."
+            },
+            {
+              "status": "Dibaca",
+              "desc": "Vendor sudah membuka detail tender."
+            },
+            {
+              "status": "Ditawar",
+              "desc": "Vendor sudah mengirim penawaran."
+            },
+            {
+              "status": "Terpilih",
+              "desc": "Penawaran vendor dipilih sebagai pemenang."
+            },
+            {
+              "status": "Tidak Terpilih",
+              "desc": "Vendor belum dipilih sebagai pemenang."
+            },
+            {
+              "status": "PO Diterima",
+              "desc": "Purchase Order sudah diterbitkan SC."
+            }
+          ]
+        },
+        {
+          "type": "quick-access-panel",
+          "buttons": [
+            {
+              "id": "btn-vendor-quick-tender",
+              "text": "Buka Tender"
+            },
+            {
+              "id": "btn-vendor-quick-po",
+              "text": "Buka Purchase Order"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "vendor-menu-01",
+          "action": "navigate",
+          "destination": "vendor-tenders-index"
+        },
+        {
+          "source": "vendor-menu-02",
+          "action": "navigate",
+          "destination": "vendor-purchase-orders-index"
+        },
+        {
+          "source": "btn-vendor-buka-tender",
+          "action": "navigate",
+          "destination": "vendor-tenders-index"
+        },
+        {
+          "source": "btn-vendor-lihat-po",
+          "action": "navigate",
+          "destination": "vendor-purchase-orders-index"
+        },
+        {
+          "source": "btn-vendor-quick-tender",
+          "action": "navigate",
+          "destination": "vendor-tenders-index"
+        },
+        {
+          "source": "btn-vendor-quick-po",
+          "action": "navigate",
+          "destination": "vendor-purchase-orders-index"
+        }
+      ]
+    },
+    {
+      "id": "vendor-tenders-index",
+      "name": "Daftar Tender (Vendor)",
+      "role": "Vendor",
+      "route": "/vendor/tenders",
+      "view": "vendor/tenders/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Tender Masuk"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-vendor-tenders",
+          "columns": [
+            "Nama Tender",
+            "Material Dibutuhkan",
+            "Deadline Penawaran",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "Tender Pipa 2024",
+              "Pipa Besi A36 Sch40",
+              "15 Feb 2025",
+              "[BADGE: Dikirim]",
+              "[Detail]"
+            ],
+            [
+              "Tender Baut 2024",
+              "Baut Stainless M20",
+              "20 Feb 2025",
+              "[BADGE: Ditawar]",
+              "[Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-vendor-tenders-btn-detail",
+          "action": "navigate",
+          "destination": "vendor-tenders-show"
+        }
+      ]
+    },
+    {
+      "id": "vendor-tenders-show",
+      "name": "Detail Tender & Form Penawaran (Vendor)",
+      "role": "Vendor",
+      "route": "/vendor/tenders/{id}",
+      "view": "vendor/tenders/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Detail Tender"
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Detail Tender & Kebutuhan Material",
+          "fields": [
+            "Nama Tender",
+            "Deadline Penawaran",
+            "Catatan Tender"
+          ]
+        },
+        {
+          "type": "table",
+          "title": "Daftar Material Dibutuhkan",
+          "columns": [
+            "Nama Barang",
+            "Spesifikasi",
+            "Qty",
+            "Satuan"
+          ]
+        },
+        {
+          "type": "form",
+          "id": "form-penawaran",
+          "title": "Form Penawaran",
+          "fields": [
+            {
+              "type": "input",
+              "id": "input-harga-total",
+              "label": "Harga Total (Rp)",
+              "input_type": "number"
+            },
+            {
+              "type": "input",
+              "id": "input-estimasi",
+              "label": "Estimasi Pengiriman (hari)",
+              "input_type": "number"
+            },
+            {
+              "type": "textarea",
+              "id": "input-catatan-penawaran",
+              "label": "Catatan Penawaran"
+            },
+            {
+              "type": "file-upload",
+              "id": "upload-file-penawaran",
+              "label": "Upload File Penawaran (PDF)"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-kirim-penawaran",
+              "text": "Kirim Penawaran",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-buka-klarifikasi",
+              "text": "Buka Klarifikasi Teknis",
+              "variant": "secondary"
+            },
+            {
+              "id": "btn-buka-negosiasi-vendor",
+              "text": "Buka Negosiasi",
+              "variant": "secondary"
+            },
+            {
+              "id": "btn-kembali-vendor-tender",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-kirim-penawaran",
+          "action": "navigate",
+          "destination": "vendor-tenders-index"
+        },
+        {
+          "source": "btn-buka-klarifikasi",
+          "action": "navigate",
+          "destination": "vendor-chat-clarification"
+        },
+        {
+          "source": "btn-buka-negosiasi-vendor",
+          "action": "navigate",
+          "destination": "vendor-chat-negotiation"
+        },
+        {
+          "source": "btn-kembali-vendor-tender",
+          "action": "navigate",
+          "destination": "vendor-tenders-index"
+        }
+      ]
+    },
+    {
+      "id": "vendor-chat-clarification",
+      "name": "Chat Klarifikasi Teknis (Vendor)",
+      "role": "Vendor",
+      "route": "/vendor/tenders/{invitation}/chat",
+      "view": "vendor/tenders/chat-clarification.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "chat-header",
+          "info": "Klarifikasi Teknis – Tender Pipa 2024"
+        },
+        {
+          "type": "chat-messages",
+          "sample": [
+            {
+              "sender": "Vendor",
+              "text": "Apakah spesifikasi bisa diubah ke A242?"
+            },
+            {
+              "sender": "Engineer",
+              "text": "Ya, A242 diperbolehkan asalkan tebal minimum 10mm."
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "input-pesan-klarifikasi-vendor",
+          "placeholder": "Tulis pertanyaan..."
+        },
+        {
+          "type": "button",
+          "id": "btn-kirim-klarifikasi-vendor",
+          "text": "Kirim",
+          "variant": "primary"
+        }
+      ],
+      "interactions": []
+    },
+    {
+      "id": "vendor-chat-negotiation",
+      "name": "Chat Negosiasi (Vendor)",
+      "role": "Vendor",
+      "route": "/vendor/tenders/{invitation}/chat-negotiation",
+      "view": "vendor/tenders/chat-negotiation.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "components": [
+        {
+          "type": "chat-header",
+          "info": "Negosiasi Harga – Tender Pipa 2024"
+        },
+        {
+          "type": "chat-messages",
+          "sample": [
+            {
+              "sender": "Supply Chain",
+              "text": "Bisa turun 5%?"
+            },
+            {
+              "sender": "Vendor",
+              "text": "Kami bisa 3%, final Rp 145.500.000."
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "input-pesan-neg-vendor",
+          "placeholder": "Tulis pesan negosiasi..."
+        },
+        {
+          "type": "button",
+          "id": "btn-kirim-neg-vendor",
+          "text": "Kirim",
+          "variant": "primary"
+        }
+      ],
+      "interactions": []
+    },
+    {
+      "id": "vendor-purchase-orders-index",
+      "name": "Daftar Purchase Order (Vendor)",
+      "role": "Vendor",
+      "route": "/vendor/purchase-orders",
+      "view": "vendor/purchase-orders/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Purchase Order Masuk"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-vendor-po",
+          "columns": [
+            "No PO",
+            "Tender",
+            "Deadline Pengiriman",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PO-2024-001",
+              "Tender Pipa 2024",
+              "28 Feb 2025",
+              "[BADGE: PO Diterima]",
+              "[Detail]"
+            ],
+            [
+              "PO-2024-002",
+              "Tender Baut 2024",
+              "05 Mar 2025",
+              "[BADGE: Dikirim]",
+              "[Detail]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-vendor-po-btn-detail",
+          "action": "navigate",
+          "destination": "vendor-purchase-orders-show"
+        }
+      ]
+    },
+    {
+      "id": "vendor-purchase-orders-show",
+      "name": "Detail Purchase Order (Vendor)",
+      "role": "Vendor",
+      "route": "/vendor/purchase-orders/{purchaseOrder}",
+      "view": "vendor/purchase-orders/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Detail Purchase Order"
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Detail Purchase Order",
+          "fields": [
+            "No PO",
+            "Tender",
+            "Supply Chain Contact",
+            "Deadline Pengiriman",
+            "Status"
+          ]
+        },
+        {
+          "type": "table",
+          "title": "Item PO",
+          "columns": [
+            "Nama Barang",
+            "Qty",
+            "Satuan",
+            "Harga Satuan",
+            "Subtotal"
+          ]
+        },
+        {
+          "type": "form",
+          "id": "form-konfirmasi-pengiriman",
+          "title": "Konfirmasi Pengiriman",
+          "condition": "tampil jika belum dikonfirmasi",
+          "fields": [
+            {
+              "type": "input",
+              "id": "input-tanggal-kirim",
+              "label": "Tanggal Pengiriman",
+              "input_type": "date"
+            },
+            {
+              "type": "input",
+              "id": "input-ekspedisi",
+              "label": "Nama Ekspedisi"
+            },
+            {
+              "type": "input",
+              "id": "input-no-resi",
+              "label": "No. Resi Pengiriman"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-konfirmasi-kirim",
+              "text": "Konfirmasi Pengiriman",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-vendor-po",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-konfirmasi-kirim",
+          "action": "navigate",
+          "destination": "vendor-purchase-orders-index"
+        },
+        {
+          "source": "btn-kembali-vendor-po",
+          "action": "navigate",
+          "destination": "vendor-purchase-orders-index"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-gudang",
+      "name": "Dashboard Gudang",
+      "role": "Gudang",
+      "route": "/gudang/dashboard",
+      "view": "dashboards/gudang.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "navbar_items": [
+        "Dashboard",
+        "Penerimaan Barang"
+      ],
+      "header": {
+        "title": "Dashboard Gudang",
+        "subtitle": "Monitoring penerimaan material – pantau status barang masuk dari vendor secara real-time.",
+        "header_button": {
+          "id": "btn-gudang-semua-po",
+          "text": "Semua PO"
+        }
+      },
+      "components": [
+        {
+          "type": "hero-banner",
+          "title": "Penerimaan Material Kapal",
+          "button_id": "btn-periksa-barang",
+          "button_text": "Periksa Barang Masuk",
+          "stat_cards": [
+            {
+              "label": "Menunggu Penerimaan",
+              "value": "4"
+            },
+            {
+              "label": "Sudah Diterima",
+              "value": "12"
+            },
+            {
+              "label": "Barang Bermasalah",
+              "value": "1"
+            },
+            {
+              "label": "Tindak Lanjut",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "type": "stat-cards",
+          "columns": 4,
+          "cards": [
+            {
+              "id": "stat-menunggu",
+              "label": "PO Menunggu",
+              "value": "4",
+              "sublabel": "Perlu diperiksa"
+            },
+            {
+              "id": "stat-diterima",
+              "label": "Sudah Diterima",
+              "value": "12",
+              "sublabel": "Laporan lengkap"
+            },
+            {
+              "id": "stat-bermasalah",
+              "label": "Barang Bermasalah",
+              "value": "1",
+              "sublabel": "Cacat / tidak sesuai"
+            },
+            {
+              "id": "stat-tindak",
+              "label": "Perlu Tindak Lanjut",
+              "value": "2",
+              "sublabel": "Menunggu keputusan"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "id": "tbl-gudang-po-menunggu",
+          "title": "Daftar Barang Menunggu Penerimaan",
+          "columns": [
+            "No. PO",
+            "Vendor",
+            "Tender / Material",
+            "Jml Pesanan",
+            "Deadline Kirim",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PO-2024-001",
+              "PT Baja Sentosa",
+              "Tender Pipa / Pipa Besi",
+              "50 item(s)",
+              "28 Feb 2025",
+              "[BADGE: Menunggu Pemeriksaan]",
+              "[Periksa Barang]"
+            ],
+            [
+              "PO-2024-002",
+              "CV Pipa Jaya",
+              "Tender Baut / Baut M20",
+              "200 item(s)",
+              "05 Mar 2025",
+              "[BADGE: Selesai]",
+              "[Lihat Laporan]"
+            ],
+            [
+              "PO-2024-003",
+              "UD Kimia Raya",
+              "Tender Cat / Cat Epoxy",
+              "30 item(s)",
+              "10 Mar 2025",
+              "[BADGE: Menunggu Pemeriksaan]",
+              "[Periksa Barang]"
+            ]
+          ]
+        },
+        {
+          "type": "pagination"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-gudang-semua-po",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-index"
+        },
+        {
+          "source": "btn-periksa-barang",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-index"
+        },
+        {
+          "source": "tbl-gudang-po-btn-periksa",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-show"
+        },
+        {
+          "source": "tbl-gudang-po-btn-laporan",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-report"
+        }
+      ]
+    },
+    {
+      "id": "gudang-goods-receipts-index",
+      "name": "Daftar Penerimaan Barang (Gudang)",
+      "role": "Gudang",
+      "route": "/gudang/goods-receipts",
+      "view": "gudang/goods-receipts/index.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Penerimaan Barang"
+      },
+      "components": [
+        {
+          "type": "table",
+          "id": "tbl-gudang-all-po",
+          "columns": [
+            "No. PO",
+            "Vendor",
+            "Tender",
+            "Jml Item",
+            "Deadline Kirim",
+            "Status",
+            "Aksi"
+          ],
+          "sample_rows": [
+            [
+              "PO-2024-001",
+              "PT Baja Sentosa",
+              "Tender Pipa 2024",
+              "50 item",
+              "28 Feb 2025",
+              "[BADGE: Menunggu]",
+              "[Periksa Barang]"
+            ],
+            [
+              "PO-2024-002",
+              "CV Pipa Jaya",
+              "Tender Baut 2024",
+              "200 item",
+              "05 Mar 2025",
+              "[BADGE: Selesai]",
+              "[Lihat Laporan]"
+            ]
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "tbl-gudang-all-btn-periksa",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-show"
+        },
+        {
+          "source": "tbl-gudang-all-btn-laporan",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-report"
+        }
+      ]
+    },
+    {
+      "id": "gudang-goods-receipts-show",
+      "name": "Pemeriksaan Penerimaan Barang",
+      "role": "Gudang",
+      "route": "/gudang/goods-receipts/{purchaseOrder}",
+      "view": "gudang/goods-receipts/show.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Pemeriksaan Penerimaan Barang"
+      },
+      "components": [
+        {
+          "type": "detail-section",
+          "title": "Informasi Purchase Order",
+          "fields": [
+            "No PO",
+            "Vendor",
+            "Tender",
+            "Deadline Pengiriman"
+          ]
+        },
+        {
+          "type": "form",
+          "id": "form-penerimaan",
+          "title": "Form Pemeriksaan Penerimaan",
+          "fields": [
+            {
+              "type": "table-input",
+              "id": "tbl-item-penerimaan",
+              "label": "Pemeriksaan Per Item",
+              "columns": [
+                "Nama Barang",
+                "Qty Pesan",
+                "Qty Diterima",
+                "Kondisi",
+                "Catatan"
+              ]
+            },
+            {
+              "type": "select",
+              "id": "select-status-penerimaan",
+              "label": "Status Keseluruhan",
+              "options": [
+                "Baik",
+                "Kurang",
+                "Cacat",
+                "Return"
+              ]
+            },
+            {
+              "type": "textarea",
+              "id": "input-catatan-penerimaan",
+              "label": "Catatan Penerimaan"
+            },
+            {
+              "type": "file-upload",
+              "id": "upload-foto-barang",
+              "label": "Upload Foto Barang (bisa lebih dari 1)"
+            }
+          ]
+        },
+        {
+          "type": "button-group",
+          "buttons": [
+            {
+              "id": "btn-simpan-laporan-penerimaan",
+              "text": "Simpan Laporan Penerimaan",
+              "variant": "primary"
+            },
+            {
+              "id": "btn-kembali-gudang-show",
+              "text": "Kembali",
+              "variant": "secondary"
+            }
+          ]
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-simpan-laporan-penerimaan",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-report"
+        },
+        {
+          "source": "btn-kembali-gudang-show",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-index"
+        }
+      ]
+    },
+    {
+      "id": "gudang-goods-receipts-report",
+      "name": "Laporan Penerimaan Barang (Gudang)",
+      "role": "Gudang",
+      "route": "/gudang/goods-receipts/report/{receipt}",
+      "view": "gudang/goods-receipts/report.blade.php",
+      "width": 1440,
+      "height": 900,
+      "layout": {
+        "sidebar": false,
+        "header": true,
+        "navbar": true
+      },
+      "header": {
+        "title": "Laporan Penerimaan Barang"
+      },
+      "components": [
+        {
+          "type": "report-header",
+          "title": "LAPORAN PENERIMAAN BARANG",
+          "fields": [
+            "No Laporan",
+            "No PO",
+            "Vendor",
+            "Tanggal Penerimaan",
+            "Diperiksa Oleh",
+            "Status Akhir"
+          ]
+        },
+        {
+          "type": "table",
+          "title": "Detail Item Diterima",
+          "columns": [
+            "Nama Barang",
+            "Qty Pesan",
+            "Qty Diterima",
+            "Kondisi",
+            "Catatan"
+          ]
+        },
+        {
+          "type": "image-gallery",
+          "label": "Foto Barang Diterima",
+          "placeholder_count": 3
+        },
+        {
+          "type": "detail-section",
+          "title": "Catatan Gudang"
+        },
+        {
+          "type": "button",
+          "id": "btn-kembali-gudang-report",
+          "text": "Kembali",
+          "variant": "secondary"
+        }
+      ],
+      "interactions": [
+        {
+          "source": "btn-kembali-gudang-report",
+          "action": "navigate",
+          "destination": "gudang-goods-receipts-index"
+        }
+      ]
+    }
+  ]
+}

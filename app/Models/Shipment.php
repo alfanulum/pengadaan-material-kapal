@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shipment extends Model
 {
+    protected $table = 'pengiriman_barang';
+
     protected $fillable = [
         'purchase_order_id',
         'tender_id',

@@ -55,6 +55,28 @@
             {{-- LEFT SIDE --}}
             <div class="lg:col-span-8 space-y-6">
 
+                @if (session('success'))
+                    <div class="bg-green-50 border border-green-200 text-green-700 p-4 rounded-2xl">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl">
+                        <ul class="list-disc list-inside space-y-1 text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 {{-- INFORMASI TENDER --}}
                 <div class="bg-white rounded-3xl shadow border border-slate-100 p-6">
 
@@ -174,10 +196,17 @@
                         Chat Klarifikasi Produk
                     </a>
 
-                    <a href="{{ route('vendor.tenders.chat.negotiation', $invitation->id) }}"
-                        class="block text-center bg-amber-100 text-amber-800 py-3 rounded-2xl font-semibold hover:bg-amber-200">
-                        Chat Negosiasi Penawaran
-                    </a>
+                    {{-- Chat Negosiasi: hanya tampil jika penawaran vendor sudah dipilih (status terpilih) --}}
+                    @if ($invitation->status === 'terpilih')
+                        <a href="{{ route('vendor.tenders.chat.negotiation', $invitation->id) }}"
+                            class="block text-center bg-amber-100 text-amber-800 py-3 rounded-2xl font-semibold hover:bg-amber-200">
+                            💬 Chat Negosiasi Penawaran
+                        </a>
+                    @else
+                        <div class="block text-center bg-slate-100 text-slate-400 py-3 rounded-2xl text-sm">
+                            Chat Negosiasi belum tersedia
+                        </div>
+                    @endif
 
                 </div>
 
@@ -186,7 +215,7 @@
 
                     <h3 class="text-xl font-bold mb-5">Penawaran Vendor</h3>
 
-                    <form action="{{ route('vendor.tenders.quotation.store', $invitation->id) }}" method="POST">
+                    <form action="{{ route('vendor.tenders.quotation.store', $invitation->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="space-y-4">
@@ -195,6 +224,7 @@
                             <div>
                                 <label class="text-xs text-slate-500">Harga Penawaran</label>
                                 <input type="number" name="harga_penawaran"
+                                    value="{{ old('harga_penawaran', $quotation->harga_penawaran ?? '') }}"
                                     class="w-full mt-1 rounded-2xl border-slate-200 focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Contoh: 25000000">
                             </div>
@@ -203,6 +233,7 @@
                             <div>
                                 <label class="text-xs text-slate-500">Estimasi Pengiriman</label>
                                 <input type="number" name="estimasi_pengiriman"
+                                    value="{{ old('estimasi_pengiriman', $quotation->estimasi_pengiriman ?? '') }}"
                                     class="w-full mt-1 rounded-2xl border-slate-200 focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Contoh: 14">
                                 <p class="text-xs text-slate-400 mt-1">Isi dalam satuan hari</p>
@@ -212,16 +243,26 @@
                             <div>
                                 <label class="text-xs text-slate-500">Catatan Penawaran</label>
                                 <textarea name="catatan" class="w-full mt-1 rounded-2xl border-slate-200 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Contoh: Harga sudah termasuk pengiriman ke gudang"></textarea>
+                                    placeholder="Contoh: Harga sudah termasuk pengiriman ke gudang">{{ old('catatan', $quotation->catatan ?? '') }}</textarea>
                             </div>
 
                             {{-- UPLOAD --}}
                             <div>
                                 <label class="text-xs text-slate-500">Upload File Penawaran</label>
-                                <input type="file" class="w-full mt-1 text-sm" name="file">
+                                <input type="file" class="w-full mt-1 text-sm" name="file_penawaran">
                                 <p class="text-xs text-slate-400 mt-1">
                                     Format: PDF, DOC, DOCX, XLS, XLSX. Maks 10MB
                                 </p>
+                                @if (isset($quotation) && $quotation->file_penawaran)
+                                    <div class="mt-2 p-2 bg-blue-50 border border-blue-100 rounded-xl">
+                                        <p class="text-xs text-blue-700">
+                                            📄 File Tersimpan: 
+                                            <a href="{{ asset('storage/' . $quotation->file_penawaran) }}" target="_blank" class="font-bold underline hover:text-blue-900">
+                                                Lihat Dokumen
+                                            </a>
+                                        </p>
+                                    </div>
+                                @endif
                             </div>
 
                             {{-- BUTTON --}}

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class VendorQuotation extends Model
 {
+    protected $table = 'penawaran_vendor';
+
     protected $fillable = [
         'tender_id',
         'vendor_id',

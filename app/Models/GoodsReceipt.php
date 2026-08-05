@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class GoodsReceipt extends Model
 {
+    protected $table = 'penerimaan_barang';
+
     protected $fillable = [
         'purchase_order_id',
         'tanggal_diterima',

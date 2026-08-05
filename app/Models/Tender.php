@@ -41,7 +41,7 @@ class Tender extends Model
     }
     public function vendors()
     {
-        return $this->belongsToMany(Vendor::class, 'tender_invitations')
+        return $this->belongsToMany(Vendor::class, 'undangan_tender')
             ->withPivot('status', 'sent_at')
             ->withTimestamps();
     }

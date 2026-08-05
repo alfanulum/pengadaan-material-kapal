@@ -1,0 +1,10 @@
+{
+  "name": "PT PAL Wireframe Generator",
+  "id": "ptpal-wireframe-generator-v1",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": [
+    "figma"
+  ]
+}
