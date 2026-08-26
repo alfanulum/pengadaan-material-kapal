@@ -12,13 +12,19 @@
 
             <div class="flex flex-col sm:flex-row gap-3">
                 <a href="{{ route('supply-chain.dashboard') }}"
-                    class="inline-flex items-center justify-center px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition">
-                    Kembali ke Dashboard
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold shadow-sm transition hover:-translate-y-0.5">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>Dashboard</span>
                 </a>
 
                 <a href="{{ route('supply-chain.tenders.index') }}"
-                    class="inline-flex items-center justify-center px-5 py-3 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition">
-                    Daftar Tender
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold shadow-sm transition hover:-translate-y-0.5">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>Daftar Tender</span>
                 </a>
             </div>
         </div>
@@ -49,10 +55,7 @@
                         {{ $tender->nama_tender }}
                     </h3>
 
-                    <p class="mt-4 text-blue-100 max-w-3xl text-base leading-relaxed">
-                        Supply Chain dapat melihat detail tender, vendor yang diundang,
-                        penawaran yang masuk, dan memilih vendor pemenang.
-                    </p>
+
                 </div>
 
                 <div>
@@ -353,7 +356,10 @@
                                                     @csrf
 
                                                     <button type="submit"
-                                                        class="inline-flex px-4 py-2 bg-green-600 text-white rounded-xl text-xs font-semibold hover:bg-green-700 transition">
+                                                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl text-xs font-bold shadow-sm hover:from-emerald-600 hover:to-green-700 hover:-translate-y-0.5 transition-all">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
                                                         Pilih Vendor
                                                     </button>
                                                 </form>
@@ -400,27 +406,58 @@
             {{-- Kanan --}}
             <div class="lg:col-span-1 space-y-8">
 
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
+                <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl shadow-lg shadow-orange-500/20 border border-orange-400 p-6 relative overflow-hidden group">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all"></div>
+                    <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-orange-900/20 rounded-full blur-2xl group-hover:bg-orange-900/30 transition-all"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white backdrop-blur-sm border border-white/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-white">
+                                Chat Negosiasi
+                            </h3>
+                        </div>
 
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">
-                        Chat Negosiasi
-                    </h3>
+                        <p class="text-sm text-orange-50 mb-6 font-medium">
+                            Diskusi harga & penawaran antara Supply Chain dan Vendor secara langsung.
+                        </p>
 
-                    <p class="text-sm text-slate-500 mb-5">
-                        Diskusi harga & penawaran antara Supply Chain dan Vendor.
-                    </p>
+                        {{-- BUTTON CHAT --}}
+                        <a href="{{ route('supply-chain.chat.negosiasi.index', $tender->id) }}"
+                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white text-orange-700 rounded-xl font-bold shadow-sm hover:bg-orange-50 hover:scale-[1.02] transition-all duration-200">
+                            Buka Chat Negosiasi
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
 
-                    {{-- BUTTON CHAT --}}
-                    <a href="{{ route('supply-chain.chat.negosiasi.index', $tender->id) }}"
-                        class="w-full inline-flex items-center justify-center px-5 py-4 bg-amber-600 text-white rounded-2xl font-bold hover:bg-amber-700 transition">
-
-                        💬 Buka Chat Negosiasi
-                    </a>
-
-                    <p class="text-xs text-slate-400 mt-3 text-center">
-                        Klik untuk membuka ruang diskusi tender ini
-                    </p>
-
+                {{-- Ringkasan Tender (Compact & Dynamic) --}}
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-slate-900">Ringkasan Tender</h3>
+                        <span class="px-2.5 py-1 rounded-full bg-blue-50 text-[10px] font-bold text-blue-700 border border-blue-100">Info</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all group">
+                            <p class="text-[10px] text-slate-500 font-medium group-hover:text-blue-600 transition-colors">Vendor Diundang</p>
+                            <p class="text-xl font-black text-slate-800 mt-1">{{ $tender->invitations->count() }}</p>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-3 border border-slate-100 hover:border-blue-200 hover:shadow-sm transition-all group">
+                            <p class="text-[10px] text-slate-500 font-medium group-hover:text-blue-600 transition-colors">Penawaran Masuk</p>
+                            <p class="text-xl font-black text-slate-800 mt-1">{{ $tender->quotations->count() }}</p>
+                        </div>
+                        <div class="col-span-2 bg-gradient-to-r from-blue-50 to-indigo-50/50 rounded-2xl p-3 border border-blue-100/50 flex items-center justify-between">
+                            <p class="text-[11px] text-blue-700 font-bold">Status Tender</p>
+                            <p class="text-xs font-black text-blue-900 capitalize">{{ str_replace('_', ' ', $tender->status) }}</p>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Vendor Diundang --}}
@@ -434,7 +471,7 @@
                         </p>
                     </div>
 
-                    <div class="p-6 space-y-4">
+                    <div class="p-6 space-y-4 max-h-[420px] overflow-y-auto">
                         @forelse ($tender->invitations as $invitation)
                             <div class="rounded-2xl bg-slate-50 p-4">
                                 <h4 class="font-bold text-slate-900">
@@ -489,32 +526,6 @@
                                 Belum ada vendor yang diundang.
                             </p>
                         @endforelse
-                    </div>
-                </div>
-
-                {{-- Ringkasan --}}
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-                    <h3 class="text-lg font-bold text-slate-900">
-                        Ringkasan Tender
-                    </h3>
-
-                    <div class="mt-5 space-y-4">
-                        <div>
-                            <p class="text-xs text-slate-500">Total Vendor Diundang</p>
-                            <p class="font-bold text-slate-900">{{ $tender->invitations->count() }}</p>
-                        </div>
-
-                        <div>
-                            <p class="text-xs text-slate-500">Total Penawaran Masuk</p>
-                            <p class="font-bold text-slate-900">{{ $tender->quotations->count() }}</p>
-                        </div>
-
-                        <div>
-                            <p class="text-xs text-slate-500">Status</p>
-                            <p class="font-bold text-slate-900 capitalize">
-                                {{ str_replace('_', ' ', $tender->status) }}
-                            </p>
-                        </div>
                     </div>
                 </div>
 

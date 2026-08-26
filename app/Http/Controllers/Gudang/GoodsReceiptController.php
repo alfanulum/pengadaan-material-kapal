@@ -25,14 +25,11 @@ class GoodsReceiptController extends Controller
     /**
      * Daftar seluruh PO yang perlu/sudah diperiksa gudang.
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $purchaseOrders = PurchaseOrder::with(['vendor', 'tender', 'items', 'goodsReceipt'])
-            ->whereIn('status', ['dikirim', 'diterima_gudang', 'selesai'])
-            ->orderBy('updated_at', 'desc')
-            ->paginate(15);
-
-        return view('gudang.goods-receipts.index', compact('purchaseOrders'));
+        // Fungsi index ini sudah digantikan secara penuh oleh Dashboard Gudang.
+        // Halaman ini di-redirect agar user selalu terpusat di Dashboard.
+        return redirect()->route('gudang.dashboard');
     }
 
     /**
@@ -175,3 +172,4 @@ class GoodsReceiptController extends Controller
         }
     }
 }
+

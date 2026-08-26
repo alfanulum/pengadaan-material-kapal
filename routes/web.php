@@ -21,6 +21,7 @@ use App\Http\Controllers\Gudang\DashboardController as GudangDashboardController
 use App\Http\Controllers\Gudang\GoodsReceiptController;
 use App\Http\Controllers\SupplyChain\GoodsReceiptReportController;
 use App\Http\Controllers\SupplyChain\GoodsReceiptPdfController;
+use App\Http\Controllers\SupplyChain\PurchaseOrderPdfController;
 use App\Http\Controllers\Auth\VendorRegisterController;
 
 Route::get('/test-firebase', function (
@@ -37,7 +38,18 @@ Route::get('/test-firebase', function (
     return "terkirim";
 });
 Route::get('/', function () {
-    return view('welcome');
+    $mr_total = \App\Models\MaterialRequest::count();
+    $tender_total = \App\Models\Tender::count();
+    $po_total = \App\Models\PurchaseOrder::count();
+
+    $mr_percent = $mr_total > 0 ? 100 : 0;
+    $tender_percent = $mr_total > 0 ? min(100, round(($tender_total / $mr_total) * 100)) : 0;
+    $po_percent = $mr_total > 0 ? min(100, round(($po_total / $mr_total) * 100)) : 0;
+
+    $po_latest = \App\Models\PurchaseOrder::with('vendor')->latest()->first();
+    $gr_latest = \App\Models\GoodsReceipt::latest()->first();
+
+    return view('welcome', compact('mr_total', 'mr_percent', 'tender_percent', 'po_percent', 'po_latest', 'gr_latest'));
 });
 
 // Registrasi Vendor Mandiri (publik, tidak perlu login)
@@ -199,6 +211,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/purchase-orders/{purchaseOrder}', [SupplyChainPurchaseOrderController::class, 'show'])
             ->name('purchase-orders.show');
 
+        // Buat Tender Ulang setelah Vendor mengundurkan diri
+        Route::post('/purchase-orders/{purchaseOrder}/buat-tender-ulang', [SupplyChainPurchaseOrderController::class, 'buatTenderUlang'])
+            ->name('purchase-orders.buat-tender-ulang');
+
+        // Unduh Dokumen Purchase Order PDF (Supply Chain)
+        Route::get('/purchase-orders/{purchaseOrder}/pdf', [PurchaseOrderPdfController::class, 'download'])
+            ->name('purchase-orders.pdf');
+
         // CHAT NEGOSIASI
         Route::get(
             '/tenders/{tender}/negotiation',
@@ -276,9 +296,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/tenders/{id}/quotation', [VendorTenderController::class, 'storeQuotation'])
             ->name('tenders.quotation.store');
 
+        Route::post('/tenders/{id}/negotiation-nominal', [VendorTenderController::class, 'updateNegotiationNominal'])
+            ->name('tenders.quotation.negotiation');
+
         Route::get('/purchase-orders', [VendorPurchaseOrderController::class, 'index'])->name('purchase-orders.index');
         Route::get('/purchase-orders/{purchaseOrder}', [VendorPurchaseOrderController::class, 'show'])->name('purchase-orders.show');
         Route::post('/purchase-orders/{purchaseOrder}/ship', [VendorPurchaseOrderController::class, 'ship'])->name('purchase-orders.ship');
+
+        // Pengunduran diri Vendor dari Purchase Order
+        Route::post('/purchase-orders/{purchaseOrder}/mundur', [VendorPurchaseOrderController::class, 'mundur'])->name('purchase-orders.mundur');
+
+        // Unduh Dokumen Purchase Order PDF (Vendor — hanya milik sendiri)
+        Route::get('/purchase-orders/{purchaseOrder}/pdf', [VendorPurchaseOrderController::class, 'unduhDokumenPo'])->name('purchase-orders.pdf');
 
         // OPEN CHAT
         Route::get(

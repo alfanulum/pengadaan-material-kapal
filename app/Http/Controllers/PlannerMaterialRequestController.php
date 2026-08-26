@@ -7,11 +7,27 @@ use Illuminate\Http\Request;
 
 class PlannerMaterialRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $requests = MaterialRequest::with(['user', 'project', 'items'])
-            ->latest()
-            ->get();
+        $query = MaterialRequest::with(['user', 'project', 'items']);
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode_pengajuan', 'like', "%{$search}%")
+                  ->orWhereHas('project', function($q) use ($search) {
+                      $q->where('nama_project', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('items', function($q) use ($search) {
+                      $q->where('nama_barang', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $requests = $query->latest()->get();
 
         return view('planner.material-requests.index', compact('requests'));
     }

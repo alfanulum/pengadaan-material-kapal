@@ -25,6 +25,19 @@ class VendorController extends Controller
             $query->where('status_registrasi', 'ditolak');
         }
 
+        // Filter berdasarkan search keyword
+        $search = $request->input('search');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_vendor', 'like', "%{$search}%")
+                  ->orWhere('nama_vendor', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('pic', 'like', "%{$search}%")
+                  ->orWhere('kategori', 'like', "%{$search}%")
+                  ->orWhere('telepon', 'like', "%{$search}%");
+            });
+        }
+
         $vendors = $query->paginate(15)->withQueryString();
 
         // Hitung jumlah per status
@@ -35,7 +48,7 @@ class VendorController extends Controller
             'ditolak'  => Vendor::where('status_registrasi', 'ditolak')->count(),
         ];
 
-        return view('supply-chain.vendors.index', compact('vendors', 'filterStatus', 'counts'));
+        return view('supply-chain.vendors.index', compact('vendors', 'filterStatus', 'counts', 'search'));
     }
 
     public function create()

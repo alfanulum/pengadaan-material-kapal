@@ -21,10 +21,7 @@
 
         {{-- Hero --}}
         <div
-            class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 rounded-3xl p-8 md:p-10 shadow-xl text-white mb-8 overflow-hidden relative">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-cyan-400/20 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
-
+            class="bg-gradient-to-br from-slate-900 to-blue-900 rounded-3xl p-8 md:p-10 shadow-xl text-white mb-8 overflow-hidden relative">
             <div class="relative z-10 max-w-4xl">
                 <p
                     class="inline-flex px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-blue-100 mb-5">
@@ -178,7 +175,7 @@
                             </a>
 
                             <button type="submit"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-blue-900 text-white rounded-xl font-semibold shadow-lg hover:bg-blue-950 transition">
+                                class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-xl font-semibold shadow-lg hover:from-slate-800 hover:to-blue-800 hover:shadow-lg transition">
                                 Simpan Vendor
                             </button>
                         </div>

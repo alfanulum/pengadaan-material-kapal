@@ -149,17 +149,33 @@ class TenderClarificationController extends Controller
             $engineer &&
             $engineer->fcm_token
         ) {
-            $firebase->sendNotification(
-                $engineer->fcm_token,
-                'Klarifikasi dari ' . Auth::user()->name,
-                $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
-                $attachmentPath ? asset('storage/' . $attachmentPath) : null
-            );
+            try {
+                $firebase->sendNotification(
+                    $engineer->fcm_token,
+                    'Klarifikasi dari ' . Auth::user()->name,
+                    $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
+                    $attachmentPath ? asset('storage/' . $attachmentPath) : null
+                );
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Firebase Clarification Error: ' . $e->getMessage());
+            }
         }
 
         // Return JSON for AJAX requests (no page reload)
         if (request()->ajax() || request()->wantsJson()) {
-            return response()->json(['status' => 'ok', 'message' => 'Pesan terkirim']);
+            return response()->json([
+                'status' => 'ok', 
+                'message' => 'Pesan terkirim',
+                'data' => [
+                    'id'             => $chat->id,
+                    'sender_id'      => $chat->sender_id,
+                    'message'        => $chat->message,
+                    'attachment_url' => $chat->attachment ? asset('storage/' . $chat->attachment) : null,
+                    'role'           => 'me',
+                    'sender_name'    => 'Anda / Vendor',
+                    'time'           => $chat->created_at->format('H:i'),
+                ]
+            ]);
         }
 
         return back();
@@ -191,10 +207,10 @@ class TenderClarificationController extends Controller
             abort(403);
         }
 
-        // Guard: hanya vendor terpilih yang boleh mengakses fitur negosiasi
-        if ($invitation->status !== 'terpilih') {
-            abort(403, 'Penawaran Anda belum dipilih. Fitur negosiasi belum tersedia.');
+        if ($invitation->status === 'tidak_terpilih' || $invitation->status === 'ditolak') {
+            abort(403, 'Anda sudah dinyatakan tidak terpilih.');
         }
+
 
 
         $messages = TenderMessage::where(
@@ -220,7 +236,7 @@ class TenderClarificationController extends Controller
             ->get();
 
         // Tentukan apakah Supply Chain sudah mengirim pesan pertama
-        $scHasSentFirst = $messages->where('role', 'supply_chain')->count() > 0;
+        $scHasSentFirst = true; // Diubah agar vendor bisa langsung chat
 
 
         return view(
@@ -256,27 +272,13 @@ class TenderClarificationController extends Controller
             abort(403);
         }
 
-        // Guard: hanya vendor terpilih yang boleh mengirim pesan negosiasi
-        if ($invitation->status !== 'terpilih') {
+        if ($invitation->status === 'tidak_terpilih' || $invitation->status === 'ditolak') {
             if ($request->ajax() || $request->wantsJson()) {
-                return response()->json(['error' => 'Penawaran Anda belum dipilih.'], 403);
+                return response()->json(['error' => 'Anda sudah dinyatakan tidak terpilih.'], 403);
             }
-            abort(403, 'Penawaran Anda belum dipilih. Fitur negosiasi belum tersedia.');
+            abort(403, 'Anda sudah dinyatakan tidak terpilih.');
         }
 
-        // Guard: Vendor tidak boleh mengirim pesan pertama — Supply Chain harus mulai lebih dulu
-        $scHasSentFirst = TenderMessage::where('tender_id', $invitation->tender_id)
-            ->where('vendor_id', $vendor->id)
-            ->where('type', 'negotiation')
-            ->where('role', 'supply_chain')
-            ->exists();
-
-        if (!$scHasSentFirst) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json(['error' => 'Menunggu pesan pertama dari Supply Chain.'], 403);
-            }
-            return back()->with('error', 'Silakan tunggu Supply Chain membuka percakapan terlebih dahulu.');
-        }
 
         $attachmentPath = $request->hasFile('attachment') ? $request->file('attachment')->store('chat_attachments', 'public') : null;
 
@@ -302,18 +304,35 @@ class TenderClarificationController extends Controller
 
         foreach ($scUsers as $scUser) {
             if ($scUser->fcm_token) {
-                $firebase->sendNotification(
-                    $scUser->fcm_token,
-                    'Negosiasi dari ' . Auth::user()->name,
-                    $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
-                    $attachmentPath ? asset('storage/' . $attachmentPath) : null
-                );
+                try {
+                    $firebase->sendNotification(
+                        $scUser->fcm_token,
+                        'Negosiasi dari ' . Auth::user()->name,
+                        $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
+                        $attachmentPath ? asset('storage/' . $attachmentPath) : null
+                    );
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Firebase Negotiation Error: ' . $e->getMessage());
+                }
             }
         }
 
         // Return JSON for AJAX requests (no page reload)
         if (request()->ajax() || request()->wantsJson()) {
-            return response()->json(['status' => 'ok', 'message' => 'Pesan terkirim']);
+            return response()->json([
+                'status' => 'ok', 
+                'message' => 'Pesan terkirim',
+                'data' => [
+                    'id'             => $msg->id,
+                    'sender_id'      => $msg->sender_id,
+                    'message'        => $msg->message,
+                    'attachment_url' => $msg->attachment ? asset('storage/' . $msg->attachment) : null,
+                    'role'           => 'me',
+                    'sender_name'    => 'Anda / Vendor',
+                    'time'           => $msg->created_at->format('H:i'),
+                    'is_read'        => $msg->is_read,
+                ]
+            ]);
         }
 
         return back();
@@ -354,7 +373,7 @@ class TenderClarificationController extends Controller
                 ];
             });
 
-        return response()->json(['messages' => $messages]);
+        return response()->json(['data' => $messages]);
     }
 
 
@@ -367,9 +386,9 @@ class TenderClarificationController extends Controller
             abort(403);
         }
 
-        // Guard: hanya vendor terpilih yang boleh polling pesan negosiasi
-        if ($invitation->status !== 'terpilih') {
-            abort(403);
+        // Guard: hanya vendor yang masih dipertimbangkan yang boleh polling pesan negosiasi
+        if ($invitation->status === 'tidak_terpilih' || $invitation->status === 'ditolak') {
+            abort(403, 'Anda sudah dinyatakan tidak terpilih.');
         }
 
         $messages = TenderMessage::where('tender_id', $invitation->tender_id)
@@ -389,6 +408,6 @@ class TenderClarificationController extends Controller
                 ];
             });
 
-        return response()->json(['messages' => $messages]);
+        return response()->json(['data' => $messages]);
     }
 }

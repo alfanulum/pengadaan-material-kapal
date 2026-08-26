@@ -12,6 +12,7 @@ class VendorQuotation extends Model
         'tender_id',
         'vendor_id',
         'harga_penawaran',
+        'harga_negosiasi',
         'estimasi_pengiriman',
         'catatan',
         'file_penawaran',
@@ -31,5 +32,10 @@ class VendorQuotation extends Model
     public function purchaseOrder()
     {
         return $this->hasOne(PurchaseOrder::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(VendorQuotationItem::class, 'vendor_quotation_id');
     }
 }

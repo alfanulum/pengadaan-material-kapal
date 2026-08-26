@@ -11,6 +11,7 @@ use App\Models\Vendor;
 use App\Models\VendorQuotation;
 use App\Services\FirebaseService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TenderController extends Controller
@@ -22,13 +23,25 @@ class TenderController extends Controller
         $this->firebase = $firebase;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $tenders = Tender::with('materialRequest')
-            ->latest()
-            ->paginate(10);
+        $search = $request->input('search');
 
-        return view('supply-chain.tenders.index', compact('tenders'));
+        $query = Tender::with(['materialRequest', 'pembuatTender'])->latest();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_tender', 'like', "%{$search}%")
+                  ->orWhere('nama_tender', 'like', "%{$search}%")
+                  ->orWhere('status', 'like', "%{$search}%")
+                  ->orWhereHas('materialRequest', fn($m) => $m->where('kode_pengajuan', 'like', "%{$search}%"))
+                  ->orWhereHas('pembuatTender', fn($u) => $u->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $tenders = $query->paginate(10)->withQueryString();
+
+        return view('supply-chain.tenders.index', compact('tenders', 'search'));
     }
 
     public function create($materialRequestId)
@@ -50,16 +63,19 @@ class TenderController extends Controller
             'catatan'             => 'nullable|string',
             'vendor_ids'          => 'required|array|min:1',
             'vendor_ids.*'        => 'exists:vendors,id',
+            'tender_induk_id'     => 'nullable|exists:tenders,id',
         ]);
 
         DB::transaction(function () use ($request) {
             $tender = Tender::create([
-                'kode_tender'        => 'TDR-' . date('YmdHis'),
-                'material_request_id'=> $request->material_request_id,
-                'nama_tender'        => $request->nama_tender,
-                'deadline'           => $request->deadline,
-                'catatan'            => $request->catatan,
-                'status'             => 'dikirim',
+                'kode_tender'         => 'TDR-' . date('YmdHis'),
+                'material_request_id' => $request->material_request_id,
+                'nama_tender'         => $request->nama_tender,
+                'deadline'            => $request->deadline,
+                'catatan'             => $request->catatan,
+                'status'              => 'dikirim',
+                'dibuat_oleh'         => Auth::id(),
+                'tender_induk_id'     => $request->tender_induk_id ?: null,
             ]);
 
             foreach ($request->vendor_ids as $vendorId) {
@@ -71,6 +87,9 @@ class TenderController extends Controller
                 ]);
             }
         });
+
+        // Hapus session tender_induk_id agar tidak bocor ke pembuatan tender berikutnya
+        session()->forget('tender_induk_id');
 
         return redirect()
             ->route('supply-chain.tenders.index')
@@ -88,6 +107,9 @@ class TenderController extends Controller
             'purchaseOrder',
             'clarifications.vendor',
             'clarifications.sender',
+            'pembuatTender',
+            'tenderInduk.materialRequest',
+            'tenderPengganti',
         ]);
 
         return view('supply-chain.tenders.show', compact('tender'));

@@ -36,4 +36,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(Vendor::class);
     }
+
+    /**
+     * Tender-tender yang dibuat oleh user ini (Supply Chain).
+     */
+    public function tendersDibuat()
+    {
+        return $this->hasMany(Tender::class, 'dibuat_oleh');
+    }
+
+    /**
+     * Purchase Order-purchase Order yang dibuat oleh user ini (Supply Chain).
+     */
+    public function purchaseOrdersDibuat()
+    {
+        return $this->hasMany(PurchaseOrder::class, 'dibuat_oleh');
+    }
 }

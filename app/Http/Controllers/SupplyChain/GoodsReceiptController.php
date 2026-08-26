@@ -1,4 +1,4 @@
-~<?php
+<?php
 
 namespace App\Http\Controllers\SupplyChain;
 
@@ -11,17 +11,29 @@ class GoodsReceiptController extends Controller
     /**
      * Daftar seluruh laporan penerimaan barang yang dilaporkan gudang.
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $goodsReceipts = GoodsReceipt::with([
+        $search = $request->input('search');
+
+        $query = GoodsReceipt::with([
             'purchaseOrder.vendor',
             'purchaseOrder.tender.materialRequest.project',
             'purchaseOrder.items',
             'photos',
             'creator',
-        ])
-        ->latest()
-        ->paginate(15);
+        ])->latest();
+
+        if ($search) {
+            $query->whereHas('purchaseOrder', function ($q) use ($search) {
+                $q->where('kode_po', 'like', "%{$search}%")
+                  ->orWhereHas('vendor', fn($v) => $v->where('nama_vendor', 'like', "%{$search}%"))
+                  ->orWhereHas('tender', fn($t) => $t->where('nama_tender', 'like', "%{$search}%")
+                        ->orWhere('kode_tender', 'like', "%{$search}%"));
+            })->orWhere('kondisi_barang', 'like', "%{$search}%")
+              ->orWhere('status_penerimaan', 'like', "%{$search}%");
+        }
+
+        $goodsReceipts = $query->paginate(15)->withQueryString();
 
         $stats = [
             'total'               => GoodsReceipt::count(),
@@ -30,7 +42,7 @@ class GoodsReceiptController extends Controller
             'tindak_lanjut'       => GoodsReceipt::where('status_penerimaan', 'menunggu_tindak_lanjut')->count(),
         ];
 
-        return view('supply-chain.goods-receipts.index', compact('goodsReceipts', 'stats'));
+        return view('supply-chain.goods-receipts.index', compact('goodsReceipts', 'stats', 'search'));
     }
 
     /**

@@ -93,14 +93,15 @@ class TenderController extends Controller
     public function storeQuotation(Request $request, $id)
     {
         $request->validate([
-            'harga_penawaran'     => 'required|numeric|min:0',
+            'items'               => 'required|array',
+            'items.*.harga_satuan'=> 'required|numeric|min:0',
             'estimasi_pengiriman' => 'nullable|integer|min:1',
             'catatan'             => 'nullable|string',
             'file_penawaran'      => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         ], [
-            'harga_penawaran.required' => 'Harga penawaran wajib diisi.',
-            'harga_penawaran.numeric'  => 'Harga penawaran harus berupa angka.',
-            'harga_penawaran.min'      => 'Harga penawaran tidak boleh kurang dari 0.',
+            'items.required'           => 'Harga per item wajib diisi.',
+            'items.*.harga_satuan.required' => 'Harga satuan wajib diisi.',
+            'items.*.harga_satuan.numeric'  => 'Harga satuan harus berupa angka.',
             'estimasi_pengiriman.integer' => 'Estimasi pengiriman harus berupa angka bulat (hari).',
             'file_penawaran.file'      => 'File penawaran yang diunggah tidak valid.',
             'file_penawaran.mimes'     => 'Format file penawaran harus berupa PDF, DOC, DOCX, XLS, atau XLSX.',
@@ -125,19 +126,50 @@ class TenderController extends Controller
             $filePath = $request->file('file_penawaran')->store('vendor-quotations', 'public');
         }
 
-        VendorQuotation::updateOrCreate(
+        // Kalkulasi Total Harga Penawaran dari Item
+        $totalHargaPenawaran = 0;
+        $itemsData = [];
+
+        foreach ($request->items as $itemId => $data) {
+            $mri = \App\Models\MaterialRequestItem::findOrFail($itemId);
+            $hargaSatuan = $data['harga_satuan'];
+            $subtotal = $hargaSatuan * $mri->qty;
+            
+            $totalHargaPenawaran += $subtotal;
+            
+            $itemsData[] = [
+                'material_request_item_id' => $itemId,
+                'harga_satuan'             => $hargaSatuan,
+                'subtotal'                 => $subtotal,
+            ];
+        }
+
+        $quotation = VendorQuotation::updateOrCreate(
             [
                 'tender_id' => $invitation->tender_id,
                 'vendor_id' => $vendor->id,
             ],
             [
-                'harga_penawaran'     => $request->harga_penawaran,
+                'harga_penawaran'     => $totalHargaPenawaran,
                 'estimasi_pengiriman' => $request->estimasi_pengiriman,
                 'catatan'             => $request->catatan,
                 'file_penawaran'      => $filePath,
                 'status'              => 'dikirim',
             ]
         );
+
+        // Hapus item lama jika update
+        \App\Models\VendorQuotationItem::where('vendor_quotation_id', $quotation->id)->delete();
+
+        // Simpan item baru
+        foreach ($itemsData as $itemData) {
+            \App\Models\VendorQuotationItem::create([
+                'vendor_quotation_id'      => $quotation->id,
+                'material_request_item_id' => $itemData['material_request_item_id'],
+                'harga_satuan'             => $itemData['harga_satuan'],
+                'subtotal'                 => $itemData['subtotal'],
+            ]);
+        }
 
         $invitation->update([
             'status' => 'ditawar',
@@ -155,6 +187,56 @@ class TenderController extends Controller
         return redirect()
             ->route('vendor.tenders.show', $invitation->id)
             ->with('success', 'Penawaran berhasil dikirim.');
+    }
+
+    public function updateNegotiationNominal(Request $request, $id)
+    {
+        $request->validate([
+            'harga_negosiasi' => 'required|numeric|min:1',
+        ], [
+            'harga_negosiasi.required' => 'Nominal negosiasi wajib diisi.',
+            'harga_negosiasi.numeric'  => 'Nominal negosiasi harus berupa angka.',
+            'harga_negosiasi.min'      => 'Nominal negosiasi harus lebih besar dari 0.',
+        ]);
+
+        $vendor = Vendor::where('user_id', Auth::id())->firstOrFail();
+
+        $invitation = TenderInvitation::with('tender.purchaseOrder')
+            ->where('vendor_id', $vendor->id)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        if ($invitation->status === 'tidak_terpilih' || $invitation->status === 'ditolak') {
+            return redirect()
+                ->route('vendor.tenders.show', $invitation->id)
+                ->with('error', 'Anda sudah dinyatakan tidak terpilih pada tender ini. Nominal tidak dapat diubah.');
+        }
+
+        if ($invitation->tender->purchaseOrder) {
+            return redirect()
+                ->route('vendor.tenders.show', $invitation->id)
+                ->with('error', 'Purchase Order sudah dibuat. Nominal tidak dapat diubah lagi.');
+        }
+
+        $quotation = VendorQuotation::where('tender_id', $invitation->tender_id)
+            ->where('vendor_id', $vendor->id)
+            ->firstOrFail();
+
+        $quotation->update([
+            'harga_negosiasi' => $request->harga_negosiasi,
+        ]);
+
+        $namaVendor = $vendor->nama_vendor ?? 'Vendor';
+        $namaTender = $invitation->tender->nama_tender ?? '-';
+
+        $this->notifySupplyChain(
+            '💰 Perubahan Nominal Penawaran',
+            "Vendor {$namaVendor} telah mengubah nominal penawaran untuk tender {$namaTender}."
+        );
+
+        return redirect()
+            ->route('vendor.tenders.show', $invitation->id)
+            ->with('success', 'Nominal penawaran berhasil diperbarui.');
     }
 
     /**

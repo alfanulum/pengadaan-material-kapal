@@ -10,51 +10,20 @@
                 </p>
             </div>
 
+            
             <a href="{{ route('supply-chain.material-requests.index') }}"
-                class="inline-flex items-center justify-center px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition">
-                Kembali ke Permintaan
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold shadow-sm transition hover:-translate-y-0.5">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span>Kembali ke Permintaan</span>
             </a>
         </div>
     </x-slot>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {{-- Hero --}}
-        <div
-            class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 rounded-3xl p-8 md:p-10 shadow-xl text-white mb-8 overflow-hidden relative">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-cyan-400/20 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-                <div>
-                    <p
-                        class="inline-flex px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-blue-100 mb-5">
-                        {{ $materialRequest->kode_pengajuan ?? 'REQ-' . str_pad($materialRequest->id, 4, '0', STR_PAD_LEFT) }}
-                    </p>
-
-                    <h3 class="text-3xl md:text-4xl font-bold leading-tight">
-                        Permintaan Material dari Planner
-                    </h3>
-
-                    <p class="mt-4 text-blue-100 max-w-3xl text-base leading-relaxed">
-                        Periksa detail pengajuan material, project, engineer, item material,
-                        dan lanjutkan ke proses pembuatan tender vendor.
-                    </p>
-                </div>
-
-                <div>
-                    @if ($materialRequest->status == 'disetujui')
-                        <span class="inline-flex px-4 py-2 rounded-full bg-green-100 text-green-800 text-sm font-bold">
-                            Disetujui Planner
-                        </span>
-                    @else
-                        <span class="inline-flex px-4 py-2 rounded-full bg-slate-100 text-slate-800 text-sm font-bold">
-                            {{ str_replace('_', ' ', ucfirst($materialRequest->status)) }}
-                        </span>
-                    @endif
-                </div>
-            </div>
-        </div>
+        
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
@@ -113,6 +82,39 @@
                             <p class="font-bold text-slate-900">
                                 {{ $materialRequest->items->count() }} Item
                             </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-slate-50 p-4 md:col-span-2">
+                            <p class="text-xs text-slate-500 mb-1">Total RAB (Anggaran)</p>
+                            <p class="font-bold text-emerald-700 text-lg">
+                                Rp {{ number_format($materialRequest->total_rab, 0, ',', '.') }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl bg-slate-50 p-4">
+                            <p class="text-xs text-slate-500 mb-1">Dokumen RAB</p>
+                            @if($materialRequest->file_rab)
+                                <a href="{{ asset('storage/' . $materialRequest->file_rab) }}" target="_blank"
+                                    class="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-900 underline mt-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                    Lihat RAB
+                                </a>
+                            @else
+                                <p class="text-sm font-medium text-slate-500 mt-1">Tidak ada file RAB</p>
+                            @endif
+                        </div>
+
+                        <div class="rounded-2xl bg-slate-50 p-4">
+                            <p class="text-xs text-slate-500 mb-1">Dokumen Perizinan</p>
+                            @if($materialRequest->file_perizinan)
+                                <a href="{{ asset('storage/' . $materialRequest->file_perizinan) }}" target="_blank"
+                                    class="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-900 underline mt-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                    Lihat Perizinan
+                                </a>
+                            @else
+                                <p class="text-sm font-medium text-slate-500 mt-1">Tidak ada file perizinan</p>
+                            @endif
                         </div>
 
                         <div class="rounded-2xl bg-slate-50 p-4 md:col-span-2">
@@ -225,7 +227,7 @@
 
                     <div class="mt-6 space-y-3">
                         <a href="{{ route('supply-chain.tenders.create', $materialRequest->id) }}"
-                            class="w-full inline-flex items-center justify-center px-5 py-3 bg-blue-900 text-white rounded-xl font-semibold shadow-lg hover:bg-blue-950 transition">
+                            class="w-full inline-flex items-center justify-center px-5 py-3 bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-xl font-semibold shadow-lg hover:from-slate-800 hover:to-blue-800 hover:shadow-lg transition">
                             Buat Tender
                         </a>
 
@@ -236,69 +238,10 @@
                     </div>
                 </div>
 
-                {{-- Alur --}}
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-                    <h3 class="text-lg font-bold text-slate-900">
-                        Alur Berikutnya
-                    </h3>
-
-                    <div class="mt-5 space-y-4">
-                        <div class="flex gap-3">
-                            <span
-                                class="w-8 h-8 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center text-xs font-bold shrink-0">
-                                1
-                            </span>
-                            <div>
-                                <p class="font-semibold text-slate-900 text-sm">Buat Tender</p>
-                                <p class="text-xs text-slate-500 mt-1">Supply Chain membuat tender dari permintaan ini.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-3">
-                            <span
-                                class="w-8 h-8 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center text-xs font-bold shrink-0">
-                                2
-                            </span>
-                            <div>
-                                <p class="font-semibold text-slate-900 text-sm">Undang Vendor</p>
-                                <p class="text-xs text-slate-500 mt-1">Vendor dipilih dan menerima undangan tender.</p>
-                            </div>
-                        </div>
-
-                        <div class="flex gap-3">
-                            <span
-                                class="w-8 h-8 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center text-xs font-bold shrink-0">
-                                3
-                            </span>
-                            <div>
-                                <p class="font-semibold text-slate-900 text-sm">Penawaran Vendor</p>
-                                <p class="text-xs text-slate-500 mt-1">Vendor mengirim harga, estimasi, dan dokumen
-                                    penawaran.</p>
-                            </div>
-                        </div>
-                    </div>
+                
                 </div>
 
-                {{-- Ringkasan --}}
-                <div
-                    class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 rounded-3xl shadow-xl text-white p-6">
-                    <p class="text-sm text-blue-100">
-                        Status Pengajuan
-                    </p>
-
-                    <h3 class="text-2xl font-bold mt-2 capitalize">
-                        {{ str_replace('_', ' ', $materialRequest->status) }}
-                    </h3>
-
-                    <p class="text-sm text-blue-100 mt-3">
-                        Permintaan ini sudah dapat diproses oleh Supply Chain untuk proses tender vendor.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
+                
 
     </div>
 </x-app-layout>

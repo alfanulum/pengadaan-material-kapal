@@ -38,8 +38,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             {{-- Hero PO Info --}}
-            <div class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-                <div class="absolute -top-12 -right-12 w-48 h-48 bg-cyan-400/20 rounded-full blur-3xl"></div>
+            <div class="bg-gradient-to-br from-slate-900 to-blue-900 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
                 <div class="relative z-10">
                     <div class="flex items-start justify-between mb-5">
                         <div>

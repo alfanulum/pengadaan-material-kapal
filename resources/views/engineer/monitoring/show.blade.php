@@ -10,7 +10,7 @@
                     <span class="text-slate-900 font-semibold">Detail Timeline</span>
                 </div>
                 <h2 class="font-bold text-2xl text-slate-900 leading-tight">
-                    Monitoring Pengadaan Material
+                    Detail Monitoring Pengadaan
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">
                     PO <span class="font-bold text-blue-700">{{ $po->kode_po }}</span> — {{ $po->vendor->nama_vendor ?? '-' }}

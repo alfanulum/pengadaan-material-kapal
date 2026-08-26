@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         $user = Auth::user();
 
@@ -24,21 +24,49 @@ class DashboardController extends Controller
         // Barang bermasalah
         $poMasalah = GoodsReceipt::whereIn('kondisi_barang', ['kerusakan', 'tidak_sesuai_spesifikasi'])->count();
 
-        // Perlu tindak lanjut (masih menunggu)
-        $perluTindakLanjut = GoodsReceipt::where('status_penerimaan', 'menunggu_tindak_lanjut')->count();
-
         // Daftar PO
-        $purchaseOrders = PurchaseOrder::with(['vendor', 'tender', 'items', 'goodsReceipt'])
-            ->whereIn('status', ['dikirim', 'diterima_gudang', 'selesai'])
-            ->orderBy('updated_at', 'desc')
-            ->paginate(10);
+        $query = PurchaseOrder::with(['vendor', 'tender', 'items', 'goodsReceipt'])
+            ->whereIn('status', ['dikirim', 'diterima_gudang', 'selesai', 'retur', 'penggantian_vendor', 'menunggu_tindak_lanjut']);
+
+        $search = $request->input('search');
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('kode_po', 'like', "%{$search}%")
+                  ->orWhereHas('vendor', function($q) use ($search) {
+                      $q->where('nama_vendor', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('tender', function($q) use ($search) {
+                      $q->where('nama_tender', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $filterStatus = $request->input('filter_status');
+        if ($filterStatus) {
+            if ($filterStatus === 'menunggu_penerimaan') {
+                $query->where('status', 'dikirim')->whereDoesntHave('goodsReceipt');
+            } elseif ($filterStatus === 'telah_diperiksa') {
+                $query->whereHas('goodsReceipt');
+            } elseif ($filterStatus === 'kondisi_bermasalah') {
+                $query->whereHas('goodsReceipt', function ($q) {
+                    $q->whereIn('kondisi_barang', ['kerusakan', 'tidak_sesuai_spesifikasi']);
+                });
+            } elseif ($filterStatus === 'menunggu_resolusi') {
+                $query->whereHas('goodsReceipt', function ($q) {
+                    $q->where('status_penerimaan', 'menunggu_tindak_lanjut');
+                });
+            }
+        }
+
+        $purchaseOrders = $query->orderBy('updated_at', 'desc')->paginate(10)->withQueryString();
 
         return view('dashboards.gudang', compact(
             'poMenunggu',
             'poSudahDiterima',
             'poMasalah',
-            'perluTindakLanjut',
             'purchaseOrders'
         ));
     }
 }
+
+

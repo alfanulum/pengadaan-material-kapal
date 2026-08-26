@@ -25,9 +25,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             {{-- Hero Stats --}}
-            <div class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-                <div class="absolute -top-12 -right-12 w-48 h-48 bg-cyan-400/20 rounded-full blur-3xl"></div>
-                <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-400/20 rounded-full blur-3xl"></div>
+            <div class="bg-gradient-to-br from-slate-900 to-blue-900 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
                 <div class="relative z-10">
                     <p class="text-sm text-blue-200 mb-1">Supply Chain · Monitoring</p>
                     <h3 class="text-2xl md:text-3xl font-bold mb-6">Laporan Penerimaan Barang dari Gudang</h3>
@@ -54,14 +52,34 @@
 
             {{-- Tabel Laporan --}}
             <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900">Daftar Laporan Penerimaan</h3>
-                        <p class="text-sm text-slate-500 mt-0.5">Laporan yang dibuat oleh staf gudang setelah barang diterima dari vendor.</p>
+                <div class="px-6 py-5 border-b border-slate-200">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Daftar Laporan Penerimaan</h3>
+                            <p class="text-sm text-slate-500 mt-0.5">Laporan yang dibuat oleh staf gudang setelah barang diterima dari vendor.</p>
+                        </div>
+                        {{-- SEARCH BAR --}}
+                        <form method="GET" action="{{ route('supply-chain.goods-receipts.index') }}" class="flex items-center gap-2">
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                <input type="text" name="search" value="{{ $search ?? '' }}"
+                                    placeholder="Cari kode PO, vendor, tender..."
+                                    class="pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64 transition">
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-xl text-sm font-semibold hover:from-slate-800 hover:to-blue-800 hover:shadow-lg transition">Cari</button>
+                            @if($search ?? false)
+                                <a href="{{ route('supply-chain.goods-receipts.index') }}" class="px-3 py-2 bg-slate-100 text-slate-600 rounded-xl text-sm hover:bg-slate-200 transition">Reset</a>
+                            @endif
+                        </form>
                     </div>
-                    <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-100">
-                        {{ $goodsReceipts->total() }} Laporan
-                    </span>
+                    @if($search ?? false)
+                        <p class="text-xs text-blue-700 mt-2">Hasil pencarian: <strong>"{{ $search }}"</strong></p>
+                    @endif
+                    <div class="flex items-center justify-end mt-2">
+                        <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-100">
+                            {{ $goodsReceipts->total() }} Laporan
+                        </span>
+                    </div>
                 </div>
 
                 @if(session('success'))
@@ -119,7 +137,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="{{ route('supply-chain.goods-receipts.show', $receipt->id) }}"
-                                            class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-900 text-white rounded-xl text-xs font-semibold hover:bg-blue-950 transition shadow-sm">
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-xl text-xs font-semibold hover:from-slate-800 hover:to-blue-800 hover:shadow-lg transition shadow-sm">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                             Lihat Detail
                                         </a>
@@ -131,8 +149,14 @@
                                         <div class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
                                             <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                         </div>
-                                        <h3 class="text-lg font-bold text-slate-900">Belum Ada Laporan</h3>
-                                        <p class="text-sm text-slate-500 mt-2">Laporan penerimaan akan muncul di sini setelah gudang membuat laporan pemeriksaan barang.</p>
+                                        @if($search ?? false)
+                                            <h3 class="text-lg font-bold text-slate-900">Tidak Ada Hasil Pencarian</h3>
+                                            <p class="text-sm text-slate-500 mt-2">Tidak ada laporan yang cocok dengan "<strong>{{ $search }}</strong>".</p>
+                                            <a href="{{ route('supply-chain.goods-receipts.index') }}" class="inline-block mt-4 px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm hover:bg-slate-200 transition">Tampilkan Semua</a>
+                                        @else
+                                            <h3 class="text-lg font-bold text-slate-900">Belum Ada Laporan</h3>
+                                            <p class="text-sm text-slate-500 mt-2">Laporan penerimaan akan muncul di sini setelah gudang membuat laporan pemeriksaan barang.</p>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforelse

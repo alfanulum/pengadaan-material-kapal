@@ -8,6 +8,8 @@ use App\Models\Shipment;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Services\FirebaseService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -54,6 +56,7 @@ class PurchaseOrderController extends Controller
             'items',
             'shipment',
             'goodsReceipt',
+            'pembuatPo',
         ]);
 
         return view('vendor.purchase-orders.show', compact('vendor', 'purchaseOrder'));
@@ -66,6 +69,11 @@ class PurchaseOrderController extends Controller
         // Validasi: PO milik vendor yang sedang login
         if ($purchaseOrder->vendor_id !== $vendor->id) {
             abort(403, 'Anda tidak berhak mengirim barang untuk PO ini.');
+        }
+
+        // Validasi: Vendor tidak boleh kirim barang jika sudah mundur
+        if ($purchaseOrder->isVendorMundur()) {
+            return back()->with('error', 'Anda telah mengundurkan diri dari Purchase Order ini. Pengiriman tidak dapat dilakukan.');
         }
 
         // Validasi: Status PO harus dikirim_ke_vendor
@@ -118,6 +126,94 @@ class PurchaseOrderController extends Controller
         return redirect()
             ->route('vendor.purchase-orders.show', $purchaseOrder->id)
             ->with('success', 'Barang berhasil dikirim ke gudang.');
+    }
+
+    /**
+     * Proses pengunduran diri Vendor dari Purchase Order.
+     */
+    public function mundur(Request $request, PurchaseOrder $purchaseOrder)
+    {
+        $vendor = Vendor::where('user_id', Auth::id())->firstOrFail();
+
+        // 1. PO harus milik vendor yang sedang login
+        if ($purchaseOrder->vendor_id !== $vendor->id) {
+            abort(403, 'Anda tidak berhak melakukan pengunduran diri dari Purchase Order ini.');
+        }
+
+        // 2. Validasi alasan wajib diisi
+        $request->validate([
+            'alasan_pengunduran_diri' => 'required|string|min:10|max:2000',
+        ], [
+            'alasan_pengunduran_diri.required' => 'Alasan pengunduran diri wajib diisi.',
+            'alasan_pengunduran_diri.min'      => 'Alasan pengunduran diri minimal 10 karakter.',
+        ]);
+
+        // 3. Reload state terbaru dari DB (hindari race condition)
+        $purchaseOrder->refresh();
+
+        // 4. Cek apakah pengunduran diri masih diperbolehkan
+        if (!$purchaseOrder->canVendorWithdraw()) {
+            return redirect()
+                ->route('vendor.purchase-orders.show', $purchaseOrder->id)
+                ->with('error', 'Pengunduran diri tidak dapat dilakukan. Status Purchase Order tidak mengizinkan tindakan ini.');
+        }
+
+        DB::transaction(function () use ($purchaseOrder, $vendor, $request) {
+            $purchaseOrder->update([
+                'status'                   => 'vendor_mundur',
+                'tanggal_pengunduran_diri' => now(),
+                'alasan_pengunduran_diri'  => $request->alasan_pengunduran_diri,
+            ]);
+        });
+
+        // Kirim notifikasi ke Supply Chain
+        $namaVendor = $vendor->nama_vendor ?? 'Vendor';
+        $kodePo     = $purchaseOrder->kode_po;
+
+        $this->notifyRole(
+            'supply_chain',
+            '⚠️ Vendor Mengundurkan Diri',
+            "Vendor {$namaVendor} telah mengundurkan diri dari Purchase Order {$kodePo}. Silakan tinjau dan tentukan tindak lanjut."
+        );
+
+        return redirect()
+            ->route('vendor.purchase-orders.show', $purchaseOrder->id)
+            ->with('success', 'Pengunduran diri Anda telah berhasil direkam. Supply Chain telah mendapatkan notifikasi.');
+    }
+
+    /**
+     * Unduh Dokumen Purchase Order dalam format PDF (untuk Vendor).
+     * Vendor hanya dapat mengunduh PO miliknya sendiri.
+     */
+    public function unduhDokumenPo(PurchaseOrder $purchaseOrder)
+    {
+        $vendor = Vendor::where('user_id', Auth::id())->firstOrFail();
+
+        // Validasi kepemilikan PO
+        if ($purchaseOrder->vendor_id !== $vendor->id) {
+            abort(403, 'Anda tidak berhak mengunduh dokumen Purchase Order ini.');
+        }
+
+        // Load semua relasi yang diperlukan
+        $purchaseOrder->load([
+            'tender.materialRequest.project',
+            'tender.materialRequest.items',
+            'vendor',
+            'quotation',
+            'items',
+            'pembuatPo',
+        ]);
+
+        $pdf = Pdf::loadView('supply-chain.purchase-orders.pdf', [
+            'po' => $purchaseOrder,
+        ]);
+
+        $pdf->setPaper('a4', 'portrait');
+
+        $kodePo   = $purchaseOrder->kode_po ?? 'PO';
+        $filename = 'purchase-order-' . $kodePo . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     /**

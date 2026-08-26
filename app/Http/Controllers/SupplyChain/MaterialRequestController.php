@@ -7,12 +7,24 @@ use App\Models\MaterialRequest;
 
 class MaterialRequestController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $materialRequests = MaterialRequest::with(['project', 'user', 'items'])
+        $search = $request->input('search');
+
+        $query = MaterialRequest::with(['project', 'user', 'items'])
             ->whereIn('status', ['approved_planner', 'disetujui'])
-            ->latest()
-            ->paginate(10);
+            ->latest();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_pengajuan', 'like', "%{$search}%")
+                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('project', fn($p) => $p->where('nama_project', 'like', "%{$search}%"))
+                  ->orWhereHas('items', fn($i) => $i->where('nama_barang', 'like', "%{$search}%"));
+            });
+        }
+
+        $materialRequests = $query->paginate(10)->withQueryString();
 
         $newRequests = MaterialRequest::with(['project', 'user', 'items'])
             ->whereIn('status', ['approved_planner', 'disetujui'])
@@ -21,7 +33,7 @@ class MaterialRequestController extends Controller
             ->take(3)
             ->get();
 
-        return view('supply-chain.material-requests.index', compact('materialRequests', 'newRequests'));
+        return view('supply-chain.material-requests.index', compact('materialRequests', 'newRequests', 'search'));
     }
 
     public function show($id)

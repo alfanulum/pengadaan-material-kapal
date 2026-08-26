@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
-                        <button type="submit" class="px-6 py-2.5 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-950 transition">
+                        <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-xl font-semibold hover:from-slate-800 hover:to-blue-800 hover:shadow-lg transition">
                             Simpan Perubahan
                         </button>
                     </div>

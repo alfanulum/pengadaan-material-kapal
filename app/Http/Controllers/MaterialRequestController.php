@@ -10,12 +10,25 @@ use Illuminate\Support\Facades\Auth;
 
 class MaterialRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $requests = MaterialRequest::with(['project', 'items'])
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        $query = MaterialRequest::with(['project', 'items'])
+            ->where('user_id', Auth::id());
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('kode_pengajuan', 'like', "%{$search}%")
+                  ->orWhereHas('project', function($q) use ($search) {
+                      $q->where('nama_project', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('items', function($q) use ($search) {
+                      $q->where('nama_barang', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $requests = $query->latest()->get();
 
         return view('material-requests.index', compact('requests'));
     }

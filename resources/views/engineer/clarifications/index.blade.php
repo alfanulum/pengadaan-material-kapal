@@ -6,145 +6,152 @@
                     Klarifikasi Spesifikasi
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">
-                    Pertanyaan vendor terkait spesifikasi material pada tender.
+                    Daftar diskusi dengan vendor mengenai spesifikasi teknis material pada tender pengadaan.
                 </p>
             </div>
 
             <a href="{{ route('engineer.dashboard') }}"
-                class="inline-flex items-center justify-center px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition">
-                Kembali ke Dashboard
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold shadow-sm transition">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span>Dashboard</span>
             </a>
         </div>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-        <div
-            class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 rounded-3xl p-8 md:p-10 shadow-xl text-white mb-8 overflow-hidden relative">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-cyan-400/20 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
+        <div class="flex flex-col lg:flex-row gap-6">
 
-            <div class="relative z-10">
-                <p
-                    class="inline-flex px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-blue-100 mb-5">
-                    Technical Clarification
-                </p>
+            {{-- Sidebar (Daftar Chat) --}}
+            <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px]">
+                
+                {{-- Search Header --}}
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+                    <div class="flex gap-2">
+                        <div class="relative flex-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <input type="text" id="clarificationSearch"
+                                class="w-full pl-9 pr-3 py-2 bg-white rounded-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 placeholder-slate-400 text-sm shadow-sm"
+                                placeholder="Cari obrolan...">
+                        </div>
+                        <button type="button" id="searchBtn" class="px-3 py-2 bg-slate-900 hover:bg-blue-900 text-white rounded-lg text-sm font-bold shadow-sm transition-colors">
+                            Cari
+                        </button>
+                    </div>
+                </div>
 
-                <h3 class="text-3xl md:text-4xl font-bold leading-tight">
-                    Pertanyaan Spesifikasi dari Vendor
-                </h3>
+                {{-- Daftar Chat List --}}
+                <div class="overflow-y-auto flex-1 divide-y divide-slate-50">
+                    
+                    <div id="clarificationNoResult" class="hidden p-6 text-center text-xs text-slate-500">
+                        Tidak ada obrolan yang ditemukan.
+                    </div>
 
-                <p class="mt-4 text-blue-100 max-w-3xl text-base leading-relaxed">
-                    Engineer dapat menjawab pertanyaan teknis agar vendor memahami kebutuhan material sebelum mengirim
-                    penawaran.
-                </p>
-            </div>
-        </div>
+                    @forelse ($clarifications as $group)
+                        @php
+                            $first = $group->first();
+                            $lastMessage = $group->sortByDesc('created_at')->first();
+                            $unreadCount = $group
+                                ->where('status', 'terkirim')
+                                ->where('sender_id', '!=', auth()->id())
+                                ->count();
+                            $vendorName = $first->vendor->nama_vendor ?? 'Vendor';
+                            $initials = substr($vendorName, 0, 2);
+                        @endphp
 
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-200">
-                <h3 class="text-lg font-bold text-slate-900">
-                    Daftar Klarifikasi
-                </h3>
-            </div>
+                        <a href="{{ route('engineer.clarifications.show', [$first->tender_id, $first->vendor_id]) }}" class="clarification-item flex items-center p-4 transition-colors hover:bg-slate-50 {{ $unreadCount > 0 ? 'bg-slate-900/10 border-l-4 border-slate-900' : 'border-l-4 border-transparent' }}">
+                            
+                            {{-- Avatar --}}
+                            <div class="relative shrink-0">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-slate-900 to-blue-900 text-white flex items-center justify-center text-sm font-bold uppercase shadow-sm">
+                                    {{ $initials }}
+                                </div>
+                                @if($unreadCount > 0)
+                                    <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-blue-500 border-2 border-white rounded-full animate-pulse"></span>
+                                @endif
+                            </div>
 
-            <div class="divide-y divide-slate-100">
-                @forelse ($clarifications as $group)
-                    @php
-                        $first = $group->first();
-
-                        $lastMessage = $group->sortByDesc('created_at')->first();
-
-                        $unreadCount = $group
-                            ->where('status', 'terkirim')
-                            ->where('sender_id', '!=', auth()->id())
-                            ->count();
-
-                        $totalMessages = $group->count();
-                    @endphp
-
-                    <a href="{{ route('engineer.clarifications.show', [$first->tender_id, $first->vendor_id]) }}"
-                        class="block p-6 transition duration-200
-        {{ $unreadCount > 0 ? 'bg-red-50 border-l-4 border-red-500 hover:bg-red-100' : 'hover:bg-slate-50' }}">
-
-                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-
-                            <div class="flex-1">
-
-                                <div class="flex items-center gap-2 flex-wrap">
-
-                                    <h4 class="font-bold text-slate-900 text-lg">
-                                        {{ $first->tender->nama_tender ?? '-' }}
+                            {{-- Info --}}
+                            <div class="ml-4 flex-1 min-w-0">
+                                <div class="flex justify-between items-baseline mb-0.5">
+                                    <h4 class="text-sm font-bold text-slate-900 truncate pr-2">
+                                        {{ $vendorName }}
                                     </h4>
-
-                                    @if ($unreadCount > 0)
-                                        <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
-                                            {{ $unreadCount }} Pesan Baru
+                                    <span class="text-[10px] text-slate-500 shrink-0 font-medium">
+                                        {{ $lastMessage->created_at->format('H:i') }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="text-xs text-slate-500 truncate pr-2 {{ $unreadCount > 0 ? 'font-semibold text-slate-800' : '' }}">
+                                        {{ $lastMessage->sender_id == auth()->id() ? 'Anda: ' : '' }}{{ \Illuminate\Support\Str::limit($lastMessage->message, 50) }}
+                                    </p>
+                                    @if($unreadCount > 0)
+                                        <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                                            {{ $unreadCount }}
                                         </span>
                                     @endif
-
                                 </div>
-
-                                <p class="text-sm text-slate-500 mt-1">
-                                    Vendor : {{ $first->vendor->nama_vendor ?? '-' }}
-                                </p>
-
-                                <p class="text-sm text-slate-700 mt-3 leading-relaxed">
-                                    {{ \Illuminate\Support\Str::limit($lastMessage->message, 120) }}
-                                </p>
-
-                                <div class="flex items-center gap-2 mt-4">
-
-                                    <span
-                                        class="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs">
-                                        {{ $totalMessages }} Pesan
-                                    </span>
-
-                                    <span
-                                        class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs">
-                                        Klarifikasi Teknis
-                                    </span>
-
+                                <div class="text-[10px] font-medium text-blue-600 mt-1 truncate">
+                                    Tender: {{ $first->tender->nama_tender ?? '-' }}
                                 </div>
-
                             </div>
-
-                            <div class="text-right shrink-0">
-
-                                <p class="text-sm font-medium text-slate-700">
-                                    {{ $lastMessage->created_at->format('d-m-Y') }}
-                                </p>
-
-                                <p class="text-xs text-slate-400 mt-1">
-                                    {{ $lastMessage->created_at->format('H:i') }}
-                                </p>
-
+                        </a>
+                    @empty
+                        <div class="px-6 py-12 text-center">
+                            <div class="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                                <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
                             </div>
-
+                            <p class="text-xs text-slate-500 font-medium">Belum ada diskusi klarifikasi.</p>
                         </div>
-
-                    </a>
-                @empty
-                    <div class="px-6 py-16 text-center">
-
-                        <div
-                            class="mx-auto w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold mb-4">
-                            CH
-                        </div>
-
-                        <h3 class="text-lg font-bold text-slate-900">
-                            Belum Ada Pertanyaan
-                        </h3>
-
-                        <p class="text-sm text-slate-500 mt-2">
-                            Pertanyaan vendor terkait spesifikasi akan tampil di halaman ini.
-                        </p>
-
-                    </div>
-                @endforelse
+                    @endforelse
+                </div>
             </div>
+
+            {{-- Main Content Area (Empty State untuk Index) --}}
+            <div class="hidden lg:flex w-full lg:w-2/3 bg-white rounded-2xl shadow-sm border border-slate-200 h-[600px] items-center justify-center bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM2NDc0OGIiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDEydjEySDM2eiIvPjwvZz48L2c+PC9zdmc+')]">
+                <div class="text-center px-6">
+                    <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
+                        <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Aplikasi Pesan Pengadaan</h3>
+                    <p class="text-sm text-slate-500 max-w-sm mx-auto">Pilih salah satu ruang obrolan di sebelah kiri untuk mulai membaca dan membalas pesan klarifikasi teknis dari vendor.</p>
+                </div>
+            </div>
+
         </div>
 
     </div>
+
+    <script>
+    (function() {
+        const searchInput = document.getElementById('clarificationSearch');
+        const noResult = document.getElementById('clarificationNoResult');
+
+        searchInput.addEventListener('input', function() {
+            const keyword = this.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.clarification-item');
+            let visible = 0;
+            items.forEach(function(item) {
+                const text = item.textContent.toLowerCase();
+                if (!keyword || text.includes(keyword)) {
+                    item.style.display = 'flex';
+                    visible++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            noResult.classList.toggle('hidden', visible > 0 || items.length === 0);
+        });
+    })();
+    </script>
 </x-app-layout>

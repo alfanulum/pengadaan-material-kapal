@@ -1,107 +1,120 @@
 <x-guest-layout>
-    <div
-        class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-blue-900 px-6 py-10">
+    <div class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-10 relative bg-[#060913]">
+        <!-- Background Grid -->
+        <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+            <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-900/15 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-900/15 rounded-full blur-3xl"></div>
+        </div>
 
-        <div class="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+        <div class="relative z-10 w-full max-w-5xl bg-[#0B1120] border border-slate-800/90 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
 
             <!-- Left Section -->
-            <div
-                class="hidden lg:flex flex-col justify-between p-10 bg-gradient-to-br from-blue-950 via-blue-900 to-cyan-800 text-white relative overflow-hidden">
-                <div class="absolute -top-24 -left-24 w-72 h-72 bg-cyan-400/20 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 right-0 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl"></div>
+            <div class="lg:col-span-5 bg-[#080E1B] border-b lg:border-b-0 lg:border-r border-slate-800 p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-slate-900 to-blue-900"></div>
 
-                <div class="relative z-10">
-                    <h1 class="text-3xl font-bold tracking-wide">
-                        PT PAL INDONESIA
-                    </h1>
-                    <p class="mt-2 text-blue-100">
-                        Sistem Informasi Pengadaan Material Kapal
-                    </p>
-                </div>
+                <div>
+                    <div class="flex items-center gap-3.5 mb-8">
+                        <div class="w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center rounded-xl shadow-md shadow-blue-900/40 ring-1 ring-white/10 shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-white tracking-tight leading-none">PT XYZ</h1>
+                            <p class="text-xs text-slate-400 font-medium mt-1">Sistem Informasi Manajemen Supply Chain</p>
+                        </div>
+                    </div>
 
-                <div class="relative z-10">
-                    <h2 class="text-4xl font-bold leading-tight mb-4">
-                        Registrasi Akun Sistem
-                    </h2>
-                    <p class="text-blue-100 leading-relaxed">
-                        Buat akun untuk mengakses sistem pengadaan material kapal.
-                        Setelah registrasi, silakan login menggunakan akun yang telah dibuat.
-                    </p>
+                    <div class="mt-6">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-3">
+                            Registrasi Akun Internal
+                        </h2>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Pendaftaran akun staf internal untuk modul Engineer, Planner, Supply Chain, dan Gudang.
+                        </p>
+                    </div>
 
-                    <div class="mt-8 space-y-3 text-blue-100">
-                        <p>✓ Pengelolaan pengajuan material</p>
-                        <p>✓ Workflow approval terstruktur</p>
-                        <p>✓ Monitoring proses procurement</p>
-                        <p>✓ Dokumentasi pengadaan terpusat</p>
+                    <div class="mt-6 space-y-2.5 text-xs text-slate-300">
+                        <div class="flex items-center gap-2.5 bg-[#0e1626] border border-slate-800 rounded-lg p-2.5">
+                            <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Otorisasi berbasis peran kerja terstruktur</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 bg-[#0e1626] border border-slate-800 rounded-lg p-2.5">
+                            <svg class="w-4 h-4 text-indigo-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span>Workflow persetujuan pengadaan material</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="relative z-10 text-sm text-blue-100">
-                    © {{ date('Y') }} PT PAL Indonesia
+                <div class="pt-6 border-t border-slate-800/80 text-xs text-slate-400 mt-6">
+                    <p class="font-medium text-slate-300">PT XYZ</p>
+                    <p class="text-slate-400 text-[11px] mt-0.5">Sistem Informasi Manajemen Supply Chain Pengadaan Material Kapal</p>
+                    <p class="text-slate-400 text-[11px] mt-2">&copy; 2026 PT XYZ</p>
                 </div>
             </div>
 
             <!-- Right Section -->
-            <div class="p-8 md:p-12">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-slate-900">
-                        Daftar Akun
+            <div class="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-center bg-[#0B1120]">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-white tracking-tight">
+                        Buat Akun Sistem
                     </h2>
-                    <p class="mt-2 text-slate-500">
-                        Isi data berikut untuk membuat akun sistem.
+                    <p class="mt-1 text-sm text-slate-400">
+                        Isi formulir berikut untuk registrasi akun sistem.
                     </p>
                 </div>
 
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="{{ route('register') }}" class="space-y-4">
                     @csrf
 
                     <div>
-                        <x-input-label for="name" value="Nama Lengkap" class="auth-label" />
-                        <x-text-input id="name"
-                            class="auth-input"
-                            type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Masukkan nama lengkap" />
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        <label for="name" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Nama Lengkap</label>
+                        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
+                            placeholder="Nama lengkap staf"
+                            class="w-full bg-[#101726] border border-slate-700/80 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white placeholder-slate-400 rounded-xl px-4 py-3 text-sm transition outline-none" />
+                        <x-input-error :messages="$errors->get('name')" class="mt-1" />
                     </div>
 
-                    <div class="mt-5">
-                        <x-input-label for="email" value="Email" class="auth-label" />
-                        <x-text-input id="email"
-                            class="auth-input"
-                            type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="Masukkan email" />
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                    <div>
+                        <label for="email" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email Perusahaan</label>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
+                            placeholder="nama@company.com"
+                            class="w-full bg-[#101726] border border-slate-700/80 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white placeholder-slate-400 rounded-xl px-4 py-3 text-sm transition outline-none" />
+                        <x-input-error :messages="$errors->get('email')" class="mt-1" />
                     </div>
 
-                    <div class="mt-5">
-                        <x-input-label for="password" value="Password" class="auth-label" />
-                        <x-text-input id="password"
-                            class="auth-input"
-                            type="password" name="password" required autocomplete="new-password" placeholder="Buat password" />
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
-
-                    <div class="mt-5">
-                        <x-input-label for="password_confirmation" value="Konfirmasi Password" class="auth-label" />
-                        <x-text-input id="password_confirmation"
-                            class="auth-input"
-                            type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Ulangi password" />
-                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="password" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Password</label>
+                            <input id="password" type="password" name="password" required autocomplete="new-password"
+                                placeholder="••••••••"
+                                class="w-full bg-[#101726] border border-slate-700/80 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white placeholder-slate-400 rounded-xl px-4 py-3 text-sm transition outline-none" />
+                            <x-input-error :messages="$errors->get('password')" class="mt-1" />
+                        </div>
+                        <div>
+                            <label for="password_confirmation" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Konfirmasi Password</label>
+                            <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
+                                placeholder="••••••••"
+                                class="w-full bg-[#101726] border border-slate-700/80 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white placeholder-slate-400 rounded-xl px-4 py-3 text-sm transition outline-none" />
+                            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
+                        </div>
                     </div>
 
                     <button type="submit"
-                        class="w-full mt-8 py-3 bg-blue-900 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-950 transition">
-                        Daftar
+                        class="w-full mt-2 py-3 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+                        <span>Daftar Akun</span>
                     </button>
 
-                    <div class="mt-6 text-center text-sm text-slate-600">
-                        Sudah punya akun?
-                        <a href="{{ route('login') }}" class="font-semibold text-blue-800 hover:text-blue-950">
-                            Login di sini
-                        </a>
-                    </div>
-
-                    <div class="mt-6 text-center">
-                        <a href="{{ url('/') }}" class="text-sm text-slate-500 hover:text-blue-800">
-                            ← Kembali ke halaman utama
+                    <div class="pt-2 flex items-center justify-between text-xs text-slate-400">
+                        <div>
+                            Sudah punya akun?
+                            <a href="{{ route('login') }}" class="font-medium text-blue-400 hover:text-blue-300">
+                                Login di sini
+                            </a>
+                        </div>
+                        <a href="{{ url('/') }}" class="hover:text-slate-200 transition">
+                            ← Halaman Utama
                         </a>
                     </div>
                 </form>

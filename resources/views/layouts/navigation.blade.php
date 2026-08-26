@@ -1,24 +1,24 @@
 <nav x-data="{ open: false }"
-    class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 shadow-lg border-b border-blue-900/40">
+    class="bg-gradient-to-r from-[#0B1120] via-blue-950 to-indigo-900 shadow-lg border-b border-indigo-900/40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-20">
 
             <div class="flex items-center">
 
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
                         <div
-                            class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
-                            <x-application-logo class="block h-7 w-auto fill-current text-white" />
+                            class="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center opacity-50 group-hover:opacity-80 transition">
+                            <x-application-logo class="block h-4 w-auto fill-current text-white/70" />
                         </div>
 
                         <div class="hidden md:block">
-                            <p class="text-white font-bold leading-tight">
-                                PT PAL
+                            <p class="text-white font-bold text-base leading-tight tracking-wide">
+                                PT XYZ
                             </p>
-                            <p class="text-xs text-blue-100">
-                                Procurement System
+                            <p class="text-[10px] uppercase tracking-wider text-blue-200/60 font-medium">
+                                Sistem Pengadaan Material
                             </p>
                         </div>
                     </a>
@@ -51,9 +51,11 @@
                             Laporan Penerimaan
                         </x-nav-link>
 
-                        <x-nav-link :href="route('supply-chain.monitoring.index')" :active="request()->routeIs('supply-chain.monitoring.*')"
-                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
+                        <x-nav-link :href="route('supply-chain.monitoring.index')" :active="request()->routeIs('supply-chain.monitoring.*')">
                             Monitoring
+                        </x-nav-link>
+                        <x-nav-link :href="route('supply-chain.purchase-orders.index')" :active="request()->routeIs('supply-chain.purchase-orders.*')">
+                            Daftar Purchase Order
                         </x-nav-link>
                     @endif
 
@@ -81,12 +83,7 @@
                         </x-nav-link>
                     @endif
 
-                    @if (Auth::user()->role === 'gudang')
-                        <x-nav-link :href="route('gudang.goods-receipts.index')" :active="request()->routeIs('gudang.goods-receipts.*')"
-                            class="text-blue-100 hover:text-white border-transparent hover:border-blue-200">
-                            Penerimaan Barang
-                        </x-nav-link>
-                    @endif
+
 
                     @if (Auth::user()->role === 'vendor')
                         <x-nav-link :href="route('vendor.tenders.index')" :active="request()->routeIs('vendor.tenders.*')"
@@ -106,16 +103,16 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
-                            class="inline-flex items-center gap-2 px-4 py-2 border border-white/20 text-sm leading-4 font-medium rounded-xl text-white bg-white/10 hover:bg-white/20 focus:outline-none transition">
+                            class="inline-flex items-center gap-3 px-4 py-2.5 border border-white/20 text-sm leading-4 font-medium rounded-xl text-white bg-white/10 hover:bg-white/20 focus:outline-none transition shadow-sm">
                             <div class="text-left">
-                                <p class="font-semibold">{{ Auth::user()->name }}</p>
-                                <p class="text-xs text-blue-100 capitalize">
+                                <p class="font-semibold text-white">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-blue-200 capitalize">
                                     {{ str_replace('_', ' ', Auth::user()->role) }}
                                 </p>
                             </div>
 
                             <div>
-                                <svg class="fill-current h-4 w-4 text-blue-100" xmlns="http://www.w3.org/2000/svg"
+                                <svg class="fill-current h-4 w-4 text-blue-200" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -127,7 +124,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            Profil Akun
                         </x-dropdown-link>
 
                         <form method="POST" action="{{ route('logout') }}">
@@ -135,7 +132,7 @@
 
                             <x-dropdown-link :href="route('logout')"
                                 onclick="event.preventDefault(); this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                Keluar
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -159,7 +156,7 @@
         </div>
     </div>
 
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-blue-950 border-t border-white/10">
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-[#0B1120] border-t border-white/10">
 
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-white hover:bg-white/10">
@@ -186,6 +183,9 @@
                 <x-responsive-nav-link :href="route('supply-chain.monitoring.index')" :active="request()->routeIs('supply-chain.monitoring.*')" class="text-white hover:bg-white/10">
                     Monitoring
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('supply-chain.purchase-orders.index')" :active="request()->routeIs('supply-chain.purchase-orders.*')" class="text-white hover:bg-white/10">
+                    Daftar Purchase Order
+                </x-responsive-nav-link>
             @endif
 
             @if (Auth::user()->role === 'engineer')
@@ -208,11 +208,7 @@
                 </x-responsive-nav-link>
             @endif
 
-            @if (Auth::user()->role === 'gudang')
-                <x-responsive-nav-link :href="route('gudang.goods-receipts.index')" :active="request()->routeIs('gudang.goods-receipts.*')" class="text-white hover:bg-white/10">
-                    Penerimaan Barang
-                </x-responsive-nav-link>
-            @endif
+
 
             @if (Auth::user()->role === 'vendor')
                 <x-responsive-nav-link :href="route('vendor.tenders.index')" :active="request()->routeIs('vendor.tenders.*')" class="text-white hover:bg-white/10">
@@ -236,7 +232,7 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')" class="text-white hover:bg-white/10">
-                    {{ __('Profile') }}
+                    Profil Akun
                 </x-responsive-nav-link>
 
                 <form method="POST" action="{{ route('logout') }}">
@@ -245,7 +241,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                         onclick="event.preventDefault(); this.closest('form').submit();"
                         class="text-white hover:bg-white/10">
-                        {{ __('Log Out') }}
+                        Keluar
                     </x-responsive-nav-link>
                 </form>
             </div>

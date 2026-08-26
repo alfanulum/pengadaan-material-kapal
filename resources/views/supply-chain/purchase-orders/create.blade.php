@@ -1,201 +1,167 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="font-bold text-2xl text-slate-900 leading-tight">
                     Buat Purchase Order
                 </h2>
                 <p class="text-sm text-slate-500 mt-1">
-                    Buat PO berdasarkan tender dan vendor pemenang.
+                    PO untuk Tender: <span class="font-semibold text-slate-700">{{ $tender->kode_tender }}</span>
                 </p>
             </div>
 
-            <a href="{{ route('supply-chain.tenders.show', $tender->id) }}"
-                class="inline-flex items-center justify-center px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold border border-slate-200 hover:bg-slate-200 transition">
-                Kembali ke Detail Tender
-            </a>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4">
+                <div class="bg-white border border-slate-200 shadow-sm rounded-xl py-2 px-4 md:px-5 flex flex-col text-right">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Total Disetujui</span>
+                    <span class="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-blue-900 leading-none">
+                        Rp {{ number_format($quotation->harga_negosiasi ?? $quotation->harga_penawaran, 0, ',', '.') }}
+                    </span>
+                </div>
+
+                <a href="{{ route('supply-chain.tenders.show', $tender->id) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition shadow-sm h-full max-h-[52px]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 shrink-0">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                    Kembali
+                </a>
+            </div>
         </div>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <div
-            class="bg-gradient-to-r from-slate-950 via-blue-950 to-blue-800 rounded-3xl p-8 md:p-10 shadow-xl text-white mb-8 overflow-hidden relative">
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-cyan-400/20 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-                <div>
-                    <p
-                        class="inline-flex px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-blue-100 mb-5">
-                        Purchase Order Creation
-                    </p>
-
-                    <h3 class="text-3xl md:text-4xl font-bold leading-tight">
-                        PO untuk Vendor Terpilih
-                    </h3>
-
-                    <p class="mt-4 text-blue-100 max-w-3xl text-base leading-relaxed">
-                        Sistem mengambil data tender, vendor pemenang, item material,
-                        dan harga penawaran yang sudah disetujui.
-                    </p>
-                </div>
-
-                <div class="bg-white/10 border border-white/10 rounded-2xl p-5 min-w-[210px]">
-                    <p class="text-sm text-blue-100">Total Penawaran</p>
-                    <p class="text-2xl font-bold mt-1">
-                        Rp {{ number_format($quotation->harga_penawaran, 0, ',', '.') }}
-                    </p>
-                </div>
-            </div>
-        </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
+            {{-- Bagian Kiri: Info Tender & Vendor --}}
             <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-slate-200">
-                        <h3 class="text-lg font-bold text-slate-900">
+                {{-- Card Info Tender --}}
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50">
+                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">
                             Informasi Tender
                         </h3>
                     </div>
-
-                    <div class="p-6 space-y-4">
-                        <div class="rounded-2xl bg-slate-50 p-4">
-                            <p class="text-xs text-slate-500 mb-1">Kode Tender</p>
-                            <p class="font-bold text-slate-900">{{ $tender->kode_tender }}</p>
-                        </div>
-
-                        <div class="rounded-2xl bg-slate-50 p-4">
-                            <p class="text-xs text-slate-500 mb-1">Nama Tender</p>
-                            <p class="font-bold text-slate-900">{{ $tender->nama_tender }}</p>
-                        </div>
-
-                        <div class="rounded-2xl bg-slate-50 p-4">
-                            <p class="text-xs text-slate-500 mb-1">Project</p>
-                            <p class="font-bold text-slate-900">
-                                {{ $tender->materialRequest->project->nama_project ?? '-' }}
-                            </p>
-                        </div>
+                    <div class="px-6 py-5">
+                        <dl class="space-y-4">
+                            <div>
+                                <dt class="text-xs font-medium text-slate-500">Kode Tender</dt>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $tender->kode_tender }}</dd>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100">
+                                <dt class="text-xs font-medium text-slate-500">Nama Tender</dt>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $tender->nama_tender }}</dd>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100">
+                                <dt class="text-xs font-medium text-slate-500">Project Terkait</dt>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">
+                                    {{ $tender->materialRequest->project->nama_project ?? '-' }}
+                                </dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-slate-200">
-                        <h3 class="text-lg font-bold text-slate-900">
+                {{-- Card Vendor Terpilih --}}
+                <div class="bg-white rounded-xl shadow-sm border border-emerald-200 overflow-hidden relative">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+                    <div class="px-6 py-4 border-b border-slate-100 bg-emerald-50/50 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <h3 class="text-sm font-bold text-emerald-900 uppercase tracking-wide">
                             Vendor Terpilih
                         </h3>
                     </div>
-
-                    <div class="p-6 space-y-4">
-                        <div class="rounded-2xl bg-green-50 border border-green-100 p-4">
-                            <p class="text-xs text-green-700 mb-1">Nama Vendor</p>
-                            <p class="font-bold text-slate-900">{{ $quotation->vendor->nama_vendor ?? '-' }}</p>
-                        </div>
-
-                        <div class="rounded-2xl bg-slate-50 p-4">
-                            <p class="text-xs text-slate-500 mb-1">Email</p>
-                            <p class="font-bold text-slate-900">{{ $quotation->vendor->email ?? '-' }}</p>
-                        </div>
-
-                        <div class="rounded-2xl bg-slate-50 p-4">
-                            <p class="text-xs text-slate-500 mb-1">Estimasi Vendor</p>
-                            <p class="font-bold text-slate-900">
-                                {{ $quotation->estimasi_pengiriman ?? '-' }} hari
-                            </p>
-                        </div>
+                    <div class="px-6 py-5">
+                        <dl class="space-y-4">
+                            <div>
+                                <dt class="text-xs font-medium text-slate-500">Nama Perusahaan / Vendor</dt>
+                                <dd class="mt-1 text-base font-bold text-slate-900">{{ $quotation->vendor->nama_vendor ?? '-' }}</dd>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100">
+                                <dt class="text-xs font-medium text-slate-500">Email Vendor</dt>
+                                <dd class="mt-1 text-sm font-medium text-slate-700">{{ $quotation->vendor->email ?? '-' }}</dd>
+                            </div>
+                            <div class="pt-4 border-t border-slate-100">
+                                <dt class="text-xs font-medium text-slate-500">Estimasi Pengiriman (Janji Vendor)</dt>
+                                <dd class="mt-1 text-sm font-semibold text-emerald-700">
+                                    {{ $quotation->estimasi_pengiriman ?? '-' }} hari kerja
+                                </dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
             </div>
 
+            {{-- Bagian Kanan: Form PO --}}
             <div class="lg:col-span-2">
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-slate-200">
-                        <h3 class="text-lg font-bold text-slate-900">
+                <form action="{{ route('supply-chain.purchase-orders.store') }}" method="POST" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
+                    @csrf
+                    <input type="hidden" name="tender_id" value="{{ $tender->id }}">
+                    <input type="hidden" name="vendor_quotation_id" value="{{ $quotation->id }}">
+
+                    <div class="px-6 py-5 border-b border-slate-200 bg-slate-50/50">
+                        <h3 class="text-base font-bold leading-6 text-slate-900">
                             Form Purchase Order
                         </h3>
                         <p class="text-sm text-slate-500 mt-1">
-                            Lengkapi tanggal PO, deadline pengiriman, dan catatan untuk vendor.
+                            Lengkapi tanggal dan catatan untuk Purchase Order ini.
                         </p>
                     </div>
 
-                    <form action="{{ route('supply-chain.purchase-orders.store') }}" method="POST" class="p-6 md:p-8">
-                        @csrf
-
-                        <input type="hidden" name="tender_id" value="{{ $tender->id }}">
-                        <input type="hidden" name="vendor_quotation_id" value="{{ $quotation->id }}">
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="px-6 py-6 sm:p-8 flex-1">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-8">
                             <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Tanggal PO
-                                </label>
-                                <input type="date" name="tanggal_po"
-                                    value="{{ old('tanggal_po', now()->format('Y-m-d')) }}"
-                                    class="w-full rounded-xl border-slate-300 focus:border-blue-800 focus:ring-blue-800">
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal PO</label>
+                                <input type="date" name="tanggal_po" value="{{ old('tanggal_po', now()->format('Y-m-d')) }}"
+                                    class="block w-full rounded-lg border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-shadow">
                                 @error('tanggal_po')
-                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-rose-600 text-sm mt-1 font-medium">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Deadline Pengiriman
-                                </label>
-                                <input type="date" name="deadline_pengiriman"
-                                    value="{{ old('deadline_pengiriman') }}"
-                                    class="w-full rounded-xl border-slate-300 focus:border-blue-800 focus:ring-blue-800">
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Deadline Pengiriman</label>
+                                <input type="date" name="deadline_pengiriman" value="{{ old('deadline_pengiriman') }}"
+                                    class="block w-full rounded-lg border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-shadow">
                                 @error('deadline_pengiriman')
-                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-rose-600 text-sm mt-1 font-medium">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Catatan PO
-                                </label>
-                                <textarea name="catatan" rows="4"
-                                    class="w-full rounded-xl border-slate-300 focus:border-blue-800 focus:ring-blue-800"
-                                    placeholder="Contoh: Mohon diproses sesuai spesifikasi dan dikirim sebelum deadline.">{{ old('catatan') }}</textarea>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Catatan Khusus PO</label>
+                                <textarea name="catatan" rows="3"
+                                    class="block w-full rounded-lg border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-shadow"
+                                    placeholder="Instruksi tambahan untuk vendor terkait pengiriman atau packing...">{{ old('catatan') }}</textarea>
                             </div>
                         </div>
 
-                        <div class="mt-8 bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
-                            <div class="px-5 py-4 border-b border-slate-200">
-                                <h4 class="font-bold text-slate-900">Item Material PO</h4>
-                                <p class="text-sm text-slate-500 mt-1">
-                                    Item otomatis diambil dari material request tender.
-                                </p>
+                        {{-- Tabel Item PO --}}
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-bold text-slate-900">Rincian Material</h4>
+                                <span class="text-xs text-slate-500">Berdasarkan Material Request</span>
                             </div>
-
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead class="bg-white">
+                            <div class="border border-slate-200 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead class="bg-slate-50">
                                         <tr>
-                                            <th class="px-5 py-3 text-left text-xs font-bold text-slate-500 uppercase">
-                                                Barang</th>
-                                            <th class="px-5 py-3 text-left text-xs font-bold text-slate-500 uppercase">
-                                                Spesifikasi</th>
-                                            <th class="px-5 py-3 text-left text-xs font-bold text-slate-500 uppercase">
-                                                Qty</th>
-                                            <th class="px-5 py-3 text-left text-xs font-bold text-slate-500 uppercase">
-                                                Satuan</th>
+                                            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Item Barang</th>
+                                            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Spesifikasi</th>
+                                            <th scope="col" class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">Kuantitas</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-200">
+                                    <tbody class="bg-white divide-y divide-slate-200">
                                         @foreach ($tender->materialRequest->items as $item)
-                                            <tr>
-                                                <td class="px-5 py-3 text-sm font-semibold text-slate-900">
+                                            <tr class="hover:bg-slate-50 transition-colors">
+                                                <td class="px-4 py-3 text-sm font-medium text-slate-900">
                                                     {{ $item->nama_barang }}
                                                 </td>
-                                                <td class="px-5 py-3 text-sm text-slate-700">
+                                                <td class="px-4 py-3 text-sm text-slate-600">
                                                     {{ $item->spesifikasi ?? '-' }}
                                                 </td>
-                                                <td class="px-5 py-3 text-sm text-slate-700">
-                                                    {{ $item->qty }}
-                                                </td>
-                                                <td class="px-5 py-3 text-sm text-slate-700">
-                                                    {{ $item->satuan }}
+                                                <td class="px-4 py-3 text-sm font-semibold text-slate-700 text-right">
+                                                    {{ $item->qty }} <span class="text-slate-500 font-normal ml-1">{{ $item->satuan }}</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -203,23 +169,20 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <a href="{{ route('supply-chain.tenders.show', $tender->id) }}"
-                                class="inline-flex items-center justify-center px-5 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold hover:bg-slate-200 transition">
-                                Kembali
-                            </a>
-
-                            <button type="submit"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-blue-900 text-white rounded-xl font-semibold shadow-lg hover:bg-blue-950 transition">
-                                Buat dan Kirim PO
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
+                        <a href="{{ route('supply-chain.tenders.show', $tender->id) }}"
+                            class="inline-flex items-center justify-center px-5 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition shadow-sm">
+                            Batal
+                        </a>
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-lg text-sm font-semibold shadow-md hover:from-slate-800 hover:to-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 transition-all">
+                            Buat & Kirim Purchase Order
+                        </button>
+                    </div>
+                </form>
             </div>
-
         </div>
-
     </div>
 </x-app-layout>

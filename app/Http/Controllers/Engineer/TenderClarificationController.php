@@ -24,6 +24,11 @@ class TenderClarificationController extends Controller
             ->get()
             ->groupBy(function ($item) {
                 return $item->tender_id . '-' . $item->vendor_id;
+            })
+            ->sortByDesc(function ($group) {
+                $hasUnread = $group->where('status', 'terkirim')->where('sender_id', '!=', Auth::id())->count() > 0 ? 1 : 0;
+                $latestMessage = $group->sortByDesc('created_at')->first();
+                return sprintf('%d_%010d', $hasUnread, $latestMessage->created_at->timestamp);
             });
 
         return view('engineer.clarifications.index', compact('clarifications'));
@@ -57,12 +62,30 @@ class TenderClarificationController extends Controller
             ]);
 
 
+        $clarifications = TenderClarification::with([
+            'tender.materialRequest.project',
+            'vendor',
+            'sender',
+        ])
+            ->where('engineer_id', Auth::id())
+            ->latest()
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->tender_id . '-' . $item->vendor_id;
+            })
+            ->sortByDesc(function ($group) {
+                $hasUnread = $group->where('status', 'terkirim')->where('sender_id', '!=', Auth::id())->count() > 0 ? 1 : 0;
+                $latestMessage = $group->sortByDesc('created_at')->first();
+                return sprintf('%d_%010d', $hasUnread, $latestMessage->created_at->timestamp);
+            });
+
         return view(
             'engineer.clarifications.show',
             compact(
                 'tender',
                 'vendor',
-                'messages'
+                'messages',
+                'clarifications'
             )
         );
     }
@@ -98,7 +121,7 @@ class TenderClarificationController extends Controller
 
         $attachmentPath = $request->hasFile('attachment') ? $request->file('attachment')->store('chat_attachments', 'public') : null;
 
-        TenderClarification::create([
+        $chat = TenderClarification::create([
 
             'tender_id' => $tender->id,
 
@@ -130,20 +153,35 @@ class TenderClarificationController extends Controller
             $vendorUser &&
             $vendorUser->fcm_token
         ) {
-
-            $firebase->sendNotification(
-                $vendorUser->fcm_token,
-                'Klarifikasi dari ' . Auth::user()->name,
-                $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
-                $attachmentPath ? asset('storage/' . $attachmentPath) : null
-            );
+            try {
+                $firebase->sendNotification(
+                    $vendorUser->fcm_token,
+                    'Klarifikasi dari ' . Auth::user()->name,
+                    $request->hasFile('attachment') ? '📷 Mengirim gambar' : \Illuminate\Support\Str::limit($request->message, 80),
+                    $attachmentPath ? asset('storage/' . $attachmentPath) : null
+                );
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Firebase Clarification Engineer Error: ' . $e->getMessage());
+            }
         }
 
 
 
         // Return JSON for AJAX requests (no page reload)
         if (request()->ajax() || request()->wantsJson()) {
-            return response()->json(['status' => 'ok', 'message' => 'Jawaban terkirim']);
+            return response()->json([
+                'status' => 'ok', 
+                'message' => 'Jawaban terkirim',
+                'data' => [
+                    'id'             => $chat->id ?? 0,
+                    'sender_id'      => Auth::id(),
+                    'message'        => $request->message,
+                    'attachment_url' => $attachmentPath ? asset('storage/' . $attachmentPath) : null,
+                    'role'           => 'me',
+                    'sender_name'    => 'Engineer (Anda)',
+                    'time'           => now()->format('H:i'),
+                ]
+            ]);
         }
 
         return redirect()
@@ -188,6 +226,6 @@ class TenderClarificationController extends Controller
                 ];
             });
 
-        return response()->json(['messages' => $messages]);
+        return response()->json(['data' => $messages]);
     }
 }
